@@ -640,7 +640,8 @@ void g_settle(Game *g)
         g->ending = ENDING_LOST;
         g->dlg.kind = DLG_NONE;
     }
-    if (g->ending != ENDING_NONE) {
+    if (g->ending != ENDING_NONE && !(g->dlg.kind != DLG_NONE && g->dlg.showing_result)) {
+        g->dlg.kind = DLG_NONE;
         g->phase = g->pending_grave_count > 0 ? PHASE_GRAVE : PHASE_ENDED;
         return;
     }
@@ -852,7 +853,7 @@ int game_score(const Game *g)
             score += g->relation[i];
         }
     }
-    if (g->ending != ENDING_ARRIVED) {
+    if (g->ending != ENDING_ARRIVED && g->ending != ENDING_SETTLED) {
         score /= 2;
     }
     static const double DIFF_MUL[DIFF_COUNT] = {0.5, 1.0, 1.5};

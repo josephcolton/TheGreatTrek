@@ -1,0 +1,47 @@
+{
+  "_about": "Events started from a place's extra actions (route.json 'actions'): talking to people, settling early, turning back.",
+  "events": [
+    {
+      "id": "talk_grahamstown", "setpiece": true, "once": false,
+      "history": "history.place.grahamstown",
+      "sources": ["invented conversation; prices and the war's effect from Harris (1839) and Backhouse (1844), 05_research_pass2.md section 4"],
+      "text": "event.talk_grahamstown.body",
+      "choices": [
+        { "text": "event.talk_grahamstown.road", "outcomes": [ { "text": "event.talk_grahamstown.road.done", "effects": [ { "flag": "asked_about_road" } ] } ] },
+        { "text": "event.talk_grahamstown.prices", "outcomes": [ { "text": "event.talk_grahamstown.prices.done" } ] },
+        { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
+      "id": "talk_thaba_nchu", "setpiece": true, "once": false,
+      "history": "history.place.thaba_nchu",
+      "sources": ["Vegkop and Moroka's help (02 section 1); the choice of north or Natal (02 section 1: 'two main directions'). The conversation is invented."],
+      "text": "event.talk_thaba_nchu.body",
+      "choices": [
+        { "text": "event.talk_thaba_nchu.north", "outcomes": [ { "text": "event.talk_thaba_nchu.north.done" } ] },
+        { "text": "event.talk_thaba_nchu.natal", "outcomes": [ { "text": "event.talk_thaba_nchu.natal.done" } ] },
+        { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
+      "id": "settle_thaba_nchu", "setpiece": true, "once": false,
+      "history": "history.settle_early",
+      "sources": ["Some trekker families stayed for long periods near Thaba Nchu in 1836-37 (02 section 1). Ending the game here is a game choice."],
+      "text": "event.settle_thaba_nchu.body",
+      "choices": [
+        { "text": "event.settle.yes", "outcomes": [ { "text": "event.settle_thaba_nchu.yes.done", "effects": [ { "ending": "settled" } ] } ] },
+        { "text": "event.settle.no", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
+      "id": "turn_back_orange", "setpiece": true, "once": false,
+      "history": "history.turn_back",
+      "sources": ["invented. Not every family that set out went on; some returned to the Colony [recall, verify how many]."],
+      "text": "event.turn_back_orange.body",
+      "choices": [
+        { "text": "event.turn_back.yes", "outcomes": [ { "text": "event.turn_back_orange.yes.done", "effects": [ { "ending": "turned_back" } ] } ] },
+        { "text": "event.turn_back.no", "outcomes": [ { "text": "" } ] }
+      ]
+    }
+  ]
+}

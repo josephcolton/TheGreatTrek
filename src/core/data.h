@@ -167,6 +167,9 @@ typedef struct {
     int river;                  /* -1 if none */
     int setpiece;               /* event index played on first arrival, -1 if none */
     double price_mul;           /* distance modifier for shop prices */
+    int action_event[3];        /* extra things to do here (talk, settle, turn back) */
+    char action_label[3][KEY_LEN];
+    int action_count;
 } NodeDef;
 
 typedef struct {
@@ -328,7 +331,7 @@ typedef enum { WHO_RANDOM, WHO_ALL, WHO_ROLE, WHO_SPEAKER, WHO_HEAD, WHO_CHILD }
 typedef enum {
     EFF_ITEM, EFF_MONEY, EFF_OX_STAMINA, EFF_WAGON_DAMAGE, EFF_HEALTH, EFF_ILLNESS,
     EFF_MORALE, EFF_LOYALTY, EFF_RELATION, EFF_FLAG, EFF_CLEAR_FLAG, EFF_COUNTER,
-    EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL,
+    EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING,
     EFF_COUNT
 } EffectType;
 

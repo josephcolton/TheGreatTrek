@@ -1,0 +1,259 @@
+{
+  "_about": "More road events: each road's own country, the people on it, the party's own lives, and the English family's chance to earn the trekkers' trust.",
+  "events": [
+    {
+      "id": "farms_for_sale", "regions": ["eastern_frontier", "karoo"], "weight": 6, "once": true,
+      "history": "history.farms_for_sale",
+      "sources": ["Backhouse (1844): a field cornet had bought his farm 'of a Boor who emigrated'; another man with eight farms was 'about to emigrate' (05_research_pass2.md section 5). The sale here is invented."],
+      "text": "event.farms_for_sale.body",
+      "choices": [
+        { "text": "event.farms_for_sale.buy", "requires": [ { "money_gte": 50 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.farms_for_sale.buy.done", "effects": [ { "money_pence": -900 }, { "item": "oxen", "add": 3 }, { "item": "spare_wheel", "add": 1 } ] } ] },
+        { "text": "event.farms_for_sale.talk",
+          "outcomes": [ { "text": "event.farms_for_sale.talk.done", "effects": [ { "morale": 2 } ] } ] }
+      ]
+    },
+    {
+      "id": "empty_farms", "regions": ["eastern_frontier", "stormberg"], "weight": 6, "once": true,
+      "requires": [ { "flag": "east_road" } ],
+      "history": "history.empty_farms",
+      "sources": ["Many frontier farms in districts like the Tarka were left as families trekked (02 section 1; 05 section 8.1). The abandoned farm is invented."],
+      "text": "event.empty_farms.body",
+      "choices": [
+        { "text": "event.empty_farms.take",
+          "outcomes": [ { "text": "event.empty_farms.take.done", "effects": [ { "item": "iron", "add": 10 }, { "item": "tallow", "add": 10 }, { "relation": "trekkers", "add": -2 } ] } ] },
+        { "text": "event.empty_farms.leave",
+          "outcomes": [ { "text": "event.empty_farms.leave.done", "effects": [ { "morale": 1 } ] } ] }
+      ]
+    },
+    {
+      "id": "stormberg_snow", "regions": ["stormberg"], "months": [5, 6, 7, 8], "weight": 10, "once": true, "harmful": true,
+      "history": "history.stormberg_snow",
+      "sources": ["invented; snow on the high ground of the eastern road in winter is [recall, verify]. Backhouse (1844) records snow lying till midday in Griqua country in June 1839."],
+      "text": "event.stormberg_snow.body",
+      "choices": [
+        { "text": "event.stormberg_snow.wait",
+          "outcomes": [ { "text": "event.stormberg_snow.wait.done", "effects": [ { "time_days": 2 }, { "morale": -3 } ] } ] },
+        { "text": "event.stormberg_snow.push",
+          "outcomes": [
+            { "weight": 60, "skill": "voorloper", "per_point": 6, "text": "event.stormberg_snow.push.ok", "effects": [ { "ox_stamina": -10 } ] },
+            { "weight": 40, "text": "event.stormberg_snow.push.bad", "effects": [ { "ox_stamina": -10 }, { "illness": "exposure", "who": "random", "count": 2 } ] } ] }
+      ]
+    },
+    {
+      "id": "dust_storm", "regions": ["karoo"], "weight": 6, "cooldown_days": 30, "harmful": true,
+      "requires": [ { "weather": "windy" } ],
+      "history": "history.dust_storm",
+      "sources": ["invented"],
+      "text": "event.dust_storm.body",
+      "choices": [
+        { "text": "event.dust_storm.shelter",
+          "outcomes": [ { "text": "event.dust_storm.shelter.done", "effects": [ { "time_days": 0.5 } ] } ] },
+        { "text": "event.dust_storm.push",
+          "outcomes": [
+            { "weight": 50, "text": "event.dust_storm.push.ok" },
+            { "weight": 50, "text": "event.dust_storm.push.lost", "effects": [ { "distance": -6 }, { "item": "sheep", "add": -4 } ] } ] }
+      ]
+    },
+    {
+      "id": "jukskei_snaps", "weight": 6, "cooldown_days": 40,
+      "speaker": { "pick": "skill", "skill": "voorloper" },
+      "history": "history.jukskei",
+      "sources": ["Oxen were yoked in pairs with a wooden juk held by jukskeie, yoke pins (02 section 3). The breakage is invented."],
+      "text": "event.jukskei_snaps.body",
+      "choices": [
+        { "text": "event.jukskei_snaps.carve",
+          "outcomes": [ { "text": "event.jukskei_snaps.carve.done", "effects": [ { "time_days": 0.5 } ] } ] }
+      ]
+    },
+    {
+      "id": "grass_fire", "regions": ["highveld", "transorangia"], "months": [6, 7, 8, 9], "weight": 6, "once": true, "harmful": true,
+      "history": "history.grass_fire",
+      "sources": ["invented; winter grass fires on the Highveld are general knowledge [recall, verify]."],
+      "text": "event.grass_fire.body",
+      "choices": [
+        { "text": "event.grass_fire.backburn",
+          "outcomes": [
+            { "weight": 70, "skill": "herding", "per_point": 5, "text": "event.grass_fire.backburn.ok", "effects": [ { "time_days": 0.5 } ] },
+            { "weight": 30, "text": "event.grass_fire.backburn.bad", "effects": [ { "wagon_damage": "tent", "amount": 40 }, { "item": "sheep", "add": -6 } ] } ] },
+        { "text": "event.grass_fire.run",
+          "outcomes": [ { "text": "event.grass_fire.run.done", "effects": [ { "ox_stamina": -15 }, { "item": "sheep", "add": -10 } ] } ] }
+      ]
+    },
+    {
+      "id": "wild_dogs", "time": "night", "regions": ["transorangia", "highveld"], "weight": 5, "cooldown_days": 30, "harmful": true,
+      "history": "history.wild_dogs",
+      "sources": ["invented"],
+      "text": "event.wild_dogs.body",
+      "choices": [
+        { "text": "event.wild_dogs.drive",
+          "outcomes": [
+            { "weight": 60, "skill": "shooting", "per_point": 6, "text": "event.wild_dogs.drive.ok", "effects": [ { "item": "gunpowder", "add": -1 } ] },
+            { "weight": 40, "text": "event.wild_dogs.drive.bad", "effects": [ { "item": "sheep", "add": -6 } ] } ] }
+      ]
+    },
+    {
+      "id": "evening_hymns", "weight": 5, "cooldown_days": 25,
+      "requires": [ { "days_gte": 10 } ],
+      "history": "history.evening_hymns",
+      "sources": ["invented. Church and worship mattered greatly to the trekkers (Kerkspruit church, Oct 1837; 05 section 3)."],
+      "text": "event.evening_hymns.body",
+      "choices": [
+        { "text": "event.evening_hymns.join",
+          "outcomes": [ { "text": "event.evening_hymns.join.done", "effects": [ { "morale": 5 }, { "relation": "trekkers", "add": 1 } ] } ] },
+        { "text": "event.evening_hymns.rest",
+          "outcomes": [ { "text": "event.evening_hymns.rest.done", "effects": [ { "morale": 2 } ] } ] }
+      ]
+    },
+    {
+      "id": "lessons_on_the_road", "weight": 4, "once": true,
+      "requires": [ { "member_role": "child" }, { "days_gte": 15 } ],
+      "history": "history.lessons",
+      "sources": ["invented"],
+      "text": "event.lessons_on_the_road.body",
+      "choices": [
+        { "text": "event.lessons_on_the_road.teach",
+          "outcomes": [ { "text": "event.lessons_on_the_road.teach.done", "effects": [ { "morale": 4 } ] } ] },
+        { "text": "event.lessons_on_the_road.skip",
+          "outcomes": [ { "text": "event.lessons_on_the_road.skip.done" } ] }
+      ]
+    },
+    {
+      "id": "servant_family_news", "weight": 5, "once": true,
+      "requires": [ { "member_role": "servant" }, { "days_gte": 25 } ],
+      "speaker": { "pick": "role", "role": "servant" },
+      "history": "history.servant_family",
+      "sources": ["invented, told from the servant's side. Khoikhoi workers could leave an employer after Ordinance 50 (1828) (05 section 7)."],
+      "text": "event.servant_family_news.body",
+      "choices": [
+        { "text": "event.servant_family_news.go_home", "requires": [ { "money_gte": 10 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.servant_family_news.go_home.done", "effects": [ { "money_pence": -180 }, { "leave": true, "who": "speaker" }, { "morale": 2 } ] } ] },
+        { "text": "event.servant_family_news.stay",
+          "outcomes": [
+            { "weight": 60, "text": "event.servant_family_news.stay.ok", "effects": [ { "loyalty": 10, "who": "speaker" } ] },
+            { "weight": 40, "text": "event.servant_family_news.stay.sad", "effects": [ { "loyalty": -10, "who": "speaker" } ] } ] }
+      ]
+    },
+    {
+      "id": "voorloper_shortcut", "weight": 5, "cooldown_days": 40,
+      "requires": [ { "member_skill_gte": ["voorloper", 3] } ],
+      "speaker": { "pick": "skill", "skill": "voorloper" },
+      "history": "history.voorloper",
+      "sources": ["The voorloper walked ahead leading the front oxen and picking the way (01_gemini_review.md section 2; DSAE). The shortcut is invented."],
+      "text": "event.voorloper_shortcut.body",
+      "choices": [
+        { "text": "event.voorloper_shortcut.take",
+          "outcomes": [
+            { "weight": 70, "skill": "voorloper", "per_point": 5, "text": "event.voorloper_shortcut.take.ok", "effects": [ { "distance": 6 }, { "loyalty": 5, "who": "speaker" } ] },
+            { "weight": 30, "text": "event.voorloper_shortcut.take.bad", "effects": [ { "wagon_damage": "wheels", "amount": 25 } ] } ] },
+        { "text": "event.voorloper_shortcut.keep",
+          "outcomes": [ { "text": "event.voorloper_shortcut.keep.done", "effects": [ { "loyalty": -3, "who": "speaker" } ] } ] }
+      ]
+    },
+    {
+      "id": "missionary_travellers", "regions": ["transorangia"], "weight": 5, "once": true,
+      "history": "history.missionaries",
+      "sources": ["Missionaries travelled through Transorangia in these years: the Wesleyans at Thaba Nchu (05 section 7) and the French missionaries Arbousset and Daumas, who toured in 1836 (archive.org). The meeting is invented."],
+      "text": "event.missionary_travellers.body",
+      "choices": [
+        { "text": "event.missionary_travellers.welcome",
+          "outcomes": [ { "text": "event.missionary_travellers.welcome.done", "effects": [ { "relation": "missionaries", "add": 5 }, { "item": "medicine", "add": 2 } ] } ] },
+        { "text": "event.missionary_travellers.cool",
+          "outcomes": [ { "text": "event.missionary_travellers.cool.done", "effects": [ { "relation": "missionaries", "add": -3 } ] } ] }
+      ]
+    },
+    {
+      "id": "basotho_herders", "regions": ["transorangia"], "weight": 6, "once": true,
+      "requires": [ { "flag": "east_road" } ],
+      "history": "history.basotho",
+      "sources": ["Moshoeshoe's Basotho lived east of the Caledon (02 section 5). The meeting is invented."],
+      "text": "event.basotho_herders.body",
+      "choices": [
+        { "text": "event.basotho_herders.greet",
+          "outcomes": [ { "text": "event.basotho_herders.greet.done", "effects": [ { "relation": "basotho", "add": 4 } ] } ] },
+        { "text": "event.basotho_herders.trade", "requires": [ { "item_gte": ["beads", 2] } ], "locked": "lock.need_beads",
+          "outcomes": [ { "text": "event.basotho_herders.trade.done", "effects": [ { "item": "beads", "add": -2 }, { "item": "maize", "add": 60 }, { "relation": "basotho", "add": 3 } ] } ] }
+      ]
+    },
+    {
+      "id": "powder_found_out", "regions": ["highveld", "transorangia"], "weight": 20, "once": true,
+      "requires": [ { "flag": "sold_powder" } ],
+      "history": "history.powder_law",
+      "sources": ["Harris (1839): carrying gunpowder into the territories of African rulers was contraband, risking twelve months' imprisonment (05 section 10). The consequence here is invented."],
+      "text": "event.powder_found_out.body",
+      "choices": [
+        { "text": "event.powder_found_out.admit",
+          "outcomes": [ { "text": "event.powder_found_out.admit.done", "effects": [ { "relation": "trekkers", "add": 2 }, { "morale": -2 } ] } ] },
+        { "text": "event.powder_found_out.deny",
+          "outcomes": [ { "text": "event.powder_found_out.deny.done", "effects": [ { "relation": "trekkers", "add": -5 } ] } ] }
+      ]
+    },
+    {
+      "id": "council_debate", "sides": ["dutch"], "regions": ["highveld"], "weight": 10, "once": true,
+      "requires": [ { "flag": "joined_laager" } ],
+      "history": "history.council",
+      "sources": ["The trekkers argued over whether to go north onto the Highveld or east over the mountains to Natal (02 section 1: two main directions; quarrels among the leaders). The vote here is invented."],
+      "text": "event.council_debate.body",
+      "choices": [
+        { "text": "event.council_debate.north",
+          "outcomes": [ { "text": "event.council_debate.north.done", "effects": [ { "flag": "voted_north" }, { "relation": "trekkers", "add": 2 } ] } ] },
+        { "text": "event.council_debate.natal",
+          "outcomes": [ { "text": "event.council_debate.natal.done", "effects": [ { "flag": "voted_natal" }, { "relation": "trekkers", "add": 2 } ] } ] },
+        { "text": "event.council_debate.unity",
+          "outcomes": [ { "text": "event.council_debate.unity.done", "effects": [ { "morale": 3 }, { "relation": "trekkers", "add": 4 } ] } ] }
+      ]
+    },
+    {
+      "id": "widow_wagon", "sides": ["english"], "regions": ["karoo", "transorangia", "stormberg"], "weight": 8, "once": true,
+      "history": "history.widow_wagon",
+      "sources": ["invented: one of the ways an English family earns the trekkers' trust (04_game_design.md section 12.1)."],
+      "text": "event.widow_wagon.body",
+      "choices": [
+        { "text": "event.widow_wagon.mend", "requires": [ { "any": [ { "item_gte": ["spare_wheel", 1] }, { "member_skill_gte": ["smithing", 1] }, { "item_gte": ["iron", 10] } ] } ], "locked": "lock.need_parts",
+          "outcomes": [ { "text": "event.widow_wagon.mend.done", "effects": [ { "time_days": 1 }, { "relation": "trekkers", "add": 12 }, { "flag": "helped_trekkers" } ] } ] },
+        { "text": "event.widow_wagon.carry", "requires": [ { "item_gte": ["oxen", 14] } ], "locked": "lock.need_14_oxen",
+          "outcomes": [ { "text": "event.widow_wagon.carry.done", "effects": [ { "item": "oxen", "add": -2 }, { "relation": "trekkers", "add": 10 }, { "flag": "helped_trekkers" } ] } ] },
+        { "text": "event.widow_wagon.pass",
+          "outcomes": [ { "text": "event.widow_wagon.pass.done", "effects": [ { "relation": "trekkers", "add": -2 } ] } ] }
+      ]
+    },
+    {
+      "id": "share_coffee", "sides": ["english"], "weight": 6, "once": true,
+      "requires": [ { "item_gte": ["coffee", 4] }, { "days_gte": 20 } ],
+      "history": "history.share_coffee",
+      "sources": ["invented. Coffee and sugar ran short among the trekkers far from the Colony's stores."],
+      "text": "event.share_coffee.body",
+      "choices": [
+        { "text": "event.share_coffee.share",
+          "outcomes": [ { "text": "event.share_coffee.share.done", "effects": [ { "item": "coffee", "add": -4 }, { "relation": "trekkers", "add": 6 } ] } ] },
+        { "text": "event.share_coffee.sell", "outcomes": [ { "text": "event.share_coffee.sell.done", "effects": [ { "item": "coffee", "add": -4 }, { "money_pence": 120 }, { "relation": "trekkers", "add": 1 } ] } ] }
+      ]
+    },
+    {
+      "id": "sick_ox", "weight": 5, "cooldown_days": 30, "harmful": true,
+      "speaker": { "pick": "skill", "skill": "herding" },
+      "history": "history.sick_ox",
+      "sources": ["invented; a generic sickness, not a named cattle disease (lungsickness only arrived in 1853, 05 section 7)."],
+      "text": "event.sick_ox.body",
+      "choices": [
+        { "text": "event.sick_ox.rest",
+          "outcomes": [
+            { "weight": 65, "skill": "herding", "per_point": 6, "text": "event.sick_ox.rest.ok", "effects": [ { "time_days": 1 } ] },
+            { "weight": 35, "text": "event.sick_ox.rest.bad", "effects": [ { "time_days": 1 }, { "item": "oxen", "add": -1 } ] } ] },
+        { "text": "event.sick_ox.slaughter",
+          "outcomes": [ { "text": "event.sick_ox.slaughter.done", "effects": [ { "item": "oxen", "add": -1 }, { "item": "biltong", "add": 60 } ] } ] }
+      ]
+    },
+    {
+      "id": "ostrich_eggs", "regions": ["karoo", "transorangia"], "weight": 4, "once": true,
+      "history": "history.ostrich_eggs",
+      "sources": ["invented. Ostrich eggs were used for food and as water containers in the region [recall, verify]."],
+      "text": "event.ostrich_eggs.body",
+      "choices": [
+        { "text": "event.ostrich_eggs.take",
+          "outcomes": [ { "text": "event.ostrich_eggs.take.done", "effects": [ { "item": "meat", "add": 12 }, { "morale": 2 } ] } ] },
+        { "text": "event.ostrich_eggs.leave", "outcomes": [ { "text": "event.ostrich_eggs.leave.done" } ] }
+      ]
+    }
+  ]
+}

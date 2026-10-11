@@ -99,6 +99,9 @@ static int pick_choice(Game *g, const DialogView *v, Policy policy, TrekRng *bot
         }
         return 3;
     }
+    if (v->kind == DLG_ROUTE) {
+        return enabled[(g->seed / 2) % (uint64_t)n]; /* half the runs take each road */
+    }
     if (v->kind == DLG_STRANDED) {
         if (v->choices[2].enabled) {
             return 2;
@@ -388,6 +391,7 @@ int main(int argc, char **argv)
     free(loc_dir);
 
     int failures = 0;
+    int *seen_any = calloc((size_t)d->event_count, sizeof(int));
     for (int f = 0; f < d->family_count; f++) {
         if (strcmp(family_id, "all") != 0 && strcmp(family_id, d->families[f].id) != 0) {
             continue;
@@ -412,18 +416,17 @@ int main(int argc, char **argv)
             }
             printf("\n");
         }
-        if (strcmp(family_id, "all") != 0 || f == d->family_count - 1) {
-            int unseen = 0;
-            for (int i = 0; i < d->event_count; i++) {
-                if (!st.event_seen[i] && !d->events[i].setpiece) {
-                    printf("           never seen: %s\n", d->events[i].id);
-                    unseen++;
-                }
-            }
-            (void)unseen;
+        for (int i = 0; i < d->event_count; i++) {
+            seen_any[i] += st.event_seen[i];
         }
         free(st.event_seen);
     }
+    for (int i = 0; i < d->event_count; i++) {
+        if (!seen_any[i] && !d->events[i].setpiece) {
+            printf("never seen: %s\n", d->events[i].id);
+        }
+    }
+    free(seen_any);
     locale_free(loc);
     data_free(d);
     return failures ? 1 : 0;

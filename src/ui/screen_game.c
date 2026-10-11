@@ -395,9 +395,9 @@ static void travel_render(App *app)
 #define DLG_W 592
 
 typedef struct {
-    ChoiceItem items[6];
-    char text[6][400];
-    char locked[6][200];
+    ChoiceItem items[MAX_CHOICES];
+    char text[MAX_CHOICES][400];
+    char locked[MAX_CHOICES][200];
     int n;
 } DialogChoices;
 

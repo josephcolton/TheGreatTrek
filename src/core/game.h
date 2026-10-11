@@ -20,6 +20,7 @@
 #define MAX_RESULT_LINES 10
 #define MAX_NOTICES 12
 #define EPITAPH_LEN 96
+#define MAX_CHOICES 8
 
 typedef enum {
     PHASE_DIALOG,   /* events, landmarks, rivers, road choices, notices */
@@ -228,7 +229,7 @@ typedef struct {
     LocText speaker;          /* empty key = no speaker */
     LocText body[MAX_RESULT_LINES];
     int body_count;
-    ChoiceView choices[6];
+    ChoiceView choices[MAX_CHOICES];
     int choice_count;
     char image[ID_LEN];
     char history_key[KEY_LEN];

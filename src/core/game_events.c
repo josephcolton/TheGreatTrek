@@ -446,6 +446,9 @@ static void apply_effect(Game *g, const Effect *e)
         game_journal(g, &t);
         break;
     }
+    case EFF_ENDING:
+        g->ending = (EndingKind)e->amount;
+        break;
     default: break;
     }
 }

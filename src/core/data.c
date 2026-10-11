@@ -615,6 +615,18 @@ static void resolve_setpieces(Loader *L, const char *dir)
         if (sp && i < d->node_count) {
             d->nodes[i].setpiece = need_index(L, data_find_event(d, sp), "event", sp, d->nodes[i].id);
         }
+        const cJSON *act;
+        cJSON_ArrayForEach(act, jget(o, "actions"))
+        {
+            NodeDef *n = &d->nodes[i];
+            if (i >= d->node_count || n->action_count >= 3) {
+                break;
+            }
+            const char *ev = jstr(act, "event");
+            n->action_event[n->action_count] = need_index(L, data_find_event(d, ev), "event", ev, n->id);
+            copy_str(n->action_label[n->action_count], KEY_LEN, jstr(act, "label"));
+            n->action_count++;
+        }
         i++;
     }
     cJSON_Delete(root);
@@ -1090,6 +1102,13 @@ static bool parse_effect(Loader *L, const cJSON *o, Effect *e, const char *ctx)
     } else if (strcmp(k, "journal") == 0) {
         e->type = EFF_JOURNAL;
         copy_str(e->str, sizeof e->str, s);
+    } else if (strcmp(k, "ending") == 0) {
+        static const char *ENDINGS[] = {"none", "arrived", "settled", "turned_back", "stranded", "lost"};
+        e->type = EFF_ENDING;
+        e->amount = find_name(ENDINGS, 6, s);
+        if (e->amount <= 0) {
+            fail(L, "%s: unknown ending \"%s\"", ctx, s ? s : "?");
+        }
     } else {
         fail(L, "%s: unknown effect \"%s\"", ctx, k);
         return false;
@@ -1483,6 +1502,9 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
     for (int i = 0; i < d->node_count; i++) {
         fn(d->nodes[i].name_key, d->nodes[i].id, ctx);
         fn(d->nodes[i].desc_key, d->nodes[i].id, ctx);
+        for (int a = 0; a < d->nodes[i].action_count; a++) {
+            fn(d->nodes[i].action_label[a], d->nodes[i].id, ctx);
+        }
     }
     for (int i = 0; i < d->edge_count; i++) {
         if (d->edges[i].label_key[0]) {
