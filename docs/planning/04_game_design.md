@@ -303,6 +303,30 @@ Worked out from coordinates in `05_research_pass2.md` §2: about **540 mi in a s
 
 **Calibrated on history:** the Uys party went from Grahamstown (April 1837) to the Sand River laager (29 June 1837) in about 87 days, which is ~6.2 mi/day overall and matches the sourced "about 10 km/day with herds". Normal pace is therefore 8–9 mi on a travel day, ~6–7 mi/day with rests; a full trip takes ~100–110 days and arrives in the Highveld winter (July).
 
+### 5.2b Choosing the road (forks)
+
+The party picks its road at forks, and each road has its own country, towns, events and timeline. A fork is a node with more than one outgoing edge; arriving there opens a **route choice** in the dialog screen. Each option shows its distance and a line of advice from someone who knows the road. Events use `node` / `edge` / `route_flag` conditions, so each road has its own events.
+
+```
+                  ┌─ Cradock ─ Colesberg ─ Orange drift ─┬──────────────── Thaba Nchu ─ Vet R. ─ Sand R. ─ Vaal drift ─ Mooi River
+ Grahamstown ─────┤   (western road, 437 mi to Thaba Nchu)└─ Philippolis ──┘
+                  └─ Tarka ─ Stormberg ─ Buffelsvlei drift ─ Caledon drift ─ Thaba Nchu
+                      (eastern road, 367 mi to Thaba Nchu)
+```
+
+| Fork | Option | Character | Historical basis |
+|---|---|---|---|
+| **Grahamstown** | **Western road** by Cradock and Colesberg | longer; colonial towns and stores on the way; the dry Karoo (carry water); the Orange near Colesberg | Colesberg as the edge of the Colony; Backhouse's 1839 journey (prices, quaggas) |
+| | **Eastern road** by the Tarka and the Stormberg | shorter, but mountain passes, cold nights and snow in winter; few stores; the Orange at Buffelsvlei, then the Caledon | **Retief's party crossed at Buffelsvlei in March 1837** (`05` §2) |
+| **Orange drift (western)** | Straight to Thaba Nchu | shortest | |
+| | By **Philippolis** (Griqua) | +~22 mi; Griqua trade and news; a relation-building stop | Philippolis as a Griqua centre |
+| **Thaba Nchu** | North to the Highveld (this game) | | settled route |
+| | *(later)* East over the Drakensberg to Natal | not in the first release | plan §1 |
+
+**Timelines.** Because news travels by road, the two roads hear different things at different times (e.g. the eastern road meets people who saw Retief's party cross; the western road hears frontier prices and Colesberg gossip). Timed events use `date_gte` / `date_lt` conditions, so a fast party and a slow party meet different news.
+
+Distances (×1.25 of straight line, see `05` §2): western road ≈ 673 mi in total, eastern road ≈ 603 mi.
+
 ### 5.3 Two map views
 
 1. **Trail strip** (always on the travel screen): a horizontal line of landmarks with the wagon icon moving along it. Shows distance to the next landmark.
@@ -543,7 +567,7 @@ Multi-node events add a `"nodes": { ... }` map and a `"start"` node; each outcom
 | Condition clauses | Effect clauses |
 |---|---|
 | `side`, `family` | `item` add/remove (food, powder, lead, parts, trade goods…) |
-| `region`, `node`, `edge_water`, `month`, `season`, `weather` | `money` add/remove |
+| `region`, `node`, `edge`, `route_flag`, `edge_water`, `month`, `season`, `weather`, `date_gte`, `date_lt` | `money` add/remove |
 | `flag`, `not_flag`, `counter_gte` | `oxen`, `livestock` (cattle, sheep, horses) add/remove |
 | `item_gte`, `money_gte`, `oxen_gte` | `ox_stamina`, `wagon_damage` (part, amount) |
 | `member_role`, `member_role_healthy`, `member_skill_gte` | `health`, `illness`, `injury` (who: random/role/named/all) |
