@@ -66,3 +66,6 @@ compile_commands.json
 
 # Release packages
 dist/
+
+# ctest run from the source folder by mistake
+Testing/
