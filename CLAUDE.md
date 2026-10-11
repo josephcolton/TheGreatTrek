@@ -85,7 +85,7 @@ ctest --test-dir "$B" --output-on-failure
 "$B/bin/TheGreatTrek.exe" --pref "$TEMP/p" --seed 7 --keys "2 1 1 enter up enter" --screenshot shot.png
 ```
 
-Testing the front end without a person: `--keys` replays key presses (1-9, a-z, enter, esc, arrows, `text:Word`, `wait:N`, and the mouse with `move:X,Y` / `click:X,Y` in 640×360 pixels), `--seed` fixes the new trip's seed, `--pref` keeps saves out of the real user folder, and `--screenshot` saves a PNG you can look at. `trekbot --dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark` writes a save at that moment; copy it into `<pref>/trips/` to open it in the game.
+Testing the front end without a person: `--keys` replays key presses (1-9, a-z, enter, esc, arrows, `text:Word`, `wait:N`, and the mouse with `move:X,Y` / `click:X,Y` in 640×360 pixels), `--seed` fixes the new trip's seed, `--pref` keeps saves out of the real user folder, and `--screenshot` saves a PNG you can look at. `trekbot --dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark|landmark:ID|night` writes a save at that moment; copy it into `<pref>/trips/` to open it in the game.
 
 ### This machine (Windows 11), checked 2026-10-11
 - **Toolchain in use:** `gcc` 13.2 (MinGW-w64 UCRT), `cmake` 3.29 and `ninja` from **Strawberry Perl** (`C:/Strawberry/c/bin`), first on PATH. Chosen because it works with no setup; the CMake files are portable to MSVC and other platforms.

@@ -16,7 +16,13 @@ SDL libraries are fetched by CMake at build time and are not stored in this repo
 | `assets/fonts/VT323-Regular.ttf` | The VT323 Project Authors (Peter Hull) | SIL Open Font License 1.1 (`assets/fonts/VT323-OFL.txt`) |
 
 ## Images and sounds
-None are files: the scenes are drawn with rectangles in `src/ui/scene.c`, and the sound effects are synthesised in `src/ui/sound.c`. Every image or sound file added later must be listed here with its author, source and licence.
+| File | Author | Licence |
+|---|---|---|
+| `assets/sprites/wagons.txt` (wagons, oxen, the voorloper) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
+| `assets/sprites/scenery.txt` (houses, churches, huts, trees, the camp) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
+| `assets/sprites/animals.txt` (the game animals) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
+
+The sprites are text files (one character per pixel), so they can be edited in any text editor. Skies, hills, rivers and the map are drawn in code (`src/ui/scene.c`, `src/ui/screen_overlay.c`), and the sound effects are synthesised in `src/ui/sound.c`. Every image or sound file added later must be listed here with its author, source and licence.
 
 ## Historical sources
 See `docs/planning/02_research_resources.md` and `docs/planning/05_research_pass2.md`.

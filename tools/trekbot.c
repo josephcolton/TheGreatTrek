@@ -1,7 +1,7 @@
 /* trekbot: plays many headless games to check that runs finish and to tune balance.
  * Usage: trekbot [--runs N] [--seed S] [--family ID|all] [--policy random|cautious|reckless]
  *                [--difficulty easy|normal|hard] [--data DIR] [--verbose] [--savecheck]
- *                [--dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark]  (save one game at that moment)
+ *                [--dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark|landmark:ID|night]  (save one game at that moment)
  * Prints arrival rate, days taken, deaths and causes, and events never seen. */
 #include "calendar.h"
 #include "data.h"
@@ -141,6 +141,12 @@ static bool maybe_dump(Game *g)
         hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_RIVER;
     } else if (strcmp(stop_at, "landmark") == 0) {
         hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_LANDMARK;
+    } else if (strncmp(stop_at, "landmark:", 9) == 0) {
+        hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_LANDMARK &&
+              strcmp(g->data->nodes[g->node].id, stop_at + 9) == 0;
+    } else if (strcmp(stop_at, "night") == 0) {
+        hit = game_phase(g) == PHASE_DIALOG && g->dlg.kind == DLG_EVENT && g->data->events[g->dlg.event].night &&
+              !g->dlg.showing_result;
     } else if (strcmp(stop_at, "route") == 0) {
         hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_ROUTE && g->day > g->start_day;
     }

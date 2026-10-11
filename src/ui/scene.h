@@ -18,6 +18,8 @@ typedef enum {
 
 /* Draws a scene into rect. region < 0 uses the game's current region. */
 void scene_draw(App *app, SDL_FRect rect, SceneKind kind, int region, bool moving);
+/* Sky, clouds and two lines of hills down to the horizon, dimmed by light (1 = full day). */
+void scene_backdrop(App *app, SDL_FRect r, float horizon, int region, float light);
 /* The colour of the ground in a region. */
 SDL_Color scene_ground(const App *app, int region);
 /* The scene that fits the game's current dialog or place. */

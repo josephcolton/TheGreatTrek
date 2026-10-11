@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include "format.h"
+#include "sprites.h"
 #include "sound.h"
 #include "util.h"
 
@@ -184,6 +185,11 @@ bool app_init(App *app)
         return false;
     }
     draw_init(&app->draw, app->renderer, app->font, app->big, app->small, FONT_BODY_PT, FONT_BIG_PT, FONT_SMALL_PT);
+    char *sprite_dir = util_path_join(app->base_path, "assets/sprites");
+    if (sprites_load(app->renderer, sprite_dir) == 0) {
+        SDL_Log("No sprites loaded from %s; scenes will be missing pictures", sprite_dir);
+    }
+    free(sprite_dir);
     trips_scan(app->pref_path, &app->trips);
     app->screen = SCR_TITLE;
     app->running = true;
@@ -204,6 +210,7 @@ void app_shutdown(App *app)
     app_close_game(app);
     sound_shutdown();
     draw_shutdown();
+    sprites_free();
     if (app->font) {
         TTF_CloseFont(app->font);
     }

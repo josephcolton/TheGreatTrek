@@ -2,6 +2,7 @@
  * player aims with the mouse and clicks to fire, then waits while the gun is loaded again. */
 #include "scene.h"
 #include "screens.h"
+#include "sprites.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -97,97 +98,28 @@ void hunt_screen_event(App *app, const SDL_Event *e)
 
 /* ---------------------------------------------------------------- drawing */
 
-static SDL_Color animal_color(const char *id)
+/* An animal's sprite, standing with its feet at (ax, ay) on screen. The body is centred on ax
+ * and the head sticks out in front, matching the hit box (game_hunt_body). */
+static void draw_animal(App *app, const AnimalDef *def, const HuntAnimal *a, float ax, float ay, double t, SDL_Color tint)
 {
-    static const struct { const char *id; SDL_Color c; } COLORS[] = {
-        {"springbok", {196, 140, 80, 255}}, {"blesbok", {140, 80, 50, 255}},  {"gnu", {50, 44, 40, 255}},
-        {"hartebeest", {170, 90, 60, 255}}, {"quagga", {150, 110, 70, 255}}, {"ostrich", {30, 30, 30, 255}},
-        {"kudu", {130, 110, 90, 255}},      {"eland", {190, 150, 100, 255}}, {"buffalo", {40, 36, 34, 255}},
-        {"lion", {200, 160, 80, 255}}};
-    for (size_t i = 0; i < sizeof COLORS / sizeof COLORS[0]; i++) {
-        if (strcmp(COLORS[i].id, id) == 0) {
-            return COLORS[i].c;
-        }
-    }
-    return (SDL_Color){150, 110, 60, 255};
-}
-
-/* A figure for each kind of game, drawn with rectangles; ax, ay are its feet on screen. */
-static void draw_animal(Draw *d, const AnimalDef *def, const HuntAnimal *a, float ax, float ay, double t)
-{
-    const char *id = def->id;
-    SDL_Color body = animal_color(id), dark = {60, 44, 30, 255}, light = {230, 220, 200, 255};
-    float s = (float)game_hunt_scale(a->y);
-    float w = (float)def->body_w * s, h = (float)def->body_h * s, legs = (float)def->legs * s;
-    float x = ax - w / 2;
-    bool ostrich = strcmp(id, "ostrich") == 0;
+    char name[48];
+    const char *frame = "walk_0";
     if (a->state == HUNT_A_DOWN) {
-        /* lying in the grass */
-        draw_rect(d, (SDL_FRect){x, ay - h * 0.7f, w, h * 0.7f}, body);
-        draw_rect(d, (SDL_FRect){a->dir > 0 ? x + w : x - 4 * s, ay - 4 * s, 4 * s, 4 * s}, body);
-        draw_rect(d, (SDL_FRect){x + 2 * s, ay - 1, w - 4 * s, 1}, dark);
+        frame = "down";
+    } else if (a->state == HUNT_A_GRAZE) {
+        frame = "graze";
+    } else {
+        int rate = a->state == HUNT_A_WALK ? 4 : 10;
+        frame = (int)(t * rate + a->x * 0.05f) % 2 ? "walk_1" : "walk_0";
+    }
+    snprintf(name, sizeof name, "%s_%s", def->id, frame);
+    const Sprite *sp = sprite_find(name);
+    if (!sp) {
         return;
     }
-    float top = ay - legs - h;
-    bool moving = a->state == HUNT_A_RUN || a->state == HUNT_A_CHARGE || a->state == HUNT_A_WALK;
-    int rate = a->state == HUNT_A_WALK ? 4 : 10;
-    float stride = moving ? (float)((int)(t * rate + a->x) % 2) * 2 * s : 0;
-    draw_rect(d, (SDL_FRect){x, top, w, h}, body);
-    /* head and neck: up when walking or running, down to the grass when grazing */
-    float hx = a->dir > 0 ? x + w - 1 * s : x - 4 * s;
-    if (a->state == HUNT_A_GRAZE) {
-        draw_rect(d, (SDL_FRect){hx, top + h * 0.5f, 5 * s, legs + h * 0.5f - 1 * s}, body);
-    } else if (ostrich) {
-        draw_rect(d, (SDL_FRect){hx + 1 * s, top - 10 * s, 2 * s, 11 * s}, (SDL_Color){200, 170, 150, 255});
-        draw_rect(d, (SDL_FRect){hx + (a->dir > 0 ? 1 : -1) * s, top - 12 * s, 4 * s, 3 * s}, (SDL_Color){200, 170, 150, 255});
-    } else {
-        draw_rect(d, (SDL_FRect){hx, top - 4 * s, 5 * s, 6 * s}, body);
-    }
-    /* legs */
-    SDL_Color leg_c = ostrich ? (SDL_Color){200, 170, 150, 255} : body;
-    draw_rect(d, (SDL_FRect){x + 1 * s + stride, ay - legs, 2 * s, legs}, leg_c);
-    draw_rect(d, (SDL_FRect){x + w - 3 * s - stride, ay - legs, 2 * s, legs}, leg_c);
-    /* markings */
-    if (strcmp(id, "quagga") == 0) {
-        float fore = a->dir > 0 ? x + w * 0.55f : x;
-        for (int i = 0; i < 3; i++) {
-            draw_rect(d, (SDL_FRect){fore + i * 3 * s, top, 1 * s, h}, light);
-        }
-    } else if (strcmp(id, "springbok") == 0) {
-        draw_rect(d, (SDL_FRect){x, top + h * 0.6f, w, h * 0.4f}, light);
-        draw_rect(d, (SDL_FRect){x, top + h * 0.45f, w, 1 * s}, dark);
-    } else if (strcmp(id, "blesbok") == 0) {
-        draw_rect(d, (SDL_FRect){hx + 1 * s, top - 4 * s, 2 * s, 5 * s}, light); /* the white blaze */
-    } else if (ostrich) {
-        draw_rect(d, (SDL_FRect){a->dir > 0 ? x : x + w - 4 * s, top, 4 * s, 3 * s}, light); /* white tail plumes */
-    } else if (strcmp(id, "lion") == 0) {
-        draw_rect(d, (SDL_FRect){hx - 2 * s, top - 6 * s, 8 * s, 9 * s}, (SDL_Color){140, 90, 40, 255});
-        draw_rect(d, (SDL_FRect){a->dir > 0 ? x - 4 * s : x + w, top + 2 * s, 4 * s, 1 * s}, body); /* tail */
-    } else if (strcmp(id, "kudu") == 0) {
-        if (a->state != HUNT_A_GRAZE) {
-            draw_rect(d, (SDL_FRect){hx + 1 * s, top - 11 * s, 1 * s, 7 * s}, dark); /* tall twisted horns */
-            draw_rect(d, (SDL_FRect){hx + 3 * s, top - 10 * s, 1 * s, 6 * s}, dark);
-        }
-    } else if (strcmp(id, "buffalo") == 0 || strcmp(id, "gnu") == 0 ||
-               strcmp(id, "hartebeest") == 0 || strcmp(id, "eland") == 0) {
-        if (a->state != HUNT_A_GRAZE) {
-            draw_rect(d, (SDL_FRect){hx - 1 * s, top - 6 * s, 7 * s, 2 * s}, dark); /* horns */
-        }
-    }
-}
-
-/* A thorn tree or bush, standing on the ground at (x, y). */
-static void bush(Draw *d, float x, float y, float s, SDL_Color leaf, bool tree)
-{
-    SDL_Color trunk = {80, 60, 40, 255};
-    if (tree) {
-        draw_rect(d, (SDL_FRect){x - 1 * s, y - 16 * s, 2 * s, 16 * s}, trunk);
-        draw_rect(d, (SDL_FRect){x - 12 * s, y - 20 * s, 24 * s, 4 * s}, leaf);
-        draw_rect(d, (SDL_FRect){x - 8 * s, y - 23 * s, 16 * s, 3 * s}, leaf);
-    } else {
-        draw_rect(d, (SDL_FRect){x - 6 * s, y - 6 * s, 12 * s, 6 * s}, leaf);
-        draw_rect(d, (SDL_FRect){x - 4 * s, y - 8 * s, 8 * s, 2 * s}, leaf);
-    }
+    float s = (float)game_hunt_scale(a->y);
+    float left = ax - (float)def->body_w * s / 2 - (a->dir < 0 ? 5 * s : 0);
+    sprite_draw_tinted(app->renderer, sp, left, ay - sp->h * s, s, a->dir < 0, tint);
 }
 
 typedef struct {
@@ -221,18 +153,15 @@ void hunt_screen_render(App *app)
     /* the sky, the far hills and the veld, which darkens as the sun goes down */
     int region = g->edge >= 0 ? data->edges[g->edge].region : 0;
     float dusk = (float)(v.daylight < 0.25 ? 0.6 + 1.6 * v.daylight : 1.0);
-    SDL_Color sky = COL_SKY, ground = scene_ground(app, region);
-    sky = (SDL_Color){(Uint8)(sky.r * dusk), (Uint8)(sky.g * dusk), (Uint8)(sky.b * (0.3f + 0.7f * dusk)), 255};
+    SDL_Color ground = scene_ground(app, region);
     ground = (SDL_Color){(Uint8)(ground.r * dusk), (Uint8)(ground.g * dusk), (Uint8)(ground.b * dusk), 255};
-    draw_rect(d, (SDL_FRect){0, 19, TREK_LOGICAL_W, FIELD_TOP - 19}, sky);
-    SDL_Color hill = {(Uint8)(ground.r * 0.75f), (Uint8)(ground.g * 0.8f), (Uint8)(ground.b * 0.85f), 255};
-    for (int i = 0; i < 7; i++) {
-        float hx = i * 100.0f - 20;
-        float hh = 6 + (float)((i * 7) % 5) * 2;
-        draw_rect(d, (SDL_FRect){hx, FIELD_TOP - hh, 90, hh}, hill);
-        draw_rect(d, (SDL_FRect){hx + 15, FIELD_TOP - hh - 3, 60, 3}, hill);
+    scene_backdrop(app, (SDL_FRect){0, 19, TREK_LOGICAL_W, FIELD_TOP - 19}, FIELD_TOP, region, dusk);
+    for (int i = 0; i < 5; i++) {
+        float bh = HUNT_FIELD_H / 5.0f;
+        float f = 0.92f + 0.04f * i;
+        draw_rect(d, (SDL_FRect){0, FIELD_TOP + i * bh, HUNT_FIELD_W, bh + 1},
+                  (SDL_Color){(Uint8)(ground.r * f), (Uint8)(ground.g * f), (Uint8)(ground.b * f), 255});
     }
-    draw_rect(d, (SDL_FRect){0, FIELD_TOP, HUNT_FIELD_W, HUNT_FIELD_H}, ground);
     SDL_Color tuft = {(Uint8)(ground.r * 0.8f), (Uint8)(ground.g * 0.8f), (Uint8)(ground.b * 0.75f), 255};
     for (int i = 0; i < 60; i++) {
         float ty = (float)((i * 41) % HUNT_FIELD_H);
@@ -241,7 +170,7 @@ void hunt_screen_render(App *app)
     }
 
     /* bushes and game, far things first */
-    SDL_Color leaf = {(Uint8)(70 * dusk), (Uint8)(96 * dusk), (Uint8)(50 * dusk), 255};
+    SDL_Color tint = {(Uint8)(255 * dusk), (Uint8)(255 * dusk), (Uint8)(255 * (0.3f + 0.7f * dusk)), 255};
     int order[HUNT_MAX_ANIMALS], n = 0;
     for (int i = 0; i < HUNT_MAX_ANIMALS; i++) {
         if (v.animals[i].state != HUNT_A_NONE) {
@@ -261,11 +190,16 @@ void hunt_screen_render(App *app)
             if (BUSHES[b].y > next_y) {
                 break;
             }
-            bush(d, BUSHES[b].x, FIELD_TOP + BUSHES[b].y, (float)game_hunt_scale(BUSHES[b].y), leaf, BUSHES[b].tree);
+            float bs = (float)game_hunt_scale(BUSHES[b].y) * (BUSHES[b].tree ? 0.6f : 1.0f);
+            const Sprite *sp = sprite_find(BUSHES[b].tree ? "tree_big" : "bush");
+            if (sp) {
+                sprite_draw_tinted(app->renderer, sp, BUSHES[b].x - sp->w * bs / 2, FIELD_TOP + BUSHES[b].y - sp->h * bs, bs,
+                                   b % 2, tint);
+            }
         }
         if (k < n) {
             const HuntAnimal *a = &v.animals[order[k]];
-            draw_animal(d, &data->animals[a->kind], a, a->x, FIELD_TOP + a->y, t);
+            draw_animal(app, &data->animals[a->kind], a, a->x, FIELD_TOP + a->y, t, tint);
         }
     }
 
