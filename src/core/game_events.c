@@ -135,6 +135,10 @@ bool g_maybe_event(Game *g, bool night)
             w *= g_harm(g);
             if (night) {
                 w *= d->rules.night_risk_mul[g->stance];
+                /* Travelling with the united laager after the Sand River: many wagons, shared guard. */
+                if (g->stance == NIGHT_LAAGER && game_has_flag(g, "joined_laager")) {
+                    w *= 0.5;
+                }
             }
         }
         weights[i] = w;
