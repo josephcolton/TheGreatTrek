@@ -259,6 +259,7 @@ static void load_rules(Loader *L, const char *dir)
     }
     r->base_event_rate = jnum(root, "base_event_rate", 0.3);
     r->sabbath_morale = jint(root, "sabbath_morale", 3);
+    r->wagon_trade_in = jnum(root, "wagon_trade_in", 0.8);
     r->breakage_per_mile = jnum(root, "breakage_per_mile", 0.001);
     const cJSON *ill = jget(root, "illness_per_day");
     for (int s = 0; s < SEASON_COUNT; s++) {
@@ -768,6 +769,7 @@ static void load_animals(Loader *L, const char *dir)
     h->carry_per_horse = jint(root, "carry_per_horse", 150);
     h->shots_per_lb = jint(root, "shots_per_lb", 12);
     h->biltong_yield = jnum(root, "biltong_yield", 0.45);
+    h->percussion_misfire_mul = jnum(root, "percussion_misfire_mul", 1.0);
     static const char *TIERS[] = {"passive", "big", "predator"};
     const cJSON *o;
     cJSON_ArrayForEach(o, jget(root, "animals"))
@@ -988,6 +990,9 @@ static bool parse_cond(Loader *L, const cJSON *o, Cond *c, const char *ctx)
         c->type = COND_SABBATH; /* true: the party keeps Sunday rest */
         if (!cJSON_IsBool(v)) { fail(L, "%s: sabbath needs true or false", ctx); }
         c->b = cJSON_IsTrue(v);
+    } else if (strcmp(k, "wagon") == 0 || strcmp(k, "afford_wagon") == 0) {
+        c->type = k[0] == 'w' ? COND_WAGON : COND_AFFORD_WAGON;
+        c->a = need_index(L, data_find_wagon(d, s), "wagon", s, ctx);
     } else if (strcmp(k, "days_gte") == 0) {
         c->type = COND_DAYS_GTE;
         c->b = v->valueint;
@@ -1110,6 +1115,9 @@ static bool parse_effect(Loader *L, const cJSON *o, Effect *e, const char *ctx)
     } else if (strcmp(k, "journal") == 0) {
         e->type = EFF_JOURNAL;
         copy_str(e->str, sizeof e->str, s);
+    } else if (strcmp(k, "wagon") == 0) {
+        e->type = EFF_WAGON; /* trade the wagon in for this one; its parts are new */
+        e->a = need_index(L, data_find_wagon(d, s), "wagon", s, ctx);
     } else if (strcmp(k, "ending") == 0) {
         static const char *ENDINGS[] = {"none", "arrived", "settled", "turned_back", "stranded", "lost"};
         e->type = EFF_ENDING;
@@ -1189,8 +1197,8 @@ static void parse_node(Loader *L, const cJSON *o, EventNode *n, const cJSON *nod
     const cJSON *ch;
     cJSON_ArrayForEach(ch, jget(o, "choices"))
     {
-        if (n->choice_count >= 4) {
-            fail(L, "%s: at most 4 choices per node", ctx);
+        if (n->choice_count >= MAX_EVENT_CHOICES) {
+            fail(L, "%s: at most %d choices per node", ctx, MAX_EVENT_CHOICES);
             return;
         }
         parse_choice(L, ch, &n->choices[n->choice_count++], node_ids, ctx);
@@ -1403,6 +1411,8 @@ static void resolve_known(Loader *L)
     d->item_gunpowder = need_index(L, data_find_item(d, "gunpowder"), "item", "gunpowder", "required items");
     d->item_lead = need_index(L, data_find_item(d, "lead"), "item", "lead", "required items");
     d->item_horses = need_index(L, data_find_item(d, "horses"), "item", "horses", "required items");
+    d->item_percussion = need_index(L, data_find_item(d, "percussion_gun"), "item", "percussion_gun", "required items");
+    d->item_caps = need_index(L, data_find_item(d, "caps"), "item", "caps", "required items");
     static const char *SPARES[WAGON_PART_COUNT] = {"spare_wheel", "spare_axle", "spare_dissel", "canvas"};
     for (int p = 0; p < WAGON_PART_COUNT; p++) {
         d->item_spare[p] = need_index(L, data_find_item(d, SPARES[p]), "item", SPARES[p], "required items");

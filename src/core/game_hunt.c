@@ -166,7 +166,13 @@ static void fire(Game *g)
     h->shots++;
     h->loaded = false;
     h->reload_left = d->hunt.reload_turns;
-    if (rng_chance(&g->rng, d->hunt.misfire[g->weather])) {
+    double misfire = d->hunt.misfire[g->weather];
+    if (g->inv[d->item_percussion] > 0 && g->inv[d->item_caps] > 0) {
+        /* A copper cap fires the charge without an open pan, so rain matters far less. */
+        misfire *= d->hunt.percussion_misfire_mul;
+        g_add_item(g, d->item_caps, -1);
+    }
+    if (rng_chance(&g->rng, misfire)) {
         h->reload_left = 1; /* only the pan to prime again */
         hunt_log(g, "hunt.misfire", a->name_key, 0);
         if (rng_chance(&g->rng, a->spook)) {

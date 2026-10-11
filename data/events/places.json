@@ -2,6 +2,26 @@
   "_about": "Events started from a place's extra actions (route.json 'actions'): talking to people, settling early, turning back.",
   "events": [
     {
+      "id": "wagonmaker_grahamstown", "setpiece": true, "once": false,
+      "history": "history.wagonmaker",
+      "sources": ["A travelling wagon made to order cost GBP67 10s in Cape Town, Aug 1838 (Backhouse). Heavy transport wagons and two-wheeled Scotch carts were used by traders and carriers; their 1837 Grahamstown prices are estimates, as is the trade-in value. Trekkers buying up wagons in 1836-37 is [recall, verify]. The wagonmaker is invented."],
+      "text": "event.wagonmaker.body",
+      "choices": [
+        { "text": "event.wagonmaker.transport",
+          "requires": [ { "side": "english" }, { "not": { "wagon": "transport_wagon" } }, { "afford_wagon": "transport_wagon" } ], "locked": "lock.wagonmaker",
+          "outcomes": [ { "text": "event.wagonmaker.transport.done", "effects": [ { "wagon": "transport_wagon" } ] } ] },
+        { "text": "event.wagonmaker.kakebeenwa",
+          "requires": [ { "side": "english" }, { "not": { "wagon": "kakebeenwa" } }, { "afford_wagon": "kakebeenwa" } ], "locked": "lock.wagonmaker",
+          "outcomes": [ { "text": "event.wagonmaker.kakebeenwa.done", "effects": [ { "wagon": "kakebeenwa" } ] } ] },
+        { "text": "event.wagonmaker.cart",
+          "requires": [ { "side": "english" }, { "not": { "wagon": "scotch_cart" } }, { "afford_wagon": "scotch_cart" } ], "locked": "lock.wagonmaker",
+          "outcomes": [ { "text": "event.wagonmaker.cart.done", "effects": [ { "wagon": "scotch_cart" } ] } ] },
+        { "text": "event.wagonmaker.look",
+          "outcomes": [ { "text": "event.wagonmaker.look.done" } ] },
+        { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
       "id": "talk_grahamstown", "setpiece": true, "once": false,
       "history": "history.place.grahamstown",
       "sources": ["invented conversation; prices and the war's effect from Harris (1839) and Backhouse (1844), 05_research_pass2.md section 4"],

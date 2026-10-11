@@ -3,7 +3,7 @@
   "shops": [
     { "id": "grahamstown_merchant", "group": "colonial_merchants", "keeper": "shop.grahamstown.keeper",
       "stock": { "oxen": 30, "cows": 20, "sheep": 80, "horses": 6, "meal": 30, "maize": 20, "biltong": 30, "beskuit": 30,
-                 "coffee": 120, "sugar": 120, "water_vat": 12, "gunpowder": 60, "lead": 120, "flints": 20,
+                 "coffee": 120, "sugar": 120, "water_vat": 12, "gunpowder": 60, "lead": 120, "flints": 20, "percussion_gun": 2, "caps": 10,
                  "spare_wheel": 6, "spare_axle": 6, "spare_dissel": 6, "canvas": 4, "iron": 20, "tallow": 20,
                  "tobacco": 100, "beads": 200, "cloth": 20, "medicine": 60 } },
     { "id": "cradock_store", "group": "colonial_merchants", "keeper": "shop.cradock.keeper",

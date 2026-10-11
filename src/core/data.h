@@ -9,6 +9,7 @@
 
 #define ID_LEN 32
 #define KEY_LEN 64
+#define MAX_EVENT_CHOICES 6 /* per event node; the dialog view holds MAX_CHOICES */
 
 #define MAX_ITEMS 64
 #define MAX_FAMILIES 12
@@ -252,6 +253,7 @@ typedef struct {
     int carry_per_horse;
     int shots_per_lb;
     double biltong_yield;           /* lb of biltong from a lb of meat */
+    double percussion_misfire_mul;  /* misfire chance times this with a percussion gun and caps */
 } HuntRules;
 
 /* ---- barter ---- */
@@ -292,6 +294,7 @@ typedef struct {
     double night_risk_mul[NIGHT_COUNT];
     double base_event_rate;
     int sabbath_morale;
+    double wagon_trade_in;    /* share of an old wagon's new price a wagonmaker allows */
     double breakage_per_mile;
     double illness_per_day[SEASON_COUNT];
     double accident_per_day;
@@ -313,7 +316,7 @@ typedef enum {
     COND_MEMBER_ROLE_HEALTHY, COND_MEMBER_SKILL_GTE, COND_RELATION_GTE,
     COND_RELATION_LT, COND_STANCE, COND_DATE_GTE, COND_DATE_LT,
     COND_DAYS_GTE, COND_DISTANCE_GTE, COND_CHANCE, COND_ANY, COND_NOT,
-    COND_WEEKDAY, COND_SABBATH,
+    COND_WEEKDAY, COND_SABBATH, COND_WAGON, COND_AFFORD_WAGON,
     COND_COUNT
 } CondType;
 
@@ -332,7 +335,7 @@ typedef enum { WHO_RANDOM, WHO_ALL, WHO_ROLE, WHO_SPEAKER, WHO_HEAD, WHO_CHILD }
 typedef enum {
     EFF_ITEM, EFF_MONEY, EFF_OX_STAMINA, EFF_WAGON_DAMAGE, EFF_HEALTH, EFF_ILLNESS,
     EFF_MORALE, EFF_LOYALTY, EFF_RELATION, EFF_FLAG, EFF_CLEAR_FLAG, EFF_COUNTER,
-    EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING,
+    EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING, EFF_WAGON,
     EFF_COUNT
 } EffectType;
 
@@ -371,7 +374,7 @@ typedef struct {
     char speaker_key[KEY_LEN];  /* fixed speaker, or empty to use the event's speaker pick */
     char text_key[KEY_LEN];
     char image[ID_LEN];
-    Choice choices[4];
+    Choice choices[MAX_EVENT_CHOICES];
     int choice_count;
 } EventNode;
 
@@ -421,7 +424,7 @@ typedef struct GameData {
     HuntRules hunt;
     /* well-known item indices, resolved at load */
     int item_oxen, item_water, item_vat, item_meat, item_medicine, item_sheep, item_tallow, item_iron, item_cows, item_biltong;
-    int item_gunpowder, item_lead, item_horses;
+    int item_gunpowder, item_lead, item_horses, item_percussion, item_caps;
     int item_spare[WAGON_PART_COUNT];
     int group_trekkers;
 } GameData;

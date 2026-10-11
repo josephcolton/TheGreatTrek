@@ -36,6 +36,10 @@
       "source": "estimate" },
     { "id": "flints", "category": "guns", "pack": 12, "pack_key": "unit.dozen", "weight_lb": 0.05, "price_pence": 6,
       "source": "estimate" },
+    { "id": "percussion_gun", "category": "guns", "pack": 1, "pack_key": "unit.each", "weight_lb": 9, "price_pence": 2400, "sides": ["english"],
+      "source": "estimate. Percussion guns were in use by English hunters in the 1830s: Steedman's party checked their 'copper caps' (1835), and Mzilikazi asked Harris for his 'percussion gun' (1837). A trade gun 'of inferior quality' cost 45s in 1839 (Backhouse); a good English gun cost far more. Sold only to the English side as a stand-in for rarity and credit." },
+    { "id": "caps", "category": "guns", "pack": 100, "pack_key": "unit.hundred", "weight_lb": 0.01, "price_pence": 24, "sides": ["english"],
+      "source": "estimate" },
 
     { "id": "spare_wheel", "category": "wagon", "pack": 1, "pack_key": "unit.each", "weight_lb": 60, "price_pence": 240,
       "source": "estimate" },

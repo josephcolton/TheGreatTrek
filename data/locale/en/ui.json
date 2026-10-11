@@ -121,7 +121,7 @@
   "item.meal.label": "Meal", "item.maize.label": "Maize", "item.biltong.label": "Biltong", "item.beskuit.label": "Beskuit",
   "item.meat.label": "Fresh meat (lb)", "item.coffee.label": "Coffee", "item.sugar.label": "Sugar",
   "item.water.label": "Water (gallons)", "item.water_vat.label": "Water vats",
-  "item.gunpowder.label": "Gunpowder", "item.lead.label": "Lead", "item.flints.label": "Flints",
+  "item.gunpowder.label": "Gunpowder", "item.lead.label": "Lead", "item.flints.label": "Flints", "item.percussion_gun.label": "Percussion gun", "item.caps.label": "Percussion caps",
   "item.spare_wheel.label": "Spare wheel", "item.spare_axle.label": "Spare axle", "item.spare_dissel.label": "Spare disselboom",
   "item.canvas.label": "Wagon canvas", "item.iron.label": "Iron", "item.tallow.label": "Tallow",
   "item.tobacco.label": "Tobacco", "item.beads.label": "Beads", "item.cloth.label": "Cloth", "item.medicine.label": "Medicine",

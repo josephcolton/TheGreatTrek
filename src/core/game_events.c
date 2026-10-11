@@ -31,6 +31,11 @@ bool g_eval(const Game *g, const Cond *c)
     case COND_MONTH: return cal_month(g->day) == c->b;
     case COND_WEEKDAY: return cal_weekday(g->day) == c->b;
     case COND_SABBATH: return g->sabbath == (c->b != 0);
+    case COND_WAGON: return g->wagon == c->a;
+    case COND_AFFORD_WAGON: {
+        int cost = g_wagon_trade_cost(g, c->a);
+        return cost <= 0 || g->money >= game_pence_to_unit(g, cost);
+    }
     case COND_SEASON: return (int)cal_season(g->day) == c->a;
     case COND_WEATHER: return (int)g->weather == c->a;
     case COND_FLAG: return game_has_flag(g, c->str);
@@ -455,6 +460,21 @@ static void apply_effect(Game *g, const Effect *e)
     case EFF_ENDING:
         g->ending = (EndingKind)e->amount;
         break;
+    case EFF_WAGON: {
+        int cost = g_wagon_trade_cost(g, e->a);
+        if (cost != 0) {
+            LocText t;
+            loctext_set(&t, cost > 0 ? "notice.wagon_paid" : "notice.wagon_got");
+            loctext_arg_money(&t, "money", game_pence_to_unit(g, cost > 0 ? cost : -cost));
+            g_add_result(g, &t);
+        }
+        g_add_money_pence(g, -cost);
+        g->wagon = e->a;
+        for (int p = 0; p < WAGON_PART_COUNT; p++) {
+            g->wagon_parts[p] = 100;
+        }
+        break;
+    }
     default: break;
     }
 }

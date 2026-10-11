@@ -139,6 +139,8 @@ static bool maybe_dump(Game *g)
         hit = game_phase(g) == PHASE_STORE;
     } else if (strcmp(stop_at, "river") == 0) {
         hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_RIVER;
+    } else if (strcmp(stop_at, "landmark") == 0) {
+        hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_LANDMARK;
     } else if (strcmp(stop_at, "route") == 0) {
         hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_ROUTE && g->day > g->start_day;
     }

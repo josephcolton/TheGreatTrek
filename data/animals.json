@@ -1,5 +1,6 @@
 {
   "_about": "Game for the hunting screen (04_game_design.md section 9). Meat weights and behaviour numbers are estimates for play. Which animals lived where follows Harris (1839) and Backhouse (1844) in general terms [recall, verify per animal]. Misfire chances by weather are the early design values (01_gemini_review.md section 2), invented.",
+  "percussion_misfire_mul": 0.15,
   "misfire": { "clear": 0.02, "hot": 0.02, "windy": 0.04, "cold": 0.04, "frost": 0.05, "rain": 0.6, "storm": 0.6 },
   "hit_by_range": [0.12, 0.3, 0.55, 0.8],
   "reload_turns": 3,

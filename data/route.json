@@ -2,7 +2,7 @@
   "_about": "Route graph. Miles are straight-line distance between the modern places x1.25 (05_research_pass2.md section 2). Forks: Grahamstown (western or eastern road) and the western Orange drift (direct or by Philippolis). map_xy is on the 640x360 map.",
   "nodes": [
     { "id": "grahamstown", "kind": "town", "lat": -33.31, "lon": 26.53, "map_xy": [324, 327], "shop": "grahamstown_merchant", "setpiece": "grahamstown_bible", "price_mul": 1.0,
-      "actions": [ { "label": "landmark.talk", "event": "talk_grahamstown" } ] },
+      "actions": [ { "label": "landmark.talk", "event": "talk_grahamstown" }, { "label": "landmark.wagonmaker", "event": "wagonmaker_grahamstown" } ] },
     { "id": "cradock", "kind": "town", "lat": -32.16, "lon": 25.62, "map_xy": [206, 277], "shop": "cradock_store", "price_mul": 1.05 },
     { "id": "colesberg", "kind": "town", "lat": -30.72, "lon": 25.10, "map_xy": [138, 214], "shop": "colesberg_store", "setpiece": "colesberg_edge", "price_mul": 1.15 },
     { "id": "orange_colesberg", "kind": "river", "river": "orange", "lat": -30.63, "lon": 25.45, "map_xy": [183, 210],

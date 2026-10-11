@@ -406,6 +406,13 @@ int game_pence_to_unit(const Game *g, int pence)
     return v < 1 ? 1 : v;
 }
 
+int g_wagon_trade_cost(const Game *g, int wagon)
+{
+    const GameData *d = g->data;
+    double old_value = d->wagons[g->wagon].price_pence * d->rules.wagon_trade_in;
+    return d->wagons[wagon].price_pence - (int)lround(old_value);
+}
+
 void g_add_money_pence(Game *g, int pence)
 {
     int units = game_pence_to_unit(g, pence < 0 ? -pence : pence);

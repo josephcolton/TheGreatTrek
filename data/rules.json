@@ -27,6 +27,7 @@
   "night_risk": { "rest": 1.0, "laager": 0.35, "guard": 0.6, "basis": "invented; Vegkop (1836) shows a laager's protective effect" },
   "base_event_rate": 0.24,
   "sabbath_morale": 3,
+  "wagon_trade_in": 0.8,
   "breakage_per_mile": 0.0012,
   "illness_per_day": { "summer": 0.0042, "autumn": 0.0034, "winter": 0.0040, "spring": 0.0034, "basis": "invented; tuned with trekbot so a careful Normal run loses about one person in five trips, near the child mortality of the period (about 160-200 per 1,000 births a year, Mamre 1837-46; 05 section 6)" },
   "accident_per_day": 0.0008,

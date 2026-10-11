@@ -29,6 +29,7 @@ int  g_head(const Game *g);
 int  g_current_region(const Game *g);
 double g_harm(const Game *g);
 void g_add_money_pence(Game *g, int pence);
+int g_wagon_trade_cost(const Game *g, int wagon); /* pence to pay (negative: paid to you) */
 
 /* game_travel.c */
 void g_pass_day(Game *g, bool travelling, bool allow_events);
