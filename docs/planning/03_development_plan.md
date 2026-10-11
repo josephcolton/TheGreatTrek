@@ -192,7 +192,7 @@ Status on 2026-10-11 (in brackets after each milestone).
 | 4 | **Vertical slice** [built; the family playtest is still to do] | Grahamstown → Orange River playable for **both sides**: about 15 events, shop with side pricing, laager, oxen, illness, tombstone. Family playtest. |
 | 5 | **Full route** [done: both roads to the Mooi River, hunting, barter, 54 events, five endings, bot-balanced; more events welcome] | Through to the Mooi River: Thaba Nchu, Vaal crossing, hunting, smous, barter, about 50 events, endings. Balance with the bot. |
 | 6 | **Accuracy & perspective pass** [history notes written for every event; a careful second read by a person is still needed] | Check that African groups, servants and the 1837 conflicts are shown fairly. "History behind this event" notes. |
-| 7 | **Polish & release** [drawn scenes, map, graves, glossary and a release zip done; sound and finer pixel art to do] | Pixel art, route map, sound, tombstone screen. GitHub release with a Windows build (zip with the exe and SDL DLLs). |
+| 7 | **Polish & release** [drawn scenes, map, graves, glossary, synthesised sound effects and a release zip done; finer pixel art and a GitHub release to do] | Pixel art, route map, sound, tombstone screen. GitHub release with a Windows build (zip with the exe and SDL DLLs). |
 | 8 | *(Later)* | Natal fork over the Drakensberg; Dutch or Afrikaans translation; Linux and macOS builds. |
 
 ---
@@ -200,5 +200,5 @@ Status on 2026-10-11 (in brackets after each milestone).
 ## 8. Next steps
 1. A family playtest (milestone 4), then balance from what the family finds.
 2. A second reader for the history notes and the origin stories (milestone 6).
-3. Sound, finer art, and a first GitHub release (milestone 7).
+3. Finer art and a first GitHub release (milestone 7). An MSVC build test needs the C++ tools added to Visual Studio.
 4. Research still open: prices of powder, coffee, sugar and trade goods; the Tregardt diary; see `05_research_pass2.md` section 13.
