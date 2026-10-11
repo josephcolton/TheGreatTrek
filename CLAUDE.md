@@ -53,7 +53,7 @@ Read these before designing or writing content:
 ```
 src/core/   pure C simulation — MUST NOT include SDL headers. Deterministic given a seed.
 src/ui/     SDL3 front end: screen state machine, text rendering/wrapping, input.
-src/main.c  SDL init + main loop.
+src/ui/main.c SDL init + main loop.
 tools/      trekbot (headless balance runs), datacheck (validate JSON + locale keys) — link core only.
 tests/      CTest unit tests for core.
 third_party/ vendored cJSON (MIT).
@@ -71,28 +71,26 @@ Conventions:
 
 ## Build
 
-Status: **the build is not set up yet.** It is milestone 1 in the plan. The intended setup:
-- CMake ≥ 3.24 with `FetchContent` for SDL3, SDL3_ttf (vendored FreeType) and SDL3_image, pinned to release tags.
-- An option to use system SDL3 packages instead.
+Milestone 1 (build skeleton) is done. CMake ≥ 3.24 fetches SDL3 3.4.16, SDL3_ttf 3.2.2 (vendored FreeType) and SDL3_image 3.4.6 with `FetchContent`, all as static libraries, so the game is one exe that needs no extra DLLs. `-DTREK_USE_SYSTEM_SDL=ON` uses installed SDL3 packages instead; `-DTREK_BUILD_GAME=OFF` builds only the core, tools and tests (no SDL).
 
-Intended commands once it exists:
+Programs, `data/` and `assets/` all land in `<build>/bin/`.
+
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
-cmake --build build
-ctest --test-dir build
+B="$LOCALAPPDATA/TheGreatTrek-build/debug"      # outside Google Drive
+cmake -S . -B "$B" -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build "$B"
+ctest --test-dir "$B" --output-on-failure
+"$B/bin/datacheck.exe" "$B/bin/data"
+"$B/bin/TheGreatTrek.exe" --screenshot shot.png  # renders one frame to a PNG and exits
 ```
 
 ### This machine (Windows 11), checked 2026-10-11
-- **First on PATH:** `gcc` 13.2 (MinGW-w64 UCRT), `cmake` 3.29 and `ninja`, all from **Strawberry Perl** (`C:\Strawberry\c\bin`).
-- MSYS2 is installed at `C:\msys64` (ucrt64 has gcc and make, but not cmake or SDL).
-- Visual Studio 2022 Community is installed.
-- SDL is **not** installed system-wide. FetchContent avoids needing it.
-- **Open question for the user:** which toolchain to standardise on.
-  - The Strawberry gcc works, but it is an unusual choice.
-  - MSYS2 UCRT64 can use `pacman -S mingw-w64-ucrt-x86_64-{cmake,ninja,sdl3,sdl3-ttf,sdl3-image}`.
-  - MSVC works through VS 2022.
-- The repo lives in Google Drive (`My Drive`). Keep `build/` out of git, and consider building outside Drive if sync slows it down.
+- **Toolchain in use:** `gcc` 13.2 (MinGW-w64 UCRT), `cmake` 3.29 and `ninja` from **Strawberry Perl** (`C:/Strawberry/c/bin`), first on PATH. Chosen because it works with no setup; the CMake files are portable to MSVC and other platforms.
+- Also installed: MSYS2 at `C:/msys64`, Visual Studio 2022 Community. SDL is not installed system-wide (FetchContent fetches it).
+- **Build outside Google Drive**, in `%LOCALAPPDATA%\TheGreatTrek-build\`, so sync doesn't slow the build.
 - Shells: both Git Bash and PowerShell are available. Paths contain spaces, so quote them.
+- Backslash escapes written through Bash heredocs or Python strings can get collapsed (`'\\'` became `'\'`); prefer the Write/Edit tools for source files.
+- `gh` (GitHub CLI) is not installed.
 
 ## Git
 
@@ -101,4 +99,3 @@ ctest --test-dir build
 - **Work only on `main`.** Do not create side branches, feature branches or worktrees.
 - Never force-push or rewrite published history.
 - Make sure the build and tests pass before pushing, once a build exists.
-- Add `build/` and editor folders to `.gitignore` when the build is created. The current file is GitHub's C template.

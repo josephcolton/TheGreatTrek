@@ -1,0 +1,7 @@
+foreach(name rng locale)
+    add_executable(test_${name} test_${name}.c)
+    target_link_libraries(test_${name} PRIVATE trek_core)
+    target_include_directories(test_${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+    trek_warnings(test_${name})
+    add_test(NAME ${name} COMMAND test_${name})
+endforeach()
