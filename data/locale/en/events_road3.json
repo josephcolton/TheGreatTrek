@@ -1,0 +1,40 @@
+{
+  "event.debt_collector.body": "A rider catches up with the wagons, his horse in a lather. He carries a bill from a Graham's Town merchant: goods taken on credit last year and never paid for. 'My master says he will be paid before you cross the Orange, or he will put it in the hands of the law.'",
+  "event.debt_collector.pay": "Pay the bill",
+  "event.debt_collector.pay.done": "You count out the money. The rider writes a receipt on his saddle and turns for home. Your name in Graham's Town is good again.",
+  "event.debt_collector.promise": "Promise to pay out of the year's trade",
+  "event.debt_collector.promise.ok": "The rider grumbles, but takes your signed promise back to his master.",
+  "event.debt_collector.promise.goods": "The rider will not go back with nothing. He takes some of your coffee as part payment and rides off with your promise for the rest.",
+  "history.debt_collector": "English settler families often traded on credit from the Graham's Town merchants. In 1836 Captain Harris paid a rider four rixdollars to chase a debt from Graaff-Reinet. This rider and his bill are invented.",
+
+  "event.write_letters.body": "At the outspan a trekker comes over with his hat in his hands. His brother is still in the Colony, and the magistrate there wants to know what the trekkers mean to do. He asks if someone in your family will write a letter for him in good English, to go back with the next trader.",
+  "event.write_letters.write": "Write the letter for him",
+  "event.write_letters.write.done": "By evening three more men have come with letters to write. Your family spends half a day at it, and is asked to supper at four different fires.",
+  "event.write_letters.refuse": "Say you have no time",
+  "event.write_letters.refuse.done": "He nods and goes away. Someone else will have to write it.",
+  "history.write_letters": "The trekker leaders wrote to the Colony to explain themselves: Piet Retief's manifesto was printed in the Graham's Town Journal in early 1837. Letters went back and forth with traders and travellers. That trekkers asked English families to write for them is invented.",
+
+  "event.leaders_quarrel.body": "At the fire the men talk of nothing but the leaders. Piet Retief has been sworn in as governor of the united laagers, and Gerrit Maritz keeps his place on the council. Hendrik Potgieter, who fought at Vegkop, has no leading post, and he wants to go north, not over the mountains to Natal. Voices rise.",
+  "event.leaders_quarrel.unity": "Say that a divided trek is a weak trek",
+  "event.leaders_quarrel.unity.done": "Some of the older men nod. The quarrel does not end, but your family is known as a peacemaker.",
+  "event.leaders_quarrel.listen": "Keep out of it",
+  "event.leaders_quarrel.listen.done": "You go to bed early. The voices carry on long after the fire is low.",
+  "history.leaders_quarrel": "In April 1837 the trekkers chose Piet Retief as governor of the united laagers, and he was sworn in on 6 June. Gerrit Maritz kept his offices. Hendrik Potgieter was left without a leading post, and the leaders disagreed about whether to go over the Drakensberg into Natal or north beyond the Vaal. The sources do not agree on every date. The talk at this fire is invented.",
+
+  "event.ticks.body": "The long grass is alive with ticks. They cluster on the oxen's ears and bellies, and the cattle stamp and rub and will not settle to graze.",
+  "event.ticks.grease": "Grease the oxen with fat",
+  "event.ticks.grease.done": "Everyone works along the span with handfuls of fat. The ticks loosen and fall, and by evening the oxen are grazing quietly.",
+  "event.ticks.pick": "Stop a day and pick them off by hand",
+  "event.ticks.pick.done": "It is slow, filthy work, and it takes the whole day, but the worst of the ticks are gone.",
+  "event.ticks.ignore": "Keep moving and hope for better grass",
+  "event.ticks.ignore.done": "The oxen grow thin and restless as the ticks feed.",
+  "lock.need_tallow5": "Needs 5 lb of tallow",
+  "history.ticks": "Ticks were a constant trouble for trek cattle in long grass. Louis Tregardt's diary complains of a plague of ticks. Greasing the cattle as a remedy, and what happens here, are invented.",
+
+  "event.boil_soap.body": "{speaker} has been saving fat for weeks. 'Everything we own is filthy,' {speaker} says. 'Give me half a day, the big pot and the ash from that bush over there, and I will make soap.'",
+  "event.boil_soap.yes": "Boil soap",
+  "event.boil_soap.yes.done": "The pot bubbles all morning. By afternoon there are grey cakes of soap drying on a board, and by evening clean shirts flap from the wagon tent. Everyone feels better for it.",
+  "event.boil_soap.no": "Not now; we must keep moving",
+  "event.boil_soap.no.done": "The fat goes back into the wagon.",
+  "history.boil_soap": "Trek families made what they needed on the road. Louis Tregardt's diary mentions soap being boiled. Soap was made by boiling animal fat with lye from the ash of certain bushes. Being cleaner really did help keep sickness away."
+}

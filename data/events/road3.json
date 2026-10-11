@@ -1,0 +1,74 @@
+{
+  "_about": "More road events: side-only scenes from the design (04_game_design.md section 8.4) and daily life from the Tregardt diary.",
+  "events": [
+    {
+      "id": "debt_collector", "sides": ["english"], "regions": ["eastern_frontier", "karoo", "stormberg"], "weight": 7, "once": true,
+      "requires": [ { "days_gte": 4 } ],
+      "history": "history.debt_collector",
+      "sources": ["Harris (1839): at Graaff-Reinet in 1836 a rider was hired for 4 Rds to chase a debt (05_research_pass2.md section 4.2). English traders worked on merchant credit (03 section 4). The rider and the bill are invented."],
+      "text": "event.debt_collector.body",
+      "choices": [
+        { "text": "event.debt_collector.pay", "requires": [ { "money_gte": 15 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.debt_collector.pay.done", "effects": [ { "money_pence": -180 }, { "relation": "colonial_merchants", "add": 5 } ] } ] },
+        { "text": "event.debt_collector.promise",
+          "outcomes": [
+            { "weight": 60, "text": "event.debt_collector.promise.ok", "effects": [ { "relation": "colonial_merchants", "add": -3 } ] },
+            { "weight": 40, "text": "event.debt_collector.promise.goods", "effects": [ { "item": "coffee", "add": -10 }, { "relation": "colonial_merchants", "add": -5 } ] } ] }
+      ]
+    },
+    {
+      "id": "write_letters", "sides": ["english"], "regions": ["transorangia", "highveld"], "weight": 7, "once": true,
+      "requires": [ { "relation_gte": ["trekkers", 20] } ],
+      "history": "history.write_letters",
+      "sources": ["Trekker leaders wrote to the Colony and to the Graham's Town Journal, for example Retief's manifesto of early 1837 (02 section 1); letters went back with travellers and traders. That trekkers asked English families to write for them is invented."],
+      "text": "event.write_letters.body",
+      "choices": [
+        { "text": "event.write_letters.write",
+          "outcomes": [ { "text": "event.write_letters.write.done", "effects": [ { "time_days": 0.5 }, { "relation": "trekkers", "add": 6 }, { "flag": "helped_trekkers" } ] } ] },
+        { "text": "event.write_letters.refuse",
+          "outcomes": [ { "text": "event.write_letters.refuse.done", "effects": [ { "relation": "trekkers", "add": -2 } ] } ] }
+      ]
+    },
+    {
+      "id": "leaders_quarrel", "sides": ["dutch"], "regions": ["transorangia", "highveld"], "weight": 8, "once": true,
+      "requires": [ { "date_gte": "1837-06-10" } ],
+      "history": "history.leaders_quarrel",
+      "sources": ["Retief was chosen governor of the united laagers in April 1837 (17 Apr in Afrikaans sources) and sworn in on 6 Jun 1837; Maritz kept his offices; Potgieter was left without a leading post, and the leaders split over going to Natal or north (Wikipedia, 'Piet Retief'; weet.co.za). Dates [conflict]. The talk at the fire is invented."],
+      "text": "event.leaders_quarrel.body",
+      "choices": [
+        { "text": "event.leaders_quarrel.unity",
+          "outcomes": [ { "text": "event.leaders_quarrel.unity.done", "effects": [ { "relation": "trekkers", "add": 3 } ] } ] },
+        { "text": "event.leaders_quarrel.listen",
+          "outcomes": [ { "text": "event.leaders_quarrel.listen.done", "effects": [ { "morale": -1 } ] } ] }
+      ]
+    },
+    {
+      "id": "ticks", "regions": ["transorangia", "highveld"], "months": [3, 4, 5], "weight": 6, "once": true, "harmful": true,
+      "history": "history.ticks",
+      "sources": ["Tregardt's diary (1836-38) complains of a plague of ticks on the cattle ('bosluispes', index of the 1938 edition). Greasing with fat as a remedy and the effects here are invented."],
+      "text": "event.ticks.body",
+      "choices": [
+        { "text": "event.ticks.grease", "requires": [ { "item_gte": ["tallow", 5] } ], "locked": "lock.need_tallow5",
+          "outcomes": [ { "text": "event.ticks.grease.done", "effects": [ { "item": "tallow", "add": -5 }, { "time_days": 0.5 } ] } ] },
+        { "text": "event.ticks.pick",
+          "outcomes": [ { "text": "event.ticks.pick.done", "effects": [ { "time_days": 1 }, { "ox_stamina": -3 } ] } ] },
+        { "text": "event.ticks.ignore",
+          "outcomes": [ { "text": "event.ticks.ignore.done", "effects": [ { "ox_stamina": -10 } ] } ] }
+      ]
+    },
+    {
+      "id": "boil_soap", "weight": 5, "once": true,
+      "requires": [ { "days_gte": 20 }, { "item_gte": ["tallow", 10] }, { "member_role_healthy": "spouse" } ],
+      "speaker": { "pick": "role", "role": "spouse" },
+      "history": "history.boil_soap",
+      "sources": ["Tregardt's diary records soap being boiled on the trek ('kook seep', 1938 edition, p. 132). Soap was made from animal fat and lye from the ash of certain bushes; the details here are general [recall, verify]."],
+      "text": "event.boil_soap.body",
+      "choices": [
+        { "text": "event.boil_soap.yes",
+          "outcomes": [ { "text": "event.boil_soap.yes.done", "effects": [ { "item": "tallow", "add": -10 }, { "time_days": 0.5 }, { "health": 4, "who": "all" }, { "morale": 2 } ] } ] },
+        { "text": "event.boil_soap.no",
+          "outcomes": [ { "text": "event.boil_soap.no.done" } ] }
+      ]
+    }
+  ]
+}
