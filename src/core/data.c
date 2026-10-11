@@ -786,6 +786,63 @@ static void load_animals(Loader *L, const char *dir)
     cJSON_Delete(root);
 }
 
+/* ---------------------------------------------------------------- barter */
+
+static void load_barter(Loader *L, const char *dir)
+{
+    cJSON *root = load_json(L, dir, "barter.json");
+    if (!root) {
+        return;
+    }
+    GameData *d = L->d;
+    const cJSON *o;
+    cJSON_ArrayForEach(o, jget(root, "contraband"))
+    {
+        const char *id = cJSON_IsString(o) ? o->valuestring : NULL;
+        int item = need_index(L, data_find_item(d, id), "item", id, "contraband");
+        if (item >= 0 && d->contraband_count < MAX_ITEMS) {
+            d->contraband[d->contraband_count++] = item;
+        }
+    }
+    cJSON_ArrayForEach(o, jget(root, "partners"))
+    {
+        if (d->partner_count >= MAX_PARTNERS) {
+            fail(L, "too many barter partners");
+            break;
+        }
+        BarterPartner *p = &d->partners[d->partner_count++];
+        need_str(L, p->id, sizeof p->id, o, "id", "partner");
+        make_key(p->name_key, sizeof p->name_key, "barter.", p->id, "");
+        p->group = need_index(L, data_find_group(d, jstr(o, "group")), "group", jstr(o, "group"), p->id);
+        p->node = need_index(L, data_find_node(d, jstr(o, "node")), "node", jstr(o, "node"), p->id);
+        p->fairness = jnum(o, "fairness", 1.0);
+        const cJSON *w;
+        cJSON_ArrayForEach(w, jget(o, "wants"))
+        {
+            if (p->want_count >= MAX_BARTER_GOODS) {
+                break;
+            }
+            BarterGood *g = &p->wants[p->want_count];
+            g->item = need_index(L, data_find_item(d, w->string), "item", w->string, p->id);
+            g->value = cJSON_IsNumber(w) ? w->valuedouble : 0;
+            p->want_count++;
+        }
+        cJSON_ArrayForEach(w, jget(o, "offers"))
+        {
+            if (p->offer_count >= MAX_BARTER_GOODS) {
+                break;
+            }
+            BarterGood *g = &p->offers[p->offer_count];
+            g->item = need_index(L, data_find_item(d, w->string), "item", w->string, p->id);
+            const cJSON *qty = cJSON_GetArrayItem(w, 0), *val = cJSON_GetArrayItem(w, 1);
+            g->stock = cJSON_IsNumber(qty) ? qty->valueint : 0;
+            g->value = cJSON_IsNumber(val) ? val->valuedouble : 0;
+            p->offer_count++;
+        }
+    }
+    cJSON_Delete(root);
+}
+
 /* ---------------------------------------------------------------- events */
 
 static bool parse_cond(Loader *L, const cJSON *o, Cond *c, const char *ctx);
@@ -1349,6 +1406,7 @@ GameData *data_load(const char *data_dir, char *err, size_t err_len, int *warnin
     if (!L.failed) load_rules(&L, data_dir);
     if (!L.failed) load_shocks(&L, data_dir);
     if (!L.failed) load_animals(&L, data_dir);
+    if (!L.failed) load_barter(&L, data_dir);
     if (!L.failed) load_events(&L, data_dir);
     if (!L.failed) resolve_setpieces(&L, data_dir);
     if (!L.failed) resolve_known(&L);
@@ -1398,7 +1456,7 @@ void data_free(GameData *d)
 
 void data_each_key(const GameData *d, void (*fn)(const char *key, const char *where, void *ctx), void *ctx)
 {
-    char buf[KEY_LEN + 8];
+    char buf[KEY_LEN + 16];
     for (int i = 0; i < d->item_count; i++) {
         fn(d->items[i].name_key, d->items[i].id, ctx);
         fn(d->items[i].pack_key, d->items[i].id, ctx);
@@ -1445,6 +1503,13 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
     }
     for (int i = 0; i < d->animal_count; i++) {
         fn(d->animals[i].name_key, d->animals[i].id, ctx);
+    }
+    for (int i = 0; i < d->partner_count; i++) {
+        fn(d->partners[i].name_key, d->partners[i].id, ctx);
+        snprintf(buf, sizeof buf, "%s.greeting", d->partners[i].name_key);
+        fn(buf, d->partners[i].id, ctx);
+        snprintf(buf, sizeof buf, "%s.needs", d->partners[i].name_key);
+        fn(buf, d->partners[i].id, ctx);
     }
     for (int i = 0; i < d->shock_count; i++) {
         if (d->shocks[i].excuse_key[0]) {

@@ -58,6 +58,8 @@ static const char *CODE_KEYS[] = {
     "hunt.kill_too_much", "hunt.kill_predator", "hunt.wounded", "hunt.wounded_ran", "hunt.charged",
     "hunt.hunter_died", "hunt.loaded", "hunt.reloading", "hunt.followed", "hunt.lost_spoor", "hunt.full",
     "hunt.give_up", "hunt.sundown", "journal.hunt", "journal.hunt_empty", "cause.hunting",
+    "landmark.barter", "barter.reply.empty", "barter.reply.insult", "barter.reply.short", "barter.reply.generous",
+    "barter.reply.done", "barter.reply.powder", "journal.barter", "journal.barter_powder",
     NULL
 };
 

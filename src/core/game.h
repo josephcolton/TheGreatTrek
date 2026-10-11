@@ -27,7 +27,8 @@ typedef enum {
     PHASE_TRAVEL,
     PHASE_GRAVE,
     PHASE_ENDED,
-    PHASE_HUNT
+    PHASE_HUNT,
+    PHASE_BARTER
 } GamePhase;
 
 typedef enum { ARG_INT, ARG_STR, ARG_KEY, ARG_MONEY, ARG_DATE } ArgKind;
@@ -122,6 +123,15 @@ typedef struct {
     int log_count;
 } HuntState;
 
+typedef struct {
+    bool active;
+    int partner;
+    int give[MAX_ITEMS];      /* base units offered, by item */
+    int take[MAX_ITEMS];      /* base units asked for, by item */
+    bool asked;               /* they have said what they need */
+    LocText reply;
+} BarterState;
+
 typedef enum {
     ENDING_NONE, ENDING_ARRIVED, ENDING_SETTLED, ENDING_TURNED_BACK, ENDING_STRANDED, ENDING_LOST
 } EndingKind;
@@ -199,6 +209,10 @@ typedef struct Game {
     HuntState hunt;
     double region_game[MAX_REGIONS]; /* 1.0 = plenty of game; falls as the party hunts */
     int last_hunt_day;               /* one hunt a day */
+
+    /* barter */
+    BarterState barter;
+    int partner_traded[MAX_PARTNERS][MAX_BARTER_GOODS]; /* units of each offer already taken */
 } Game;
 
 /* ---- views for the front end ---- */
@@ -290,6 +304,37 @@ bool game_can_hunt(const Game *g);
 void game_hunt_start(Game *g);
 bool game_hunt_view(const Game *g, HuntView *out);
 void game_hunt_act(Game *g, HuntAction a);
+
+/* ---- barter ---- */
+typedef struct {
+    int item;
+    LocText name;
+    int have;                 /* give rows: what you hold; take rows: what they still have */
+    int amount;               /* units in the deal */
+    int step;                 /* units per press */
+    bool wanted_highly;       /* shown once they have said what they need */
+} BarterRow;
+
+typedef struct {
+    LocText partner;
+    LocText reply;
+    BarterRow give[MAX_BARTER_GOODS];
+    int give_count;
+    BarterRow take[MAX_BARTER_GOODS];
+    int take_count;
+    double give_value, take_value, need_value; /* the meter: deal goes when give >= need */
+    bool contraband;          /* the offer includes goods that may not be sold beyond the frontier */
+} BarterView;
+
+/* Barter partner at the current place, or -1. */
+int  game_barter_partner_here(const Game *g);
+void game_barter_start(Game *g, int partner);
+bool game_barter_view(const Game *g, BarterView *out);
+/* Changes the deal: theirs = the right-hand list; row is an index into it; delta is +1/-1 steps. */
+void game_barter_adjust(Game *g, bool theirs, int row, int delta);
+void game_barter_propose(Game *g);
+void game_barter_ask(Game *g);
+void game_barter_leave(Game *g);
 
 /* ---- graves ---- */
 const Grave *game_pending_grave(const Game *g);

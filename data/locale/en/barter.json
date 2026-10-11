@@ -1,0 +1,41 @@
+{
+  "_about": "Barter screen and partners. The partners are groups of people at a place, not named real individuals.",
+
+  "landmark.barter": "Barter with {partner}",
+
+  "barter.griqua_philippolis": "Griqua traders at Philippolis",
+  "barter.griqua_philippolis.greeting": "\"Coin? Out here coin is worth little. Show us what you have, and we will see what we can do.\"",
+  "barter.griqua_philippolis.needs": "\"Tobacco and cloth, coffee and sugar, iron. Powder most of all, but you know the Governor's law on that.\"",
+  "barter.barolong_thaba_nchu": "Barolong herders at Thaba Nchu",
+  "barter.barolong_thaba_nchu.greeting": "Through an interpreter: \"We have cattle and grain. What do you bring?\"",
+  "barter.barolong_thaba_nchu.needs": "\"Beads, good beads, and cloth. Tobacco we grow ourselves now. Iron is useful. And powder, of course.\"",
+  "barter.basotho_caledon": "Basotho traders by the Caledon",
+  "barter.basotho_caledon.greeting": "Men from Moshoeshoe's country have brought grain down to the drift to trade.",
+  "barter.basotho_caledon.needs": "\"Beads and cloth, iron for hoes. Tobacco too.\"",
+  "barter.trekkers_sand_river": "Trekker families in the laager",
+  "barter.trekkers_sand_river.greeting": "\"Neighbour, what have you got? We have oxen, but coffee and sugar we have not seen in weeks.\"",
+  "barter.trekkers_sand_river.needs": "\"Coffee! And sugar, tobacco, cloth for the children. Powder and lead, always.\"",
+
+  "barter.title": "Barter",
+  "barter.you_offer": "You offer",
+  "barter.they_offer": "They offer",
+  "barter.have": "have {n}",
+  "barter.left": "{n} left",
+  "barter.wanted": "wanted!",
+  "barter.meter": "Their view of the deal:",
+  "barter.meter.short": "not enough",
+  "barter.meter.fair": "a fair deal",
+  "barter.meter.generous": "generous",
+  "barter.contraband": "Selling gunpowder beyond the frontier is against the law, and the trekkers do not like it either.",
+  "barter.footer": "Left/right: switch side  Up/down: choose  +/-: more or less  P: propose  A: ask  Esc: leave",
+
+  "barter.reply.empty": "\"Put something on the blanket first, then we can talk.\"",
+  "barter.reply.insult": "They laugh and shake their heads. \"That is not a trade.\"",
+  "barter.reply.short": "\"A little more, and we have a deal.\"",
+  "barter.reply.done": "Hands are shaken. The goods change hands.",
+  "barter.reply.generous": "\"You trade fairly.\" They will remember it.",
+  "barter.reply.powder": "The deal is done, and the powder goes with it. Word of this will travel.",
+
+  "journal.barter": "Traded goods with {partner}.",
+  "journal.barter_powder": "Traded goods with {partner}, including gunpowder, against the Colony's law."
+}

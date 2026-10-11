@@ -49,6 +49,10 @@ bool open_trip(App *app, const char *trip_id);
 void hunt_screen_event(App *app, const SDL_Event *e);
 void hunt_screen_render(App *app);
 
+/* barter (screen_barter.c) */
+void barter_screen_event(App *app, const SDL_Event *e);
+void barter_screen_render(App *app);
+
 /* overlays (screen_overlay.c) */
 void overlay_event(App *app, const SDL_Event *e);
 void overlay_render(App *app);

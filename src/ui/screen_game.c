@@ -750,7 +750,7 @@ void game_screen_event(App *app, const SDL_Event *e)
         return;
     }
     GamePhase phase = game_phase(g);
-    if (is_back(e) && phase != PHASE_STORE && phase != PHASE_ENDED) {
+    if (is_back(e) && phase != PHASE_STORE && phase != PHASE_ENDED && phase != PHASE_BARTER) {
         app->travelling = false;
         app->overlay = OV_PAUSE;
         app->sel = 0;
@@ -763,6 +763,7 @@ void game_screen_event(App *app, const SDL_Event *e)
     case PHASE_GRAVE: grave_event(app, e); break;
     case PHASE_ENDED: ending_event(app, e); break;
     case PHASE_HUNT: hunt_screen_event(app, e); break;
+    case PHASE_BARTER: barter_screen_event(app, e); break;
     }
 }
 
@@ -802,5 +803,6 @@ void game_screen_render(App *app)
     case PHASE_GRAVE: grave_render(app); break;
     case PHASE_ENDED: ending_render(app); break;
     case PHASE_HUNT: hunt_screen_render(app); break;
+    case PHASE_BARTER: barter_screen_render(app); break;
     }
 }

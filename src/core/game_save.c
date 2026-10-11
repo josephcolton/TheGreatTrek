@@ -219,6 +219,34 @@ char *game_save_json(const Game *g)
     cJSON_AddNumberToObject(o, "deaths", g->deaths);
 
     cJSON_AddNumberToObject(o, "last_hunt_day", g->last_hunt_day);
+    cJSON *traded = cJSON_AddObjectToObject(o, "partner_traded");
+    for (int p = 0; p < d->partner_count; p++) {
+        cJSON *pj = NULL;
+        for (int i = 0; i < d->partners[p].offer_count; i++) {
+            if (g->partner_traded[p][i]) {
+                if (!pj) {
+                    pj = cJSON_AddObjectToObject(traded, d->partners[p].id);
+                }
+                cJSON_AddNumberToObject(pj, d->items[d->partners[p].offers[i].item].id, g->partner_traded[p][i]);
+            }
+        }
+    }
+    if (g->barter.active) {
+        cJSON *bj = cJSON_AddObjectToObject(o, "barter");
+        cJSON_AddStringToObject(bj, "partner", d->partners[g->barter.partner].id);
+        cJSON_AddBoolToObject(bj, "asked", g->barter.asked);
+        cJSON_AddItemToObject(bj, "reply", loctext_json(&g->barter.reply));
+        cJSON *give = cJSON_AddObjectToObject(bj, "give");
+        cJSON *take = cJSON_AddObjectToObject(bj, "take");
+        for (int i = 0; i < d->item_count; i++) {
+            if (g->barter.give[i]) {
+                cJSON_AddNumberToObject(give, d->items[i].id, g->barter.give[i]);
+            }
+            if (g->barter.take[i]) {
+                cJSON_AddNumberToObject(take, d->items[i].id, g->barter.take[i]);
+            }
+        }
+    }
     cJSON *game_level = cJSON_AddObjectToObject(o, "region_game");
     for (int i = 0; i < d->region_count; i++) {
         cJSON_AddNumberToObject(game_level, d->regions[i].id, g->region_game[i]);
@@ -588,6 +616,55 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         }
     }
     g->last_hunt_day = (int)nget(o, "last_hunt_day", -1);
+    cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(o, "partner_traded"))
+    {
+        int pi = -1;
+        for (int p = 0; p < data->partner_count; p++) {
+            if (strcmp(data->partners[p].id, f->string) == 0) {
+                pi = p;
+            }
+        }
+        const cJSON *it2;
+        cJSON_ArrayForEach(it2, f)
+        {
+            int item = data_find_item(data, it2->string);
+            for (int i = 0; pi >= 0 && i < data->partners[pi].offer_count; i++) {
+                if (data->partners[pi].offers[i].item == item && cJSON_IsNumber(it2)) {
+                    g->partner_traded[pi][i] = it2->valueint;
+                }
+            }
+        }
+    }
+    memset(&g->barter, 0, sizeof g->barter);
+    const cJSON *bj = cJSON_GetObjectItemCaseSensitive(o, "barter");
+    if (bj) {
+        g->barter.partner = -1;
+        for (int p = 0; p < data->partner_count; p++) {
+            if (strcmp(data->partners[p].id, sget(bj, "partner")) == 0) {
+                g->barter.partner = p;
+            }
+        }
+        if (g->barter.partner >= 0) {
+            g->barter.active = true;
+            g->barter.asked = bget(bj, "asked");
+            read_loctext(cJSON_GetObjectItemCaseSensitive(bj, "reply"), &g->barter.reply);
+            const cJSON *gi;
+            cJSON_ArrayForEach(gi, cJSON_GetObjectItemCaseSensitive(bj, "give"))
+            {
+                int item = data_find_item(data, gi->string);
+                if (item >= 0 && cJSON_IsNumber(gi)) {
+                    g->barter.give[item] = gi->valueint;
+                }
+            }
+            cJSON_ArrayForEach(gi, cJSON_GetObjectItemCaseSensitive(bj, "take"))
+            {
+                int item = data_find_item(data, gi->string);
+                if (item >= 0 && cJSON_IsNumber(gi)) {
+                    g->barter.take[item] = gi->valueint;
+                }
+            }
+        }
+    }
     memset(&g->hunt, 0, sizeof g->hunt);
     g->hunt.animal = -1;
     const cJSON *hj = cJSON_GetObjectItemCaseSensitive(o, "hunt");

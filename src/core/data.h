@@ -24,6 +24,8 @@
 #define MAX_WAGONS 6
 #define MAX_START_ITEMS 24
 #define MAX_ANIMALS 16
+#define MAX_PARTNERS 12
+#define MAX_BARTER_GOODS 12
 
 typedef enum { SIDE_DUTCH, SIDE_ENGLISH, SIDE_COUNT } Side;
 
@@ -249,6 +251,25 @@ typedef struct {
     double biltong_yield;           /* lb of biltong from a lb of meat */
 } HuntRules;
 
+/* ---- barter ---- */
+typedef struct {
+    int item;
+    double value;     /* pence per base unit */
+    int stock;        /* offers only: base units available */
+} BarterGood;
+
+typedef struct {
+    char id[ID_LEN];
+    char name_key[KEY_LEN];
+    int group;
+    int node;
+    double fairness;  /* they accept when what you give is worth at least this share of what you take */
+    BarterGood wants[MAX_BARTER_GOODS];
+    int want_count;
+    BarterGood offers[MAX_BARTER_GOODS];
+    int offer_count;
+} BarterPartner;
+
 /* ---- rules (tunables) ---- */
 typedef struct {
     double miles[PACE_COUNT];
@@ -391,6 +412,8 @@ typedef struct GameData {
     PriceShock shocks[MAX_SHOCKS];      int shock_count;
     EventDef *events;                   int event_count;
     AnimalDef animals[MAX_ANIMALS];     int animal_count;
+    BarterPartner partners[MAX_PARTNERS]; int partner_count;
+    int contraband[MAX_ITEMS];          int contraband_count;
     HuntRules hunt;
     /* well-known item indices, resolved at load */
     int item_oxen, item_water, item_vat, item_meat, item_medicine, item_sheep, item_tallow, item_iron, item_cows, item_biltong;

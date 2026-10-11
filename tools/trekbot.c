@@ -113,6 +113,7 @@ static int pick_choice(Game *g, const DialogView *v, Policy policy, TrekRng *bot
 }
 
 static bool visited_shop[MAX_NODES];
+static bool bartered[MAX_NODES];
 static const char *dump_path, *stop_at;
 
 /* For testing the front end: write the save when the game reaches a chosen moment. */
@@ -127,6 +128,10 @@ static bool maybe_dump(Game *g)
         hit = game_phase(g) == PHASE_GRAVE;
     } else if (strcmp(stop_at, "ending") == 0) {
         hit = game_phase(g) == PHASE_ENDED;
+    } else if (strcmp(stop_at, "barter") == 0) {
+        hit = game_phase(g) == PHASE_BARTER;
+    } else if (strcmp(stop_at, "hunt") == 0) {
+        hit = game_phase(g) == PHASE_HUNT;
     } else if (strcmp(stop_at, "store") == 0) {
         hit = game_phase(g) == PHASE_STORE;
     } else if (strcmp(stop_at, "river") == 0) {
@@ -153,6 +158,7 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
     TrekRng bot_rng;
     rng_seed(&bot_rng, seed, 99);
     memset(visited_shop, 0, sizeof visited_shop);
+    memset(bartered, 0, sizeof bartered);
     if (policy == POLICY_RECKLESS) {
         game_set_orders(g, PACE_HARD, RATIONS_MEAGRE, NIGHT_REST, false);
     } else if (policy == POLICY_CAUTIOUS) {
@@ -202,6 +208,30 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
             }
             game_travel(g, policy == POLICY_RECKLESS ? 30 : 7);
             break;
+        case PHASE_BARTER: {
+            /* Offer beads and tobacco for oxen if the span is short, then leave. */
+            BarterView bv;
+            game_barter_view(g, &bv);
+            if (g->inv[d->item_oxen] < d->wagons[g->wagon].full_span) {
+                for (int r = 0; r < bv.take_count; r++) {
+                    if (bv.take[r].item == d->item_oxen) {
+                        game_barter_adjust(g, true, r, 1);
+                    }
+                }
+                for (int r = 0; r < bv.give_count; r++) {
+                    for (int k = 0; k < 20; k++) {
+                        game_barter_view(g, &bv);
+                        if (bv.give_value >= bv.need_value || bv.give[r].item == d->item_gunpowder) {
+                            break;
+                        }
+                        game_barter_adjust(g, false, r, 1);
+                    }
+                }
+                game_barter_propose(g);
+            }
+            game_barter_leave(g);
+            break;
+        }
         case PHASE_HUNT: {
             HuntView hv;
             game_hunt_view(g, &hv);
@@ -243,6 +273,9 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
                 v.choice_count > 1) {
                 c = 1; /* Trade */
                 visited_shop[g->node] = true;
+            } else if (v.kind == DLG_LANDMARK && game_barter_partner_here(g) >= 0 && !bartered[g->node]) {
+                bartered[g->node] = true;
+                c = d->nodes[g->node].shop >= 0 ? 2 : 1; /* Barter comes after Trade */
             } else {
                 c = pick_choice(g, &v, policy, &bot_rng);
             }

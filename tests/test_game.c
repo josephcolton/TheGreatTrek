@@ -30,6 +30,7 @@ static Game *play(const GameData *d, uint64_t seed, int family, int stop_after_s
             break;
         case PHASE_STORE: game_store_leave(g); break;
         case PHASE_GRAVE: game_grave_done(g, "Rest in peace"); break;
+        case PHASE_BARTER: game_barter_leave(g); break;
         case PHASE_HUNT: {
             HuntView hv;
             CHECK(game_hunt_view(g, &hv));

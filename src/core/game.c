@@ -652,6 +652,10 @@ void g_settle(Game *g)
         g->phase = PHASE_HUNT;
         return;
     }
+    if (g->barter.active) {
+        g->phase = PHASE_BARTER;
+        return;
+    }
     if (g->pending_grave_count > 0) {
         g->phase = PHASE_GRAVE;
         return;

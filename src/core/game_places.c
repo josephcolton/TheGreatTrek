@@ -41,7 +41,7 @@ static void spend_time(Game *g, double days)
 
 /* ---------------------------------------------------------------- landmark */
 
-typedef enum { LM_LOOK, LM_TRADE, LM_REST, LM_CROSS, LM_LEAVE } LandmarkAction;
+typedef enum { LM_LOOK, LM_TRADE, LM_BARTER, LM_REST, LM_CROSS, LM_LEAVE } LandmarkAction;
 
 static int landmark_actions(const Game *g, LandmarkAction *out)
 {
@@ -50,6 +50,9 @@ static int landmark_actions(const Game *g, LandmarkAction *out)
     out[k++] = LM_LOOK;
     if (n->shop >= 0) {
         out[k++] = LM_TRADE;
+    }
+    if (game_barter_partner_here(g) >= 0) {
+        out[k++] = LM_BARTER;
     }
     out[k++] = LM_REST;
     out[k++] = (n->river >= 0 && !g->river_crossed[g->node]) ? LM_CROSS : LM_LEAVE;
@@ -68,15 +71,18 @@ void g_landmark_view(const Game *g, DialogView *v)
         return;
     }
     loctext_set(&v->body[v->body_count++], n->desc_key);
-    LandmarkAction acts[5];
+    LandmarkAction acts[6];
     int k = landmark_actions(g, acts);
-    static const char *KEYS[] = {"landmark.look", "landmark.trade", "landmark.rest", "landmark.cross", "landmark.leave"};
+    static const char *KEYS[] = {"landmark.look", "landmark.trade", "landmark.barter", "landmark.rest", "landmark.cross", "landmark.leave"};
     for (int i = 0; i < k; i++) {
         ChoiceView *cv = &v->choices[v->choice_count++];
         loctext_set(&cv->text, KEYS[acts[i]]);
         cv->enabled = true;
         if (acts[i] == LM_CROSS) {
             loctext_arg_key(&cv->text, "river", g->data->rivers[n->river].name_key);
+        }
+        if (acts[i] == LM_BARTER) {
+            loctext_arg_key(&cv->text, "partner", g->data->partners[game_barter_partner_here(g)].name_key);
         }
     }
 }
@@ -88,7 +94,7 @@ void g_landmark_choose(Game *g, int choice)
         g->dlg.result_count = 0;
         return;
     }
-    LandmarkAction acts[5];
+    LandmarkAction acts[6];
     int k = landmark_actions(g, acts);
     if (choice < 0 || choice >= k) {
         return;
@@ -105,6 +111,9 @@ void g_landmark_choose(Game *g, int choice)
     case LM_TRADE:
         g->shop = n->shop;
         g->dlg.kind = DLG_NONE;
+        break;
+    case LM_BARTER:
+        game_barter_start(g, game_barter_partner_here(g));
         break;
     case LM_REST:
         g_pass_day(g, false, false);
