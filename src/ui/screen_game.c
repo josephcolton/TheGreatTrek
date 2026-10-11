@@ -95,9 +95,21 @@ typedef enum { TR_GO, TR_REST, TR_HUNT, TR_ORDERS, TR_SUPPLIES, TR_PARTY, TR_MAP
 #define MENU_Y 186.0f
 #define MENU_W 300
 
-static void travel_items(App *app, ChoiceItem *items)
+typedef enum { RM_REST, RM_MEND, RM_BACK, RM_COUNT } RestMenuItem;
+
+/* The travel menu, or the small rest / mend menu in its place. Returns the number of items. */
+static int travel_items(App *app, ChoiceItem *items)
 {
-    static const char *KEYS[TR_COUNT] = {"travel.go", "travel.rest", "travel.hunt", "travel.orders",
+    if (app->rest_menu) {
+        items[RM_REST] = (ChoiceItem){app_text(app, "travel.rest_day"), NULL};
+        items[RM_MEND] = (ChoiceItem){app_text(app, "travel.mend"), NULL};
+        items[RM_BACK] = (ChoiceItem){app_text(app, "travel.back"), NULL};
+        if (!game_can_mend(app->game)) {
+            items[RM_MEND].locked = app_text(app, "travel.mend_locked");
+        }
+        return RM_COUNT;
+    }
+    static const char *KEYS[TR_COUNT] = {"travel.go", "travel.rest_or_mend", "travel.hunt", "travel.orders",
                                          "travel.supplies", "travel.party", "travel.map", "travel.journal"};
     for (int i = 0; i < TR_COUNT; i++) {
         items[i] = (ChoiceItem){app_text(app, KEYS[i]), NULL};
@@ -105,11 +117,37 @@ static void travel_items(App *app, ChoiceItem *items)
     if (!game_can_hunt(app->game)) {
         items[TR_HUNT].locked = "";
     }
+    return TR_COUNT;
+}
+
+static void rest_menu_activate(App *app, int item)
+{
+    Game *g = app->game;
+    switch (item) {
+    case RM_REST:
+        game_rest_day(g);
+        commit(app);
+        break;
+    case RM_MEND:
+        if (!game_can_mend(g)) {
+            return;
+        }
+        game_mend_wagon(g);
+        commit(app);
+        break;
+    default: break;
+    }
+    app->rest_menu = false;
+    app->sel = item == RM_BACK ? TR_REST : 0;
 }
 
 static void travel_activate(App *app, int item)
 {
     Game *g = app->game;
+    if (app->rest_menu) {
+        rest_menu_activate(app, item);
+        return;
+    }
     switch (item) {
     case TR_GO:
         app->travelling = !app->travelling;
@@ -117,8 +155,8 @@ static void travel_activate(App *app, int item)
         break;
     case TR_REST:
         app->travelling = false;
-        game_rest_day(g);
-        commit(app);
+        app->rest_menu = true;
+        app->sel = 0;
         break;
     case TR_HUNT:
         if (game_can_hunt(g)) {
@@ -140,14 +178,14 @@ static void travel_activate(App *app, int item)
 static void travel_event(App *app, const SDL_Event *e)
 {
     ChoiceItem items[TR_COUNT];
-    travel_items(app, items);
+    int n = travel_items(app, items);
     if (app->travelling && (e->type == SDL_EVENT_KEY_DOWN || is_click(e))) {
         app->travelling = false; /* any key stops the wagons */
         return;
     }
-    nav_updown(app, e, TR_COUNT);
+    nav_updown(app, e, n);
     int digit = key_digit(e);
-    if (digit >= 0 && digit < TR_COUNT) {
+    if (digit >= 0 && digit < n) {
         app->sel = digit;
         travel_activate(app, digit);
     } else if (is_confirm(e)) {
@@ -161,7 +199,7 @@ static void travel_event(App *app, const SDL_Event *e)
         app->overlay = OV_GLOSSARY;
         app->scroll = 0;
     } else if (is_click(e)) {
-        int hit = choices_hit(&app->draw, items, TR_COUNT, MENU_X, MENU_Y, MENU_W, app->mx, app->my, true);
+        int hit = choices_hit(&app->draw, items, n, MENU_X, MENU_Y, MENU_W, app->mx, app->my, true);
         if (hit >= 0) {
             app->sel = hit;
             travel_activate(app, hit);
@@ -324,11 +362,11 @@ static void travel_render(App *app)
     draw_text(d, d->font, app_fmt(app, &t), 620, 172, COL_DIM, TEXT_RIGHT);
     draw_status(app, 20, 192);
     ChoiceItem items[TR_COUNT];
-    travel_items(app, items);
-    if (app->travelling) {
+    int n = travel_items(app, items);
+    if (app->travelling && !app->rest_menu) {
         items[TR_GO].text = app_text(app, "travel.stop");
     }
-    draw_choices(d, items, TR_COUNT, MENU_X, MENU_Y, MENU_W, app->mx, app->my, app->sel, true, NULL);
+    draw_choices(d, items, n, MENU_X, MENU_Y, MENU_W, app->mx, app->my, app->sel, true, NULL);
     draw_footer(app, app_text(app, app->travelling ? "travel.footer_moving" : "travel.footer"));
 }
 
@@ -724,6 +762,14 @@ void game_screen_event(App *app, const SDL_Event *e)
         return;
     }
     GamePhase phase = game_phase(g);
+    if (phase != PHASE_TRAVEL) {
+        app->rest_menu = false;
+    }
+    if (is_back(e) && app->rest_menu) {
+        app->rest_menu = false;
+        app->sel = TR_REST;
+        return;
+    }
     if (is_back(e) && phase != PHASE_STORE && phase != PHASE_ENDED && phase != PHASE_BARTER) {
         app->travelling = false;
         app->overlay = OV_PAUSE;

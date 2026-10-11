@@ -32,6 +32,14 @@ bool g_eval(const Game *g, const Cond *c)
     case COND_WEEKDAY: return cal_weekday(g->day) == c->b;
     case COND_SABBATH: return g->sabbath == (c->b != 0);
     case COND_WAGON: return g->wagon == c->a;
+    case COND_WAGON_WORN: {
+        bool worn = false;
+        for (int p = 0; p < WAGON_PART_COUNT; p++) {
+            worn = worn || g->wagon_parts[p] < 100;
+        }
+        return worn == (c->b != 0);
+    }
+    case COND_AFFORD_REPAIR: return (g->money >= game_pence_to_unit(g, g_smith_cost(g))) == (c->b != 0);
     case COND_AFFORD_WAGON: {
         int cost = g_wagon_trade_cost(g, c->a);
         return cost <= 0 || g->money >= game_pence_to_unit(g, cost);
@@ -460,6 +468,21 @@ static void apply_effect(Game *g, const Effect *e)
     case EFF_ENDING:
         g->ending = (EndingKind)e->amount;
         break;
+    case EFF_SMITH_QUOTE:
+    case EFF_SMITH_REPAIR: {
+        int cost = g_smith_cost(g);
+        LocText t;
+        loctext_set(&t, e->type == EFF_SMITH_QUOTE ? "notice.smith_quote" : "notice.smith_paid");
+        loctext_arg_money(&t, "money", game_pence_to_unit(g, cost));
+        g_add_result(g, &t);
+        if (e->type == EFF_SMITH_REPAIR) {
+            g_add_money_pence(g, -cost);
+            for (int p = 0; p < WAGON_PART_COUNT; p++) {
+                g->wagon_parts[p] = 100;
+            }
+        }
+        break;
+    }
     case EFF_WAGON: {
         int cost = g_wagon_trade_cost(g, e->a);
         if (cost != 0) {

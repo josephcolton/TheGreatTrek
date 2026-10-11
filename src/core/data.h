@@ -302,6 +302,11 @@ typedef struct {
     int sabbath_morale;
     double wagon_trade_in;    /* share of an old wagon's new price a wagonmaker allows */
     double breakage_per_mile;
+    /* a day mending the wagon on the road (game_mend_wagon) */
+    int mend_gain, mend_gain_per_smith, mend_cap, mend_iron_lb, mend_spare_below, mend_tallow_lb, mend_grease_gain;
+    double mend_no_iron_mul;
+    int mend_tent_patch, mend_tent_cap;
+    double smith_pence_per_point; /* a town smith's charge per point of wear put right */
     double illness_per_day[SEASON_COUNT];
     double accident_per_day;
     double harm_mul[DIFF_COUNT];
@@ -322,7 +327,7 @@ typedef enum {
     COND_MEMBER_ROLE_HEALTHY, COND_MEMBER_SKILL_GTE, COND_RELATION_GTE,
     COND_RELATION_LT, COND_STANCE, COND_DATE_GTE, COND_DATE_LT,
     COND_DAYS_GTE, COND_DISTANCE_GTE, COND_CHANCE, COND_ANY, COND_NOT,
-    COND_WEEKDAY, COND_SABBATH, COND_WAGON, COND_AFFORD_WAGON,
+    COND_WEEKDAY, COND_SABBATH, COND_WAGON, COND_AFFORD_WAGON, COND_WAGON_WORN, COND_AFFORD_REPAIR,
     COND_COUNT
 } CondType;
 
@@ -341,7 +346,7 @@ typedef enum { WHO_RANDOM, WHO_ALL, WHO_ROLE, WHO_SPEAKER, WHO_HEAD, WHO_CHILD }
 typedef enum {
     EFF_ITEM, EFF_MONEY, EFF_OX_STAMINA, EFF_WAGON_DAMAGE, EFF_HEALTH, EFF_ILLNESS,
     EFF_MORALE, EFF_LOYALTY, EFF_RELATION, EFF_FLAG, EFF_CLEAR_FLAG, EFF_COUNTER,
-    EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING, EFF_WAGON,
+    EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING, EFF_WAGON, EFF_SMITH_REPAIR, EFF_SMITH_QUOTE,
     EFF_COUNT
 } EffectType;
 

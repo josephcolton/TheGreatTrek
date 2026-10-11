@@ -287,6 +287,12 @@ bool game_travel_day(Game *g);
 /* Plays days until something needs the player, at most max_days. */
 int  game_travel(Game *g, int max_days);
 void game_rest_day(Game *g);
+/* Whether any part of the wagon (or its tent) is worn enough to be worth a day's mending. */
+bool game_can_mend(const Game *g);
+/* A day at the outspan mending the wagon: fits a spare to a badly worn part, mends the rest
+ * with bar iron (better with a good smith), greases wheels and axle with tallow, and patches
+ * the tent or puts new canvas over it. The day passes as a rest day. */
+void game_mend_wagon(Game *g);
 
 /* ---- dialogs ---- */
 bool game_dialog_view(const Game *g, DialogView *out);

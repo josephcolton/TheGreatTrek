@@ -413,6 +413,17 @@ int g_wagon_trade_cost(const Game *g, int wagon)
     return d->wagons[wagon].price_pence - (int)lround(old_value);
 }
 
+int g_smith_cost(const Game *g)
+{
+    int points = 0;
+    for (int p = 0; p < WAGON_PART_COUNT; p++) {
+        points += 100 - g->wagon_parts[p];
+    }
+    const NodeDef *n = &g->data->nodes[g->node];
+    double mul = n->price_mul > 0 ? n->price_mul : 1.0;
+    return (int)lround(points * g->data->rules.smith_pence_per_point * mul);
+}
+
 void g_add_money_pence(Game *g, int pence)
 {
     int units = game_pence_to_unit(g, pence < 0 ? -pence : pence);

@@ -29,6 +29,11 @@
   "sabbath_morale": 3,
   "wagon_trade_in": 0.8,
   "breakage_per_mile": 0.0012,
+  "mend": { "gain": 15, "gain_per_smith": 8, "cap": 85, "iron_lb": 3, "no_iron_mul": 0.5, "spare_below": 40,
+            "tallow_lb": 2, "grease_gain": 5, "tent_patch": 15, "tent_cap": 60,
+            "basis": "invented. A day's mending on the road: each worn part gains gain + gain_per_smith x the best smith's skill (more for the smith family), using iron_lb of bar iron (half without), up to cap; a part below spare_below is replaced by a spare if one is carried; tallow greases wheels and axle; the tent is patched up to tent_cap, or new canvas makes it whole. Trekkers tightened tyres, greased axles and patched tents at outspans [recall, verify]." },
+  "smith_pence_per_point": 1.5,
+  "smith_basis": "estimate: a town smith charges this many pence per point of wear put right, times the town's price_mul; putting a broken wheel right costs a little under a new spare wheel (240d).",
   "illness_per_day": { "summer": 0.0042, "autumn": 0.0034, "winter": 0.0040, "spring": 0.0034, "basis": "invented; tuned with trekbot so a careful Normal run loses about one person in five trips, near the child mortality of the period (about 160-200 per 1,000 births a year, Mamre 1837-46; 05 section 6)" },
   "accident_per_day": 0.0008,
   "difficulty": {

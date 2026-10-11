@@ -623,6 +623,105 @@ int game_travel(Game *g, int max_days)
     return days;
 }
 
+bool game_can_mend(const Game *g)
+{
+    if (g->phase != PHASE_TRAVEL) {
+        return false;
+    }
+    const Rules *r = &g->data->rules;
+    for (int p = 0; p < WAGON_PART_TENT; p++) {
+        if (g->wagon_parts[p] < r->mend_cap) {
+            return true;
+        }
+    }
+    bool canvas = g->inv[g->data->item_spare[WAGON_PART_TENT]] > 0;
+    return g->wagon_parts[WAGON_PART_TENT] < (canvas ? r->mend_tent_cap + 10 : r->mend_tent_cap);
+}
+
+static void mend_note(Game *g, const char *key, int part)
+{
+    LocText t;
+    loctext_set(&t, key);
+    loctext_arg_key(&t, "part", PART_KEYS[part]);
+    g_notice(g, &t);
+}
+
+void game_mend_wagon(Game *g)
+{
+    if (!game_can_mend(g)) {
+        return;
+    }
+    const GameData *d = g->data;
+    const Rules *r = &d->rules;
+    int smith_member = g_best_skill_member(g, SKILL_SMITHING);
+    int smith = g_best_skill(g, SKILL_SMITHING, true);
+    double perk = d->families[g->family].repair_mul > 0 ? d->families[g->family].repair_mul : 1.0;
+    bool short_of_iron = false;
+    for (int p = 0; p < WAGON_PART_TENT; p++) {
+        if (g->wagon_parts[p] >= r->mend_cap) {
+            continue;
+        }
+        if (g->wagon_parts[p] < r->mend_spare_below && g->inv[d->item_spare[p]] > 0) {
+            g_add_item(g, d->item_spare[p], -1);
+            g->wagon_parts[p] = 100;
+            mend_note(g, "mend.spare", p);
+            continue;
+        }
+        double gain = (r->mend_gain + r->mend_gain_per_smith * smith) / perk;
+        if (g->inv[d->item_iron] >= r->mend_iron_lb) {
+            g_add_item(g, d->item_iron, -r->mend_iron_lb);
+        } else {
+            gain *= r->mend_no_iron_mul;
+            short_of_iron = true;
+        }
+        g->wagon_parts[p] += (int)lround(gain);
+        if (g->wagon_parts[p] > r->mend_cap) {
+            g->wagon_parts[p] = r->mend_cap;
+        }
+    }
+    /* grease for the hubs and axle arms */
+    if ((g->wagon_parts[WAGON_PART_WHEELS] < r->mend_cap || g->wagon_parts[WAGON_PART_AXLE] < r->mend_cap) &&
+        g->inv[d->item_tallow] >= r->mend_tallow_lb) {
+        g_add_item(g, d->item_tallow, -r->mend_tallow_lb);
+        for (int p = WAGON_PART_WHEELS; p <= WAGON_PART_AXLE; p++) {
+            if (g->wagon_parts[p] < r->mend_cap) {
+                g->wagon_parts[p] += r->mend_grease_gain;
+                if (g->wagon_parts[p] > r->mend_cap) {
+                    g->wagon_parts[p] = r->mend_cap;
+                }
+            }
+        }
+    }
+    /* the tent: new canvas if it is badly worn and there is some, otherwise patches */
+    int *tent = &g->wagon_parts[WAGON_PART_TENT];
+    if (*tent < r->mend_tent_cap + 10 && g->inv[d->item_spare[WAGON_PART_TENT]] > 0) {
+        g_add_item(g, d->item_spare[WAGON_PART_TENT], -1);
+        *tent = 100;
+        mend_note(g, "mend.canvas", WAGON_PART_TENT);
+    } else if (*tent < r->mend_tent_cap) {
+        *tent += r->mend_tent_patch;
+        if (*tent > r->mend_tent_cap) {
+            *tent = r->mend_tent_cap;
+        }
+    }
+    if (short_of_iron) {
+        g_notice_key(g, "mend.no_iron");
+    }
+    LocText t;
+    loctext_set(&t, smith > 0 && smith_member >= 0 ? "mend.done" : "mend.done_all");
+    if (smith_member >= 0) {
+        loctext_arg_str(&t, "who", g->party[smith_member].name);
+    }
+    loctext_arg_int(&t, "wheels", g->wagon_parts[WAGON_PART_WHEELS]);
+    loctext_arg_int(&t, "axle", g->wagon_parts[WAGON_PART_AXLE]);
+    loctext_arg_int(&t, "dissel", g->wagon_parts[WAGON_PART_DISSEL]);
+    loctext_arg_int(&t, "tent", g->wagon_parts[WAGON_PART_TENT]);
+    g_notice(g, &t);
+    g->stop_travel = false;
+    g_pass_day(g, false, true);
+    g_settle(g);
+}
+
 void game_rest_day(Game *g)
 {
     if (g->phase != PHASE_TRAVEL) {

@@ -73,6 +73,7 @@ typedef struct App {
     Game *game;
     char trip_id[64];
     bool travelling;
+    bool rest_menu;      /* the travel menu is showing rest / mend the wagon / back */
     double travel_timer;
     int store_qty;
     char epitaph[96];

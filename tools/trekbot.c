@@ -248,6 +248,17 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
             if (game_food_days(g) < 3 && g->rations == RATIONS_FULL) {
                 game_set_orders(g, g->pace, RATIONS_MEAGRE, g->stance, g->sabbath);
             }
+            /* Mend the wagon before a part gives way. */
+            if (game_can_mend(g)) {
+                int worst = 100;
+                for (int p = 0; p < WAGON_PART_COUNT - 1; p++) {
+                    worst = g->wagon_parts[p] < worst ? g->wagon_parts[p] : worst;
+                }
+                if (worst < 35) {
+                    game_mend_wagon(g);
+                    break;
+                }
+            }
             /* Hunt when food runs short, and hunting families hunt every week or so. */
             if (game_can_hunt(g) && (game_food_days(g) < 30 ||
                                      (d->families[family].hunt_mul > 1.0 && (g->day - g->start_day) % 7 == 3))) {

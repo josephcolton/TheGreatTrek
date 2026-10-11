@@ -5,8 +5,11 @@
       "id": "wagonmaker_grahamstown", "setpiece": true, "once": false,
       "history": "history.wagonmaker",
       "sources": ["A travelling wagon made to order cost GBP67 10s in Cape Town, Aug 1838 (Backhouse). Heavy transport wagons and two-wheeled Scotch carts were used by traders and carriers; their 1837 Grahamstown prices are estimates, as is the trade-in value. Trekkers buying up wagons in 1836-37 is [recall, verify]. The wagonmaker is invented."],
-      "text": "event.wagonmaker.body",
+      "nodes": [
+        { "id": "start", "text": "event.wagonmaker.body",
       "choices": [
+        { "text": "event.wagonmaker.repair", "requires": [ { "wagon_worn": true } ], "locked": "lock.smith_sound",
+          "outcomes": [ { "text": "event.wagonmaker.repair.done", "next": "price", "effects": [ { "smith": "quote" } ] } ] },
         { "text": "event.wagonmaker.transport",
           "requires": [ { "side": "english" }, { "not": { "wagon": "transport_wagon" } }, { "afford_wagon": "transport_wagon" } ], "locked": "lock.wagonmaker",
           "outcomes": [ { "text": "event.wagonmaker.transport.done", "effects": [ { "wagon": "transport_wagon" } ] } ] },
@@ -19,6 +22,32 @@
         { "text": "event.wagonmaker.look",
           "outcomes": [ { "text": "event.wagonmaker.look.done" } ] },
         { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
+      ] },
+        { "id": "price", "text": "event.smith.price",
+          "choices": [
+            { "text": "event.smith.repair", "requires": [ { "afford_repair": true } ], "locked": "lock.smith_money",
+              "outcomes": [ { "text": "event.smith.repair.done", "effects": [ { "smith": "repair" }, { "time_days": 0.5 } ] } ] },
+            { "text": "event.smith.no", "outcomes": [ { "text": "event.smith.no.done" } ] }
+          ] }
+      ]
+    },
+    {
+      "id": "smith_town", "setpiece": true, "once": false,
+      "history": "history.smith",
+      "sources": ["Wagons were mended by smiths and wagonmakers in the colonial towns; beyond the Orange the trekkers had only their own smiths [recall, verify]. A spare wheel cost about 20s and bar iron about 4d a lb (items.json, estimates); the smith's charge here is an estimate. The smith is invented."],
+      "nodes": [
+        { "id": "start", "text": "event.smith.body",
+          "choices": [
+            { "text": "event.smith.ask", "requires": [ { "wagon_worn": true } ], "locked": "lock.smith_sound",
+              "outcomes": [ { "text": "event.smith.ask.done", "next": "price", "effects": [ { "smith": "quote" } ] } ] },
+            { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
+          ] },
+        { "id": "price", "text": "event.smith.price",
+          "choices": [
+            { "text": "event.smith.repair", "requires": [ { "afford_repair": true } ], "locked": "lock.smith_money",
+              "outcomes": [ { "text": "event.smith.repair.done", "effects": [ { "smith": "repair" }, { "time_days": 0.5 } ] } ] },
+            { "text": "event.smith.no", "outcomes": [ { "text": "event.smith.no.done" } ] }
+          ] }
       ]
     },
     {

@@ -261,6 +261,18 @@ static void load_rules(Loader *L, const char *dir)
     r->sabbath_morale = jint(root, "sabbath_morale", 3);
     r->wagon_trade_in = jnum(root, "wagon_trade_in", 0.8);
     r->breakage_per_mile = jnum(root, "breakage_per_mile", 0.001);
+    const cJSON *mend = jget(root, "mend");
+    r->mend_gain = jint(mend, "gain", 15);
+    r->mend_gain_per_smith = jint(mend, "gain_per_smith", 8);
+    r->mend_cap = jint(mend, "cap", 85);
+    r->mend_iron_lb = jint(mend, "iron_lb", 3);
+    r->mend_no_iron_mul = jnum(mend, "no_iron_mul", 0.5);
+    r->mend_spare_below = jint(mend, "spare_below", 40);
+    r->mend_tallow_lb = jint(mend, "tallow_lb", 2);
+    r->mend_grease_gain = jint(mend, "grease_gain", 5);
+    r->mend_tent_patch = jint(mend, "tent_patch", 15);
+    r->mend_tent_cap = jint(mend, "tent_cap", 60);
+    r->smith_pence_per_point = jnum(root, "smith_pence_per_point", 1.5);
     const cJSON *ill = jget(root, "illness_per_day");
     for (int s = 0; s < SEASON_COUNT; s++) {
         r->illness_per_day[s] = jnum(ill, SEASON_IDS[s], 0.002);
@@ -1002,6 +1014,10 @@ static bool parse_cond(Loader *L, const cJSON *o, Cond *c, const char *ctx)
         c->type = COND_SABBATH; /* true: the party keeps Sunday rest */
         if (!cJSON_IsBool(v)) { fail(L, "%s: sabbath needs true or false", ctx); }
         c->b = cJSON_IsTrue(v);
+    } else if (strcmp(k, "wagon_worn") == 0 || strcmp(k, "afford_repair") == 0) {
+        c->type = k[0] == 'w' ? COND_WAGON_WORN : COND_AFFORD_REPAIR; /* true: some part needs work / money for the smith */
+        if (!cJSON_IsBool(v)) { fail(L, "%s: %s needs true or false", ctx, k); }
+        c->b = cJSON_IsTrue(v);
     } else if (strcmp(k, "wagon") == 0 || strcmp(k, "afford_wagon") == 0) {
         c->type = k[0] == 'w' ? COND_WAGON : COND_AFFORD_WAGON;
         c->a = need_index(L, data_find_wagon(d, s), "wagon", s, ctx);
@@ -1127,6 +1143,15 @@ static bool parse_effect(Loader *L, const cJSON *o, Effect *e, const char *ctx)
     } else if (strcmp(k, "journal") == 0) {
         e->type = EFF_JOURNAL;
         copy_str(e->str, sizeof e->str, s);
+    } else if (strcmp(k, "smith") == 0) {
+        /* "repair": a town smith puts every part right, for money; "quote": he says what it would cost */
+        if (strcmp(s, "repair") == 0) {
+            e->type = EFF_SMITH_REPAIR;
+        } else if (strcmp(s, "quote") == 0) {
+            e->type = EFF_SMITH_QUOTE;
+        } else {
+            fail(L, "%s: smith must be repair or quote", ctx);
+        }
     } else if (strcmp(k, "wagon") == 0) {
         e->type = EFF_WAGON; /* trade the wagon in for this one; its parts are new */
         e->a = need_index(L, data_find_wagon(d, s), "wagon", s, ctx);

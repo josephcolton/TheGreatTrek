@@ -175,6 +175,46 @@ static void test_hunt(const GameData *d)
     CHECK(meat > 0);
 }
 
+static void test_mend(const GameData *d)
+{
+    Game *g = NULL;
+    for (int steps = 20; steps < 400 && !g; steps += 7) {
+        g = play(d, 3, data_find_family(d, "grensboer"), steps);
+        if (game_phase(g) != PHASE_TRAVEL || g->edge < 0) {
+            game_free(g);
+            g = NULL;
+        }
+    }
+    CHECK(g != NULL);
+    if (!g) {
+        return;
+    }
+    for (int p = 0; p < WAGON_PART_COUNT; p++) {
+        g->wagon_parts[p] = 100;
+    }
+    CHECK(!game_can_mend(g));
+    CHECK(g_smith_cost(g) == 0);
+    int spare = d->item_spare[WAGON_PART_WHEELS], canvas = d->item_spare[WAGON_PART_TENT];
+    g->wagon_parts[WAGON_PART_WHEELS] = 30; /* badly worn: the spare goes on */
+    g->wagon_parts[WAGON_PART_AXLE] = 60;   /* worn: mended with iron and greased */
+    g->wagon_parts[WAGON_PART_TENT] = 20;   /* torn: new canvas */
+    g->inv[spare] = 1;
+    g->inv[canvas] = 1;
+    g->inv[d->item_iron] = 10;
+    g->inv[d->item_tallow] = 10;
+    CHECK(g_smith_cost(g) > 0);
+    CHECK(game_can_mend(g));
+    int day = g->day;
+    game_mend_wagon(g);
+    CHECK(g->day == day + 1);
+    CHECK(g->inv[spare] == 0);
+    CHECK(g->inv[canvas] == 0);
+    CHECK(g->inv[d->item_iron] == 10 - d->rules.mend_iron_lb);
+    CHECK(g->inv[d->item_tallow] == 10 - d->rules.mend_tallow_lb);
+    CHECK(g->notice_count >= 3); /* spare, canvas, and what was done */
+    game_free(g);
+}
+
 int main(void)
 {
     test_calendar();
@@ -187,6 +227,7 @@ int main(void)
     }
     test_wagon_trade(d);
     test_hunt(d);
+    test_mend(d);
     for (int f = 0; f < d->family_count; f++) {
         for (uint64_t seed = 1; seed <= 3; seed++) {
             Game *a = play(d, seed, f, -1);

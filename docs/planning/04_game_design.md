@@ -579,6 +579,7 @@ The table is the vocabulary as designed; `parse_cond` and `parse_effect` in `src
 | `chance` (extra random gate) | `time_days`, `distance` (lost or gained miles) |
 | `weekday` (0 = Sunday), `sabbath` (true if the party keeps Sunday rest) | `wagon` (trade the wagon in for another; the cost is the new price less `wagon_trade_in` of the old) |
 | `wagon` (the wagon now in use), `afford_wagon` (can pay for that trade) | `ending` (end the trip with a given ending) |
+| `wagon_worn` (true if any part is below 100%), `afford_repair` (can pay the smith) | `smith`: `"quote"` (adds "He asks ...") or `"repair"` (pays and makes every part 100%) |
 | | `schedule` (event id, in N days) — chains and follow-ups |
 | | `start_hunt` (table), `start_barter` (partner), `start_river` |
 | | `death` (who) — rare, always with its own text; see §11.4 |
@@ -751,7 +752,9 @@ typedef struct {
 - **Oxen:** count + average stamina. A kakebeenwa needs a span of **12–16** (tunable; 01 §3). Fewer oxen = slower; below the minimum the wagon can't move and a "stranded" event starts (buy, borrow, or trade for oxen; or leave goods behind).
 - **Stamina** changes daily: `+ grazing[region][month] + rest − pace_cost − load_cost − no_water_cost`. Under 30 the span slows; under 10 an ox may "lie down and not rise".
 - **Loose stock** (cattle, sheep, horses): slow the trek a little, need herders, can stray or be stolen, and are food and barter currency. Horses are needed for good hunting. (Horse-sickness: outbreaks mainly in late summer and autumn, repeated in the 1820s **[sourced]**. Lungsickness arrived in 1853, so it must **not** appear **[sourced]**.)
-- **Wagon:** condition per part (wheels, axle, disselboom, tent/canvas) 0–100. Breakage risk grows with damage, rough terrain, hard pace and overload. A spare part plus a repair action fixes it; the Blacksmith family repairs faster and can mend without a spare at a cost in time and iron.
+- **Wagon:** condition per part (wheels, axle, disselboom, tent/canvas) 0–100. Wear comes from rough roads, hard pace, overload, a poor voorloper, river crossings and some events; storms tear the tent, and a torn tent lets in the cold. When a wheel, axle or disselboom reaches 0 the wagon stops: fit a spare (100%), mend it with iron (70% with a good smith, 45% without), or rig something (25%).
+- **Mending before it breaks** (travel menu, "Rest, or mend the wagon", one day; `rules.json` `mend`): a badly worn part (below 40%) gets the spare if one is carried; other worn parts gain 15 + 8 × the best smith's skill (doubled for the Blacksmith family), using 3 lb of bar iron each (half as much gain without), up to 85%: field mending never makes a part new. 2 lb of tallow greases wheels and axle (+5). The tent is patched up to 60%, or new canvas makes it 100%. The day passes as a rest day.
+- **Town smiths:** the Grahamstown wagonmaker and the smiths at Cradock and Colesberg look the wagon over, quote a price (`smith_pence_per_point` × points of wear × the town's `price_mul`) and, if paid, put every part right in half a day. There are no smiths north of the Orange.
 - **Voorloper:** if the voorloper is sick, missing or dead, distance drops and wagon/route mishaps rise (Gemini idea, kept).
 
 ### 11.4 Death and graves
