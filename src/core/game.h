@@ -32,13 +32,14 @@ typedef enum {
     PHASE_BARTER
 } GamePhase;
 
-typedef enum { ARG_INT, ARG_STR, ARG_KEY, ARG_MONEY, ARG_DATE } ArgKind;
+/* ARG_PERSON is a party member's name (s) with their pronoun (i), so text can say {who.his}. */
+typedef enum { ARG_INT, ARG_STR, ARG_KEY, ARG_MONEY, ARG_DATE, ARG_PERSON } ArgKind;
 
 typedef struct {
     char name[12];
     ArgKind kind;
-    long long i;      /* ARG_INT, ARG_MONEY (in the side's unit), ARG_DATE (day number) */
-    char s[40];       /* ARG_STR (literal), ARG_KEY (locale key) */
+    long long i;      /* ARG_INT, ARG_MONEY (in the side's unit), ARG_DATE (day number), ARG_PERSON (Pronoun) */
+    char s[40];       /* ARG_STR (literal), ARG_KEY (locale key), ARG_PERSON (name) */
 } TextArg;
 
 /* A piece of text to show: a locale key plus named arguments, e.g. {who}, {n}. */
@@ -403,6 +404,9 @@ void member_role_key(Role role, Pronoun pronoun, char *out, size_t cap);
 void loctext_set(LocText *t, const char *key);
 void loctext_arg_int(LocText *t, const char *name, long long v);
 void loctext_arg_str(LocText *t, const char *name, const char *s);
+/* A party member: {name} gives their name, {name.he} {name.him} {name.his} {name.himself} their
+ * pronoun, capitalised as {name.He}. m may be NULL (an empty name). */
+void loctext_arg_person(LocText *t, const char *name, const Member *m);
 void loctext_arg_key(LocText *t, const char *name, const char *key);
 void loctext_arg_money(LocText *t, const char *name, long long v);
 void loctext_arg_date(LocText *t, const char *name, int day);

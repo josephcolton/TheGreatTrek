@@ -145,7 +145,13 @@ Rules:
 - No player-facing literals in C. Every string is a key in `data/locale/en.json`.
 - **Lookup order** so text can differ by side without code: `key@<side>.<family>` → `key@<side>` → `key`. Example: `event.smous.intro@english` can greet the English family in English while the default greets in Dutch.
 - **Substitution:** `{name}` style placeholders filled from an argument list the core supplies.
-  - Party references: `{m.name}`, `{m.he}`, `{m.him}`, `{m.his}` for the member an event picked (each member has a pronoun set in `families.json`).
+  - Party references:
+    - `{who}`, `{speaker}`, `{helper}`, `{head}` and `{name}` give a person's name.
+    - Add a form for their pronoun: `{who.he}`, `{who.him}`, `{who.his}`, `{who.hers}`, `{who.himself}`. Each member's pronoun is set in `families.json`.
+    - A capital letter capitalises the word: `{who.He}` gives "He" or "She".
+    - The words come from the `pronoun.he.*`, `pronoun.she.*` and `pronoun.they.*` keys, so a translation supplies its own.
+    - Never write "they/them/their" for a named person.
+    - datacheck rejects unknown forms.
   - Plurals: `{n:ox|oxen}` picks the form by `n`. A translation can define its own rules later.
   - Money: `{money:amount}` formats per side (§7.1).
 - **Light markup** inside strings:

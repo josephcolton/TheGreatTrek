@@ -203,14 +203,14 @@ static void add_std_args(const Game *g, LocText *t)
 {
     int head = g_head(g);
     if (g->dlg.speaker >= 0) {
-        loctext_arg_str(t, "speaker", g->party[g->dlg.speaker].name);
+        loctext_arg_person(t, "speaker", &g->party[g->dlg.speaker]);
     }
     if (head >= 0) {
-        loctext_arg_str(t, "head", g->party[head].name);
+        loctext_arg_person(t, "head", &g->party[head]);
     }
     loctext_arg_str(t, "family", g->data->families[g->family].surname);
     if (g->dlg.subject >= 0) {
-        loctext_arg_str(t, "who", g->party[g->dlg.subject].name);
+        loctext_arg_person(t, "who", &g->party[g->dlg.subject]);
     }
 }
 
@@ -225,7 +225,7 @@ static void speaker_text(const Game *g, LocText *t, const EventNode *node)
         char role_key[KEY_LEN];
         member_role_key(m->role, m->pronoun, role_key, sizeof role_key);
         loctext_set(t, "speaker.member");
-        loctext_arg_str(t, "name", m->name);
+        loctext_arg_person(t, "name", m);
         loctext_arg_key(t, "role", role_key);
     }
 }
@@ -391,7 +391,7 @@ static void apply_effect(Game *g, const Effect *e)
                 g_kill(g, members[i], "cause.accident");
                 LocText t;
                 loctext_set(&t, "result.died");
-                loctext_arg_str(&t, "who", g->party[members[i]].name);
+                loctext_arg_person(&t, "who", &g->party[members[i]]);
                 g_add_result(g, &t);
             }
         }
@@ -403,7 +403,7 @@ static void apply_effect(Game *g, const Effect *e)
             g->dlg.subject = members[i];
             LocText t;
             loctext_set(&t, d->illnesses[e->a].accident ? "notice.accident" : "notice.fell_ill");
-            loctext_arg_str(&t, "who", g->party[members[i]].name);
+            loctext_arg_person(&t, "who", &g->party[members[i]]);
             loctext_arg_key(&t, "illness", d->illnesses[e->a].name_key);
             g_add_result(g, &t);
         }

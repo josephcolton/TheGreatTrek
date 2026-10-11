@@ -34,6 +34,26 @@ void fmt_money(const Locale *loc, Side side, long long amount, char *out, size_t
     fmt_template(loc, locale_get(loc, key), &t, NULL, NULL, out, cap);
 }
 
+/* {who.his}: the pronoun of a person argument, from the locale (pronoun.she.his = "her"), so a
+ * translation can supply its own. A capital first letter ({who.His}) capitalises the word. Plain
+ * names from older saves have no pronoun and use pronoun.they. */
+static void pronoun_word(const Locale *loc, const TextArg *a, const char *form, size_t form_len, char *out,
+                         size_t cap)
+{
+    static const char *IDS[] = {"he", "she"};
+    const char *who = (a->kind == ARG_PERSON && a->i >= 0 && a->i < 2) ? IDS[a->i] : "they";
+    char key[KEY_LEN];
+    snprintf(key, sizeof key, "pronoun.%s.%.*s", who, (int)form_len, form);
+    if (form_len > 0 && form[0] >= 'A' && form[0] <= 'Z') {
+        char *k = key + strlen("pronoun.") + strlen(who) + 1;
+        *k = (char)(*k - 'A' + 'a');
+    }
+    snprintf(out, cap, "%s", locale_get(loc, key));
+    if (form_len > 0 && form[0] >= 'A' && form[0] <= 'Z' && out[0] >= 'a' && out[0] <= 'z') {
+        out[0] = (char)(out[0] - 'a' + 'A');
+    }
+}
+
 static const TextArg *find_arg(const LocText *t, const char *name, size_t len)
 {
     for (int i = 0; t && i < t->n_args; i++) {
@@ -68,12 +88,17 @@ void fmt_template(const Locale *loc, const char *tmpl, const LocText *t, const c
         }
         const char *name = p + 1;
         const char *colon = memchr(name, ':', (size_t)(close - name));
-        size_t name_len = (size_t)((colon ? colon : close) - name);
+        const char *dot = colon ? NULL : memchr(name, '.', (size_t)(close - name));
+        size_t name_len = (size_t)((colon ? colon : dot ? dot : close) - name);
         const TextArg *a = find_arg(t, name, name_len);
         char buf[160];
         buf[0] = '\0';
         if (!a) {
             append(out, cap, &len, p, (size_t)(close - p + 1)); /* leave unknown placeholders visible */
+        } else if (dot) {
+            /* {who.his} */
+            pronoun_word(loc, a, dot + 1, (size_t)(close - dot - 1), buf, sizeof buf);
+            append(out, cap, &len, buf, strlen(buf));
         } else if (colon) {
             /* {n:one|many} */
             const char *bar = memchr(colon + 1, '|', (size_t)(close - colon - 1));
@@ -86,7 +111,8 @@ void fmt_template(const Locale *loc, const char *tmpl, const LocText *t, const c
         } else {
             switch (a->kind) {
             case ARG_INT: snprintf(buf, sizeof buf, "%lld", a->i); break;
-            case ARG_STR: snprintf(buf, sizeof buf, "%s", a->s); break;
+            case ARG_STR:
+            case ARG_PERSON: snprintf(buf, sizeof buf, "%s", a->s); break;
             case ARG_KEY: {
                 const char *txt = locale_find(loc, a->s) ? locale_get_variant(loc, a->s, side, family) : NULL;
                 size_t kl = strlen(a->s);

@@ -62,6 +62,10 @@ static const char *CODE_KEYS[] = {
     "journal.hunt", "journal.hunt_empty", "cause.hunting",
     "landmark.barter", "barter.reply.empty", "barter.reply.insult", "barter.reply.short", "barter.reply.generous",
     "barter.reply.done", "barter.reply.powder", "journal.barter", "journal.barter_powder",
+    "river.trouble.person_alone",
+    "pronoun.he.he", "pronoun.he.him", "pronoun.he.his", "pronoun.he.hers", "pronoun.he.himself",
+    "pronoun.she.he", "pronoun.she.him", "pronoun.she.his", "pronoun.she.hers", "pronoun.she.himself",
+    "pronoun.they.he", "pronoun.they.him", "pronoun.they.his", "pronoun.they.hers", "pronoun.they.himself",
     NULL
 };
 
@@ -145,6 +149,32 @@ int main(int argc, char **argv)
             check_key(d->nodes[i].history_key, d->nodes[i].id, &kc);
         }
         errors += kc.missing;
+        /* {who.form}: the form must be one the formatter knows (format.c, pronoun.* keys) */
+        static const char *FORMS[] = {"he", "him", "his", "hers", "himself"};
+        for (size_t i = 0; i < locale_count(loc); i++) {
+            const char *key = locale_key_at(loc, i);
+            const char *text = locale_get(loc, key);
+            for (const char *p = strchr(text, '{'); p; p = strchr(p + 1, '{')) {
+                const char *close = strchr(p, '}');
+                const char *dot = close ? memchr(p, '.', (size_t)(close - p)) : NULL;
+                if (!dot || memchr(p, ':', (size_t)(close - p))) {
+                    continue;
+                }
+                char form[16];
+                snprintf(form, sizeof form, "%.*s", (int)(close - dot - 1), dot + 1);
+                if (form[0] >= 'A' && form[0] <= 'Z') {
+                    form[0] = (char)(form[0] - 'A' + 'a');
+                }
+                bool ok = false;
+                for (size_t f = 0; f < sizeof FORMS / sizeof FORMS[0]; f++) {
+                    ok = ok || strcmp(form, FORMS[f]) == 0;
+                }
+                if (!ok) {
+                    fprintf(stderr, "%s: unknown pronoun form in %.*s\n", key, (int)(close - p + 1), p);
+                    errors++;
+                }
+            }
+        }
         printf("locale: %lu keys, %d missing\n", (unsigned long)locale_count(loc), kc.missing);
         locale_free(loc);
     }

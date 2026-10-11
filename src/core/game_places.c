@@ -298,18 +298,31 @@ static void river_trouble(Game *g, bool cargo_safe)
             break;
         }
         g->dlg.subject = m;
+        /* someone else wades in: the best herder, an adult before a child */
+        int rescuer = -1, best = -1;
+        for (int i = 0; i < g->party_count; i++) {
+            if (i == m || !g_member_active(g, i)) {
+                continue;
+            }
+            int score = g->party[i].skills[SKILL_HERDING] + (g->party[i].age == AGE_CHILD ? 0 : 10);
+            if (score > best) {
+                best = score;
+                rescuer = i;
+            }
+        }
         LocText t;
-        loctext_set(&t, "river.trouble.person");
-        loctext_arg_str(&t, "who", g->party[m].name);
-        int rescuer = g_best_skill_member(g, SKILL_HERDING);
-        loctext_arg_str(&t, "helper", rescuer >= 0 && rescuer != m ? g->party[rescuer].name : g->party[m].name);
+        loctext_set(&t, rescuer >= 0 ? "river.trouble.person" : "river.trouble.person_alone");
+        loctext_arg_person(&t, "who", &g->party[m]);
+        if (rescuer >= 0) {
+            loctext_arg_person(&t, "helper", &g->party[rescuer]);
+        }
         g_add_result(g, &t);
         g->party[m].health -= (int)lround(rng_range(&g->rng, 20, 45) * g_harm(g));
         if (g->party[m].health <= 0) {
             g_kill(g, m, "cause.drowned");
             LocText dt;
             loctext_set(&dt, "result.died");
-            loctext_arg_str(&dt, "who", g->party[m].name);
+            loctext_arg_person(&dt, "who", &g->party[m]);
             g_add_result(g, &dt);
         }
         break;

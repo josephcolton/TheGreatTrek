@@ -22,7 +22,7 @@ static void hunt_log(Game *g, const char *key, const char *animal_key, int n)
     LocText *t = &h->log[h->log_count++];
     loctext_set(t, key);
     if (h->hunter >= 0) {
-        loctext_arg_str(t, "who", g->party[h->hunter].name);
+        loctext_arg_person(t, "who", &g->party[h->hunter]);
     }
     if (animal_key) {
         loctext_arg_key(t, "animal", animal_key);
@@ -421,7 +421,7 @@ bool game_hunt_view(const Game *g, HuntView *out)
     const HuntState *h = &g->hunt;
     loctext_set(&out->hunter, "hunt.hunter");
     if (h->hunter >= 0) {
-        loctext_arg_str(&out->hunter, "who", g->party[h->hunter].name);
+        loctext_arg_person(&out->hunter, "who", &g->party[h->hunter]);
     }
     out->over = h->over;
     out->loaded = h->reload_ticks == 0 && h->shots < h->shots_max;
@@ -443,13 +443,13 @@ bool game_hunt_view(const Game *g, HuntView *out)
     out->log_count = h->log_count;
     memcpy(out->log, h->log, sizeof out->log);
     if (h->over) {
-        const char *who = h->hunter >= 0 ? g->party[h->hunter].name : "";
+        const Member *who = h->hunter >= 0 ? &g->party[h->hunter] : NULL;
         if (h->meat <= 0) {
             loctext_set(&out->summary[0], "hunt.summary.none");
-            loctext_arg_str(&out->summary[0], "who", who);
+            loctext_arg_person(&out->summary[0], "who", who);
         } else {
             loctext_set(&out->summary[0], "hunt.summary.shot");
-            loctext_arg_str(&out->summary[0], "who", who);
+            loctext_arg_person(&out->summary[0], "who", who);
             loctext_arg_int(&out->summary[0], "meat", h->meat);
             loctext_set(&out->summary[1], h->meat > h->carry ? "hunt.summary.too_much" : "hunt.summary.all");
             loctext_arg_int(&out->summary[1], "carry", h->carry);
@@ -481,7 +481,7 @@ void game_hunt_finish(Game *g)
     LocText t;
     loctext_set(&t, brought > 0 ? "journal.hunt" : "journal.hunt_empty");
     if (h->hunter >= 0) {
-        loctext_arg_str(&t, "who", g->party[h->hunter].name);
+        loctext_arg_person(&t, "who", &g->party[h->hunter]);
     }
     loctext_arg_int(&t, "fresh", fresh);
     loctext_arg_int(&t, "dried", dried);

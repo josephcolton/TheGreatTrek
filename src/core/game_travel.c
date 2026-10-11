@@ -364,7 +364,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 if (rng_chance(&g->rng, p)) {
                     LocText t;
                     loctext_set(&t, "journal.recovered");
-                    loctext_arg_str(&t, "who", m->name);
+                    loctext_arg_person(&t, "who", m);
                     loctext_arg_key(&t, "illness", il->name_key);
                     game_journal(g, &t);
                     m->conds[c] = m->conds[m->cond_count - 1];
@@ -380,7 +380,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
                     g_add_illness(g, other, m->conds[c].illness);
                     LocText t;
                     loctext_set(&t, "notice.fell_ill");
-                    loctext_arg_str(&t, "who", g->party[other].name);
+                    loctext_arg_person(&t, "who", &g->party[other]);
                     loctext_arg_key(&t, "illness", il->name_key);
                     g_notice(g, &t);
                 }
@@ -401,7 +401,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 g_add_illness(g, i, il);
                 LocText t;
                 loctext_set(&t, "notice.fell_ill");
-                loctext_arg_str(&t, "who", m->name);
+                loctext_arg_person(&t, "who", m);
                 loctext_arg_key(&t, "illness", d->illnesses[il].name_key);
                 g_notice(g, &t);
             }
@@ -412,7 +412,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 g_add_illness(g, i, il);
                 LocText t;
                 loctext_set(&t, "notice.accident");
-                loctext_arg_str(&t, "who", m->name);
+                loctext_arg_person(&t, "who", m);
                 loctext_arg_key(&t, "illness", d->illnesses[il].name_key);
                 g_notice(g, &t);
             }
@@ -463,7 +463,7 @@ static void servants_day(Game *g)
                 m->loyalty += 3;
                 LocText t;
                 loctext_set(&t, "journal.paid_in_sheep");
-                loctext_arg_str(&t, "who", m->name);
+                loctext_arg_person(&t, "who", m);
                 loctext_arg_int(&t, "n", sheep_wage);
                 game_journal(g, &t);
             } else {
@@ -710,7 +710,7 @@ void game_mend_wagon(Game *g)
     LocText t;
     loctext_set(&t, smith > 0 && smith_member >= 0 ? "mend.done" : "mend.done_all");
     if (smith_member >= 0) {
-        loctext_arg_str(&t, "who", g->party[smith_member].name);
+        loctext_arg_person(&t, "who", &g->party[smith_member]);
     }
     loctext_arg_int(&t, "wheels", g->wagon_parts[WAGON_PART_WHEELS]);
     loctext_arg_int(&t, "axle", g->wagon_parts[WAGON_PART_AXLE]);

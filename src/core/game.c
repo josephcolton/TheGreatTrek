@@ -45,6 +45,16 @@ void loctext_arg_str(LocText *t, const char *name, const char *s)
     }
 }
 
+void loctext_arg_person(LocText *t, const char *name, const Member *m)
+{
+    TextArg *a = new_arg(t, name);
+    if (a) {
+        a->kind = ARG_PERSON;
+        a->i = m ? m->pronoun : PRONOUN_COUNT;
+        snprintf(a->s, sizeof a->s, "%s", m ? m->name : "");
+    }
+}
+
 void loctext_arg_key(LocText *t, const char *name, const char *key)
 {
     TextArg *a = new_arg(t, name);
@@ -208,7 +218,7 @@ void g_notice_member(Game *g, const char *key, int member)
     LocText t;
     loctext_set(&t, key);
     if (member >= 0) {
-        loctext_arg_str(&t, "who", g->party[member].name);
+        loctext_arg_person(&t, "who", &g->party[member]);
     }
     g_notice(g, &t);
 }
@@ -460,7 +470,7 @@ void g_kill(Game *g, int member, const char *cause_key)
     }
     LocText t;
     loctext_set(&t, "notice.death");
-    loctext_arg_str(&t, "who", m->name);
+    loctext_arg_person(&t, "who", m);
     loctext_arg_key(&t, "cause", cause_key ? cause_key : "cause.unknown");
     game_journal(g, &t);
     g_add_morale(g, -15);
@@ -817,7 +827,7 @@ int game_epilogue(const Game *g, LocText *out, int max)
     for (int i = 0; i < g->grave_count; i++) {
         const Grave *gr = &g->graves[i];
         if ((t = ADD("ending.grave")) != NULL) {
-            loctext_arg_str(t, "who", g->party[gr->member].name);
+            loctext_arg_person(t, "who", &g->party[gr->member]);
             loctext_arg_date(t, "date", gr->day);
             loctext_arg_key(t, "place", d->nodes[gr->node].name_key);
             loctext_arg_key(t, "cause", gr->cause_key);
@@ -825,7 +835,7 @@ int game_epilogue(const Game *g, LocText *out, int max)
     }
     for (int i = 0; i < g->party_count; i++) {
         if (g->party[i].alive && !g->party[i].with_party && (t = ADD("ending.left")) != NULL) {
-            loctext_arg_str(t, "who", g->party[i].name);
+            loctext_arg_person(t, "who", &g->party[i]);
         }
     }
     for (int i = 0; i < d->group_count; i++) {

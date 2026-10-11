@@ -83,9 +83,9 @@
   "event.lessons_on_the_road.skip.done": "The children go back to their games.",
 
   "event.servant_family_news.body": "{speaker} has heard from a passing wagon that family back in the Colony is ill. \"I should be with them,\" {speaker} says quietly.",
-  "event.servant_family_news.go_home": "Give a month's wages and let them go home",
+  "event.servant_family_news.go_home": "Give a month's wages and let {speaker.him} go home",
   "event.servant_family_news.go_home.done": "{speaker} thanks you and walks south with the passing wagon. You will miss the help.",
-  "event.servant_family_news.stay": "Ask them to stay; you need every hand",
+  "event.servant_family_news.stay": "Ask {speaker.him} to stay; you need every hand",
   "event.servant_family_news.stay.ok": "{speaker} agrees to stay, for now.",
   "event.servant_family_news.stay.sad": "{speaker} stays, but it is plain that the heart has gone out of the work.",
 
