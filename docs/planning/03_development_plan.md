@@ -70,8 +70,8 @@ Both sides outfit in Grahamstown. The opening scene is the April 1837 gift of th
 |---|---|---|
 | Why they go | Grievances against British rule, frontier-war losses, land, independence | Trade with the trekkers and the interior, hunting, cheap land, a fresh start after frontier-war losses |
 | Starting wealth | Little cash (rixdollars), **lots of livestock** (cattle, sheep, horses) | **More cash** (sterling) and merchant credit, few animals |
-| Wagons offered | Kakebeenwa (light, sturdy, standard); a second family wagon cheaper through kin | Kakebeenwa at a markup; **heavy transport wagon** (more cargo, needs more oxen, slower); Scotch cart (light two-wheeler, cheap, fragile) *(verify period availability)* |
-| Guns | Sanna/roer (flintlock); family members can shoot | Same, or a pricier English-made gun; possibly percussion *(verify availability in 1837)* |
+| Wagons offered | Kakebeenwa (light, sturdy, standard); a second family wagon cheaper through kin | Kakebeenwa at a markup; **heavy transport wagon** (more cargo, needs more oxen, slower); Scotch cart (light two-wheeler, cheap, fragile). *Built: a wagonmaker at Grahamstown trades wagons for English families; the 1837 prices of the transport wagon and cart are estimates.* |
+| Guns | Sanna/roer (flintlock); family members can shoot | Same, or a pricier English-made gun. *Percussion guns were in use by English hunters in the 1830s (Steedman's "copper caps", Harris's "percussion gun"); built as an English-side item that cuts misfires.* |
 | Trekker laagers | Welcome. Can join a group laager (safer nights), vote in council, trade at fair prices | Tolerated or suspected ("Are you the Governor's man?"). Higher prices; joining a laager isn't guaranteed |
 | Grahamstown / colonial merchants | Normal prices | **Cheaper.** Credit available |
 | Missionaries (Wesleyan, LMS) | Neutral to cool | Warmer (English-speaking). Medicine and news easier to get |
@@ -187,7 +187,7 @@ Status on 2026-10-11 (in brackets after each milestone).
 | # | Milestone | Done when |
 |---|---|---|
 | 1 | **Build skeleton** [done] | CMake + FetchContent builds a window with text on Windows. `core` library, `trekbot` and `datacheck` stubs, and CTest all run. |
-| 2 | **Research pass 2** [done, except the Tregardt diary, which is not free online; see `05_research_pass2.md` section 13] | Route checked on a real map with distances. Calendar for 1837. Glossary of period terms. Tregardt diary and Harris's *Narrative* skimmed for events. |
+| 2 | **Research pass 2** [done; the Tregardt diary was found free on DBNL and read in part in pass 3, `05_research_pass2.md` section 14] | Route checked on a real map with distances. Calendar for 1837. Glossary of period terms. Tregardt diary and Harris's *Narrative* skimmed for events. |
 | 3 | **Core loop** [done] | Outfit → travel → landmark → end works with placeholder text, both sides, seeded RNG, save/load. The bot can finish runs. |
 | 4 | **Vertical slice** [built; the family playtest is still to do] | Grahamstown → Orange River playable for **both sides**: about 15 events, shop with side pricing, laager, oxen, illness, tombstone. Family playtest. |
 | 5 | **Full route** [done: both roads to the Mooi River, hunting, barter, 54 events, five endings, bot-balanced; more events welcome] | Through to the Mooi River: Thaba Nchu, Vaal crossing, hunting, smous, barter, about 50 events, endings. Balance with the bot. |
@@ -201,4 +201,4 @@ Status on 2026-10-11 (in brackets after each milestone).
 1. A family playtest (milestone 4), then balance from what the family finds.
 2. A second reader for the history notes and the origin stories (milestone 6).
 3. Finer art and a first GitHub release (milestone 7). An MSVC build test needs the C++ tools added to Visual Studio.
-4. Research still open: prices of powder, coffee, sugar and trade goods; the Tregardt diary; see `05_research_pass2.md` section 13.
+4. Research still open: shop prices of powder, coffee, sugar and trade goods; isiXhosa names; see `05_research_pass2.md` sections 13 and 14.

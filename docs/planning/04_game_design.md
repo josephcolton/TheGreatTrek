@@ -562,6 +562,8 @@ Multi-node events add a `"nodes": { ... }` map and a `"start"` node; each outcom
 
 ### 8.2 Conditions and effects (a fixed vocabulary, not a scripting language)
 
+The table is the vocabulary as designed; `parse_cond` and `parse_effect` in `src/core/data.c` are the vocabulary as built, and `datacheck` rejects anything else. An event node may have up to six choices.
+
 `requires` is a list of clauses that must **all** be true; `{ "any": [ ... ] }` gives OR, `{ "not": {...} }` negates.
 
 | Condition clauses | Effect clauses |
@@ -575,6 +577,8 @@ Multi-node events add a `"nodes": { ... }` map and a `"start"` node; each outcom
 | `stance` (tonight's night stance), `in_group_laager` | `relation` (group, delta) |
 | `days_since_start_gte`, `distance_gte` | `flag` set/clear, `counter` add |
 | `chance` (extra random gate) | `time_days`, `distance` (lost or gained miles) |
+| `weekday` (0 = Sunday), `sabbath` (true if the party keeps Sunday rest) | `wagon` (trade the wagon in for another; the cost is the new price less `wagon_trade_in` of the old) |
+| `wagon` (the wagon now in use), `afford_wagon` (can pay for that trade) | `ending` (end the trip with a given ending) |
 | | `schedule` (event id, in N days) — chains and follow-ups |
 | | `start_hunt` (table), `start_barter` (partner), `start_river` |
 | | `death` (who) — rare, always with its own text; see §11.4 |
