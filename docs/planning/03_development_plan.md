@@ -55,7 +55,7 @@ VAAL RIVER DRIFT               — second big crossing; entering Ndebele-claimed
    │
 MOOI RIVER (end)               — settle; epilogue
 ```
-- Estimated length: about 450–500 mi. Retief and Uys took months, so expect roughly 60–120 in-game days at 6–12 mi/day.
+- Length: about 540 mi in a straight line, ~650–700 mi on the ground (`05_research_pass2.md` §2). The Uys party took ~87 days from Grahamstown to the Sand River in 1837, so a full trip is ~100–110 in-game days.
 - **Historical tension of 1837:** Mzilikazi's Ndebele held the land north of the Vaal until trekker commandos drove them north in Jan and Nov 1837 (Mosega, then the Marico campaign). A 1837 start puts the player in that tense period. Events can show it through news, refugees, envoys and the decision to wait or press on, without making the family fight battles.
 
 ---

@@ -50,7 +50,7 @@ Target length: **30–60 minutes** for a full run (plan §2). Rough budget on No
 | **Your trips** | Saved trips, newest first; pick one to carry on (§13.2) | Title → Continue |
 | **Side select** | Dutch or English, with a short list of what changes | Title |
 | **Family select** | Backstory cards: portrait, story, perks/penalties, party list | Side |
-| **Name party** | Accept or edit names (default fictional names supplied) | Family |
+| **Name party** | Read the family's origin story (`05` §8.3); accept, edit or re-roll names from period name lists | Family |
 | **Dialog** | All events and conversations (§3) | many |
 | **Store** | Coin purchases at colonial towns and missions (§7) | Landmark |
 | **Barter** | Two-column trade north of the Orange (§7.4) | Landmark, event |
@@ -214,7 +214,7 @@ Party members (especially the servants and older children) are speakers in event
 
 - One tick = **one day**. The date is stored as a day count from 1 Jan 1837; the weekday and month are computed (1 Jan 1837 was a Sunday, so the default start, **Monday 3 April 1837**, is computed, not hard-coded).
 - **Seasons (southern hemisphere):** Apr autumn · May–Aug winter · Sep–Oct spring · Nov–Mar summer.
-- **Sundays:** a standing order "Keep the Sabbath" (rest on Sundays) defaults to *on*. It costs distance but gives morale, and trekker parties expect it. *Sabbath rest on trek* is **[recall, verify]**.
+- **Sundays:** a standing order "Keep the Sabbath" (rest on Sundays) defaults to *on*. It costs distance but gives morale, and trekker parties expect it. How strictly parties kept it on the road is **not confirmed** (`05` §7). The Grahamstown market closed on Sundays, and church mattered greatly, so the game rewards it but doesn't force it.
 
 ### 4.2 Weather
 
@@ -285,22 +285,23 @@ The route is a **graph**, not a line, so optional stops (Philippolis) and the la
 - `water` is `streams` (water most days), `springs` (sometimes), or `dry` (Karoo stretches: carry water).
 - Real lat/lon is stored so the route can be checked against a real map in research pass 2.
 
-### 5.2 Rough distances (to verify, milestone 2)
+### 5.2 Distances (research pass 2)
 
-These are **my estimates from modern road distances**; ox-wagon tracks differed. They total more than the plan's 450–500 mi estimate, so research pass 2 must settle this.
+Worked out from coordinates in `05_research_pass2.md` §2: about **540 mi in a straight line, ~650–700 mi on the ground**.
 
-| Leg | Region | ~Miles |
+| Leg | Region | ~Miles on the ground |
 |---|---|---|
-| Grahamstown → Cradock | Eastern frontier | 95 |
-| Cradock → Colesberg | Karoo | 145 |
-| Colesberg → Orange River drift | Karoo / river | 25 |
-| Orange drift → Thaba Nchu (direct, or via Philippolis) | Transorangia | 125 (direct) |
-| Thaba Nchu → Sand/Vet River | Highveld | 60 |
-| Sand/Vet River → Vaal drift | Highveld | 95 |
+| Grahamstown → Cradock | Eastern frontier | 120 |
+| Cradock → Colesberg | Karoo | 130 |
+| Colesberg → Orange River drift | Karoo / river | 28 |
+| Orange drift → Thaba Nchu (via Philippolis +23) | Transorangia | 160 |
+| Thaba Nchu → Vet River | Highveld | 60 |
+| Vet River → Sand River | Highveld | 40 |
+| Sand River → Vaal drift | Highveld | 105 |
 | Vaal drift → Mooi River | Highveld | 30 |
-| | **Total** | **≈ 575** |
+| | **Total** | **≈ 675** (game: ~650) |
 
-At 6–12 mi/day **[sourced: about 10 km/day with herds]**, with rest days, that is roughly 70–100 days, inside the plan's 60–120.
+**Calibrated on history:** the Uys party went from Grahamstown (April 1837) to the Sand River laager (29 June 1837) in about 87 days, which is ~6.2 mi/day overall and matches the sourced "about 10 km/day with herds". Normal pace is therefore 8–9 mi on a travel day, ~6–7 mi/day with rests; a full trip takes ~100–110 days and arrives in the Highveld winter (July).
 
 ### 5.3 Two map views
 
@@ -320,7 +321,7 @@ The Orange and the Vaal are the two big drifts; smaller rivers (Great Fish, Cale
 
 **Reading the river.** The crossing screen describes depth, current and banks in words, from:
 `depth = base_depth[river][month] + recent_rain_bonus + random_spread`.
-Summer rains raise the rivers; an April–July crossing of the Orange is usually lower. *(Seasonal flooding: [recall, verify].)*
+Summer rains raise the rivers; an April–July crossing of the Orange is usually lower. *(Harris needed raised platforms inside the wagons to cross in 1836; the seasonal pattern is still [recall, verify].)*
 
 | Choice | Needs | Effect |
 |---|---|---|
@@ -351,28 +352,21 @@ Outcomes: safe crossing; goods lost (random items, weight-weighted); ox drowns; 
 
 #### Period prices
 
-Prices should reflect what things really cost in 1836–37, as far as we can tell. Anchors found so far:
+Prices come from real sources: the Graham's Town market register (1831–32), Harris (1836) and Backhouse (1838–39). The full tables are in `05_research_pass2.md` §4. Starting prices for Grahamstown, April 1837:
 
-| Item or service | Price | Where / when | Status |
-|---|---|---|---|
-| Wether sheep, bought from a Boer commandant | **3 Rds a head** | north-east Cape frontier, 1836 | **[sourced: Harris]** |
-| Hire of a wagon and driver, Grahamstown → Somerset (about half way to Graaff-Reinet) | **100 Rds** (≈ £7) | 1836 | **[sourced: Harris]** |
-| A rider hired to chase a debt | **4 Rds** | Graaff-Reinet, 1836 | **[sourced: Harris]** |
-| Effect of the 1834–35 frontier war | "trebled the price of every thing, and of live stock in particular" | Algoa Bay / Grahamstown, 1836 | **[sourced: Harris]** |
-| Whole hunting expedition, with heavy ox losses | **£800** | 1836–37 | **[sourced: Harris]** |
-| A wagon and its ox team | **£70** | Overberg, undated | weak source; check |
-| Trek ox | ~30 Rds / £2 5s | Grahamstown, 1837 | **estimate**; to check |
-| Riding horse | ~100 Rds / £7 10s | Grahamstown, 1837 | **estimate**; to check |
-| New kakebeenwa | ~450 Rds / £34 | Grahamstown, 1837 | **estimate**; to check |
+| Item | Unit | Dutch | English | Basis |
+|---|---|---|---|---|
+| Trek ox | each | 45 Rds | £3 8s | Backhouse 1838 ("considered high"); 1832 price £1 5s × the war's trebling |
+| Cow | each | 36 Rds | £2 14s | estimate from the 1832 cow/ox ratio |
+| Sheep | each | 3 Rds | 5s | "the usual price throughout the country" (Steedman; Harris) |
+| Riding horse | each | 107 Rds | £8 | Backhouse 1839 |
+| Kakebeenwa | each | 900 Rds | £67 | Backhouse 1838 (Cape Town) |
+| Meal | **muid** (~180 lb) | 20 Rds | £1 10s | 1832 £1 1s plus a war rise (estimate) |
+| Servant's wage | month | 10 Rds | 15s | Steedman c. 1832; Backhouse 1838 |
 
-Other prices (meal, coffee, sugar, gunpowder, lead, tobacco, beads, cloth, spare parts) are still to be found. Research pass 2 should look in:
-- the **Graham's Town Journal market column**: a market price list from 8 Feb 1838 is reproduced in a thesis on Eastern Cape trade, 1820–1860 (Huntley Street, Farmerfield and Fort Double Drift; Table 2.4);
-- the **Graaff-Reinet livestock price series** in Rds, from the Cape estate auction rolls (Cilliers 2023, *Economic History Review*);
-- Harris's *Narrative* / *Wild Sports* for more incidental prices.
-
-Every price in `data/prices.json` carries a `source` note, like events do (§8.5).
-
-#### Prices moved by history
+- **Meal and grain are sold by the *muid*,** the unit used then (glossary term).
+- Gunpowder, lead, coffee, sugar, tea, tobacco, beads, cloth, iron and medicine: **no period price found yet**; these are estimates kept in proportion until research finds them.
+- #### Prices moved by history
 
 Real events changed prices along the road, so the game models them as **price shocks** in `data/price_shocks.json`. Each one has a date window, the places and goods it affects, a multiplier that fades over time, the line a seller uses to explain it, and sources:
 
@@ -392,17 +386,18 @@ Real events changed prices along the road, so the game models them as **price sh
 
 The price formula (§7.2) gains a `× shock_modifier(node, item, date)` term.
 
-Shocks to research and include (dates and effects to verify in research pass 2):
+Shocks checked in research pass 2 (`05_research_pass2.md` §5):
 
-| Event | Date | Likely effect | Status |
+| Event | Date | Effect | Status |
 |---|---|---|---|
-| Sixth Frontier War and its aftermath | 1834–36 | livestock (and everything) dear around Grahamstown and Algoa Bay | **[sourced: Harris]**; how long it lasted is a guess |
-| The trek itself: hundreds of families selling farms and buying wagons, oxen, powder | 1836–37 | wagons, oxen and powder dear in the eastern districts; farms and furniture cheap | **[recall, verify]** |
-| Vegkop: Potgieter's trek lost most of its cattle | Oct 1836 | oxen scarce and dear at Thaba Nchu and the trekker laagers in early 1837 | Moroka's oxen **[sourced]**; size of the loss **[recall, verify]** |
-| Mosega: the commando drove off a large Ndebele herd | Jan 1837 | more cattle at trekker laagers; and the Ndebele side of the same story (§8) | **[recall, verify]** |
-| Gunpowder contraband beyond the frontier | 1830s | powder dear north of the Orange, and risky to sell | **[sourced: Harris]** |
-| The 1837 financial panic in Britain and America | 1837 | English merchants tighten credit; English side gets a smaller credit limit | **[recall, verify]**; check it reached the Cape |
-| Drought or good rains in a district | to find | grazing and food prices | to research |
+| Sixth Frontier War and its aftermath | 1834–38 | livestock (and everything) dear around Grahamstown; oxen still "high" in Dec 1838 | **[sourced: Harris, Backhouse]** |
+| Trekkers selling up | 1836–39 | farms and household goods cheap in the eastern districts | **[sourced example: Backhouse]** |
+| Vegkop | Oct 1836 | Potgieter alone lost 5,000 sheep, 300 cattle, 100 draught oxen; oxen scarce at Thaba Nchu early in 1837 | **[sourced]** |
+| Mosega | 17 Jan 1837 | ~6,000–6,500 cattle taken; more cattle at trekker laagers | **[sourced]** |
+| Gunpowder contraband beyond the frontier | 1830s | powder very valuable north of the Orange, and a crime to sell | **[sourced: Harris]** |
+| Grain dear on the frontier | (Colesberg, 1839: 75s a muid against an "old price" of 6–10 Rds) | meal dear at Colesberg; the cause isn't recorded | **[sourced]** price; cause **unverified** |
+
+The 1837 financial panic was dropped: no source links it to the Cape.
 
 **Sellers use the news.** When a price is up because of a shock, the shopkeeper says why ("Since the war, sir, an ox costs what a horse did."). The History note (`H`) explains the real event. Some sellers, especially a sharp smous, **use the news as an excuse** to charge more than it justifies; a player who has heard the real news (a journal flag, or a good relation with someone who would know) can call it out and get a fairer price. That part is game design, and the History note says so.
 
@@ -653,7 +648,7 @@ Each turn the player picks one action; then animals act.
 | Big game | eland, Cape buffalo *(check range)* | lots of meat; buffalo may **charge** if wounded |
 | Predators | lion | may **hunt back**: the hunt turns into a short danger sequence (stand and fire, retreat to the wagon, send the dogs) |
 
-- The **quagga** was alive and common on these plains in 1837 (extinct by 1883) **[recall, verify]**. A history note can say so.
+- The **quagga** was on this road: Backhouse saw "a troop of Quaggas, with their foals" in the Colesberg district in June 1839 **[sourced]**. It was extinct in the wild by c. 1878, and the last one died in Amsterdam in 1883. A History note says so.
 - **Meat and carry limit:** you can bring back only what you can carry (more with a horse or if the wagon is near). Extra meat is wasted, and the game says so. Overhunting a region lowers that region's game for the rest of the run (`region_game_level`).
 - **Family-friendly presentation:** the animal falls or runs off; no blood or gore. A lion "springs at the hunter" and the outcome is told in text.
 - Art: W. Cornwallis Harris's 1840 animal plates (public domain) as the basis for pixel animals.
@@ -713,7 +708,7 @@ typedef struct {
 } Member;
 ```
 
-- Servants (Khoikhoi, formerly enslaved, Mfengu) are **full members** with names and skills. They are paid (wages in coin, livestock or goods) and can **choose to leave** if treated badly or unpaid; when one leaves, the game tells their side of it. Under **Ordinance 50 (1828)** Khoikhoi in the Colony could no longer be held by pass laws **[recall, verify]**, so leaving was a real option.
+- Servants (Khoikhoi, formerly enslaved, Mfengu) are **full members** with names and skills. They are paid (wages in coin, livestock or goods) and can **choose to leave** if treated badly or unpaid; when one leaves, the game tells their side of it. Under **Ordinance 50 (1828)** Khoikhoi and other free people of colour no longer had to carry passes **[sourced]**, so leaving was a real option. It did **not** cover Africans (Ordinance 49), so an Mfengu herder had fewer rights, and the game shows that. Wages: about 10 Rds / 15s a month plus food **[sourced]**; underpaying lowers loyalty.
 - **Health conditions** (each with a daily progression and a recovery chance, nursing skill helps):
   - *flux* (dysentery; the Oregon Trail homage, unsourced as a major killer)
   - *fever* (low on this route; higher on a future Natal/northern route; malaria is the documented killer on Tregardt's route **[sourced]**)
@@ -727,7 +722,7 @@ typedef struct {
 
 - **Oxen:** count + average stamina. A kakebeenwa needs a span of **12–16** (tunable; 01 §3). Fewer oxen = slower; below the minimum the wagon can't move and a "stranded" event starts (buy, borrow, or trade for oxen; or leave goods behind).
 - **Stamina** changes daily: `+ grazing[region][month] + rest − pace_cost − load_cost − no_water_cost`. Under 30 the span slows; under 10 an ox may "lie down and not rise".
-- **Loose stock** (cattle, sheep, horses): slow the trek a little, need herders, can stray or be stolen, and are food and barter currency. Horses are needed for good hunting. (Horse-sickness in summer: **[recall, verify]**. Lungsickness arrived in the 1850s, so it must **not** appear.)
+- **Loose stock** (cattle, sheep, horses): slow the trek a little, need herders, can stray or be stolen, and are food and barter currency. Horses are needed for good hunting. (Horse-sickness: outbreaks mainly in late summer and autumn, repeated in the 1820s **[sourced]**. Lungsickness arrived in 1853, so it must **not** appear **[sourced]**.)
 - **Wagon:** condition per part (wheels, axle, disselboom, tent/canvas) 0–100. Breakage risk grows with damage, rough terrain, hard pace and overload. A spare part plus a repair action fixes it; the Blacksmith family repairs faster and can mend without a spare at a cost in time and iron.
 - **Voorloper:** if the voorloper is sick, missing or dead, distance drops and wagon/route mishaps rise (Gemini idea, kept).
 
@@ -884,6 +879,7 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
 | `data/endings.json` | epilogue sentence rules (relation thresholds, flags) |
 | `data/events/*.json` | events (§8) |
 | `data/glossary.json` | glossary terms → locale keys + DSAE links |
+| `data/names.json` | first names, pet names and surnames per side and for servants (`05_research_pass2.md` §9) |
 | `data/locale/en.json` | all player-facing text |
 
 ---
@@ -903,8 +899,9 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
 - **English group laager:** must be earned through events (§12.1).
 - **Difficulty:** Easy / Normal / Hard, set from the main menu before a trip (§13.1).
 - **Saves:** one save per trip, newest first, always moving forward; permadeath (§13).
+- **Distance:** ~650 game miles, calibrated on the Uys party's 1837 timeline (§5.2).
+- **Finished trips:** kept read-only in a "Finished" list (journal, graves, epilogue); they can be deleted but never continued.
 
 ## 18. Open questions
 
-1. **Distance:** my rough leg estimate (≈575 mi) is longer than the plan's 450–500. Settle in research pass 2.
-2. **Finished trips:** keep them in a read-only "Finished" list (journal, graves, epilogue), or delete them when the trip ends?
+None right now. Research gaps are listed in `05_research_pass2.md` §13.

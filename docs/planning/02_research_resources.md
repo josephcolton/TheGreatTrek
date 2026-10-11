@@ -126,6 +126,8 @@ You need these to write the people the trekkers met as full participants rather 
 - **English speakers on the Trek** were rare. I found no good source listing them, which is a research gap. Andrew Smith (English) scouted Natal in 1832. Port Natal traders took part in the 1838 events.
   - https://en.wikipedia.org/wiki/Great_Trek
 
+*Research pass 2 (distances, prices, wages, origins, names) is in `05_research_pass2.md`.*
+
 ## 6c. Prices and barter, 1836–37 (added 2026-10-11)
 
 - **Harris, *The Wild Sports of Southern Africa* (London, 1839)**, public-domain scan with full text: https://archive.org/details/wildsportsofsout00harr. Facts used in `04_game_design.md` §7: **[sourced]**
