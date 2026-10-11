@@ -330,12 +330,13 @@ Distances (×1.25 of straight line, see `05` §2): western road ≈ 673 mi in to
 ### 5.3 Two map views
 
 1. **Trail strip** (always on the travel screen): a horizontal line of landmarks with the wagon icon moving along it. Shows distance to the next landmark.
-2. **Map screen** (`M`): a hand-drawn-style pixel map of the eastern Cape to the Highveld on the 640×360 canvas.
-   - Rivers drawn and labelled: Great Fish, Orange, Caledon, Vet, Sand, Vaal, Mooi.
-   - Landmarks: visited (filled), known (outline), rumoured (a "?" until someone tells you about it).
-   - The route already travelled is a dotted line; each grave is a small cross.
-   - **Peoples are labelled softly across areas** (Griqua, Barolong, Basotho, Ndebele), with no hard borders. Land claims were contested, and the map shouldn't imply lines that didn't exist. Hovering a label shows a short note.
-   - Map positions come from `map_xy` in `route.json`; the background is one PNG in `assets/images/`.
+2. **Map screen** (`M`, also from the ending screen): a parchment map of the eastern Cape to the Highveld, with a key beside it.
+   - Places sit at their real latitude and longitude (`route.json`), projected by `data/map.json`. The map is stretched east to west about 2.5 times so that places close together (Colesberg, the Orange drift, Philippolis) stay readable, and it says so.
+   - Rivers drawn and labelled from simplified courses in `map.json`: Great Fish, Orange (Gariep), Caledon, Vet, Sand, Vaal, Mooi. Also the coast and the Indian Ocean, and the Stormberg, Sneeuberg and Drakensberg.
+   - Each kind of place has its own mark (town, mission, drift, landmark, journey's end). Places the party has not come near show only a faded mark, with no name. `map.json` `places` says on which side each name goes, so names do not collide.
+   - Roads: travelled in red (to the wagon's exact place on the current leg), known roads in ink, roads not yet seen dotted. Each grave is a small cross.
+   - **Peoples are labelled softly across areas** (Griqua, Barolong, Basotho, Ndebele, Xhosa, the Cape Colony), with no hard borders. Land claims were contested, and the map shouldn't imply lines that didn't exist.
+   - The key also says where the wagon is, the next place and its distance, and the miles and days so far.
 
 ---
 

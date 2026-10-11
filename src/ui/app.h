@@ -49,6 +49,7 @@ typedef struct App {
     SDL_Renderer *renderer;
     TTF_Font *font;
     TTF_Font *big;
+    TTF_Font *small;
     Draw draw;
     Locale *loc;
     GameData *data;

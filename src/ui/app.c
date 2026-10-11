@@ -12,6 +12,7 @@
 #define FONT_FILE "assets/fonts/VT323-Regular.ttf"
 #define FONT_BODY_PT 16.0f
 #define FONT_BIG_PT 32.0f
+#define FONT_SMALL_PT 12.0f
 
 static TTF_Font *open_font(const App *app, const char *name, float size)
 {
@@ -178,10 +179,11 @@ bool app_init(App *app)
     }
     app->font = open_font(app, FONT_FILE, FONT_BODY_PT);
     app->big = open_font(app, FONT_FILE, FONT_BIG_PT);
-    if (!app->font || !app->big) {
+    app->small = open_font(app, FONT_FILE, FONT_SMALL_PT);
+    if (!app->font || !app->big || !app->small) {
         return false;
     }
-    draw_init(&app->draw, app->renderer, app->font, app->big, FONT_BODY_PT, FONT_BIG_PT);
+    draw_init(&app->draw, app->renderer, app->font, app->big, app->small, FONT_BODY_PT, FONT_BIG_PT, FONT_SMALL_PT);
     trips_scan(app->pref_path, &app->trips);
     app->screen = SCR_TITLE;
     app->running = true;
@@ -207,6 +209,9 @@ void app_shutdown(App *app)
     }
     if (app->big) {
         TTF_CloseFont(app->big);
+    }
+    if (app->small) {
+        TTF_CloseFont(app->small);
     }
     if (app->renderer) {
         SDL_DestroyRenderer(app->renderer);

@@ -572,9 +572,6 @@ static void load_route(Loader *L, const char *dir)
         n->kind = (NodeKind)kind;
         n->lat = jnum(o, "lat", 0);
         n->lon = jnum(o, "lon", 0);
-        const cJSON *xy = jget(o, "map_xy");
-        n->map_x = cJSON_IsNumber(cJSON_GetArrayItem(xy, 0)) ? cJSON_GetArrayItem(xy, 0)->valueint : 0;
-        n->map_y = cJSON_IsNumber(cJSON_GetArrayItem(xy, 1)) ? cJSON_GetArrayItem(xy, 1)->valueint : 0;
         n->shop = jstr(o, "shop") ? need_index(L, data_find_shop(d, jstr(o, "shop")), "shop", jstr(o, "shop"), n->id) : -1;
         n->river = -1;
         if (jstr(o, "river")) {
@@ -641,6 +638,97 @@ static void resolve_setpieces(Loader *L, const char *dir)
             n->action_count++;
         }
         i++;
+    }
+    cJSON_Delete(root);
+}
+
+static void map_project(const MapData *m, double lon, double lat, float *x, float *y)
+{
+    *x = (float)((lon - m->lon0) / (m->lon1 - m->lon0) * m->w);
+    *y = (float)((lat - m->lat0) / (m->lat1 - m->lat0) * m->h);
+}
+
+static int map_points(const MapData *m, const cJSON *arr, float *xs, float *ys, int max)
+{
+    int n = 0;
+    const cJSON *p;
+    cJSON_ArrayForEach(p, arr)
+    {
+        const cJSON *a = cJSON_GetArrayItem(p, 0), *b = cJSON_GetArrayItem(p, 1);
+        if (n < max && cJSON_IsNumber(a) && cJSON_IsNumber(b)) {
+            map_project(m, a->valuedouble, b->valuedouble, &xs[n], &ys[n]);
+            n++;
+        }
+    }
+    return n;
+}
+
+static void load_map(Loader *L, const char *dir)
+{
+    cJSON *root = load_json(L, dir, "map.json");
+    if (!root) {
+        return;
+    }
+    MapData *m = &L->d->map;
+    const cJSON *size = jget(root, "size"), *lon = jget(root, "lon"), *lat = jget(root, "lat");
+    m->w = cJSON_IsNumber(cJSON_GetArrayItem(size, 0)) ? (float)cJSON_GetArrayItem(size, 0)->valuedouble : 390;
+    m->h = cJSON_IsNumber(cJSON_GetArrayItem(size, 1)) ? (float)cJSON_GetArrayItem(size, 1)->valuedouble : 280;
+    m->lon0 = cJSON_IsNumber(cJSON_GetArrayItem(lon, 0)) ? cJSON_GetArrayItem(lon, 0)->valuedouble : 24;
+    m->lon1 = cJSON_IsNumber(cJSON_GetArrayItem(lon, 1)) ? cJSON_GetArrayItem(lon, 1)->valuedouble : 29;
+    m->lat0 = cJSON_IsNumber(cJSON_GetArrayItem(lat, 0)) ? cJSON_GetArrayItem(lat, 0)->valuedouble : -26;
+    m->lat1 = cJSON_IsNumber(cJSON_GetArrayItem(lat, 1)) ? cJSON_GetArrayItem(lat, 1)->valuedouble : -34;
+    if (m->lon1 == m->lon0 || m->lat1 == m->lat0) {
+        fail(L, "map.json: lon and lat ranges must not be empty");
+        cJSON_Delete(root);
+        return;
+    }
+    static const char *SIDES[] = {"right", "left", "above", "below"};
+    const cJSON *places = jget(root, "places");
+    for (int i = 0; i < L->d->node_count; i++) {
+        NodeDef *n = &L->d->nodes[i];
+        map_project(m, n->lon, n->lat, &n->map_x, &n->map_y);
+        const char *side = jstr(places, n->id);
+        int s = side ? find_name(SIDES, 4, side) : 0;
+        if (s < 0) {
+            fail(L, "map.json: place %s: side must be right, left, above or below", n->id);
+            s = 0;
+        }
+        n->map_label = s;
+    }
+    const cJSON *o;
+    cJSON_ArrayForEach(o, jget(root, "rivers"))
+    {
+        if (m->river_count >= MAP_MAX_LINES) {
+            fail(L, "map.json: too many rivers");
+            break;
+        }
+        MapLine *r = &m->rivers[m->river_count++];
+        need_str(L, r->key, sizeof r->key, o, "key", "map river");
+        r->n = map_points(m, jget(o, "points"), r->x, r->y, MAP_MAX_POINTS);
+        r->label_at = jint(o, "label_at", 0);
+        if (r->label_at >= r->n) {
+            r->label_at = 0;
+        }
+        if (r->label_at < 0) {
+            r->label_at = -1; /* no name written */
+        }
+    }
+    m->coast.n = map_points(m, jget(root, "coast"), m->coast.x, m->coast.y, MAP_MAX_POINTS);
+    m->peak_count = map_points(m, jget(root, "mountains"), m->peak_x, m->peak_y, MAP_MAX_PEAKS);
+    static const char *KINDS[] = {"people", "feature", "sea"};
+    cJSON_ArrayForEach(o, jget(root, "labels"))
+    {
+        if (m->text_count >= MAP_MAX_LABELS) {
+            fail(L, "map.json: too many labels");
+            break;
+        }
+        MapText *t = &m->texts[m->text_count++];
+        need_str(L, t->key, sizeof t->key, o, "key", "map label");
+        int k = find_name(KINDS, 3, jstr(o, "kind"));
+        t->kind = k < 0 ? MAP_TEXT_PEOPLE : (MapTextKind)k;
+        const cJSON *at = jget(o, "at");
+        const cJSON *a = cJSON_GetArrayItem(at, 0), *b = cJSON_GetArrayItem(at, 1);
+        map_project(m, cJSON_IsNumber(a) ? a->valuedouble : 0, cJSON_IsNumber(b) ? b->valuedouble : 0, &t->x, &t->y);
     }
     cJSON_Delete(root);
 }
@@ -1476,6 +1564,7 @@ GameData *data_load(const char *data_dir, char *err, size_t err_len, int *warnin
     if (!L.failed) load_rivers(&L, data_dir);
     if (!L.failed) load_shops(&L, data_dir);
     if (!L.failed) load_route(&L, data_dir);
+    if (!L.failed) load_map(&L, data_dir);
     if (!L.failed) load_families(&L, data_dir);
     if (!L.failed) load_rules(&L, data_dir);
     if (!L.failed) load_shocks(&L, data_dir);
@@ -1553,6 +1642,12 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
     for (int i = 0; i < d->shop_count; i++) {
         fn(d->shops[i].name_key, d->shops[i].id, ctx);
         fn(d->shops[i].keeper_key, d->shops[i].id, ctx);
+    }
+    for (int i = 0; i < d->map.river_count; i++) {
+        fn(d->map.rivers[i].key, "map.json", ctx);
+    }
+    for (int i = 0; i < d->map.text_count; i++) {
+        fn(d->map.texts[i].key, "map.json", ctx);
     }
     for (int i = 0; i < d->node_count; i++) {
         fn(d->nodes[i].name_key, d->nodes[i].id, ctx);

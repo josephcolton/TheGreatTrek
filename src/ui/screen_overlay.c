@@ -3,6 +3,7 @@
 #include "format.h"
 #include "screens.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -245,10 +246,119 @@ static void party_render(App *app)
 
 /* ---------------------------------------------------------------- map */
 
+/* The route map: a parchment sheet with the real lie of the land (stretched east-west so that
+ * close places stay readable), and a legend with where the wagon is and what comes next. */
+
+#define MAP_X 26.0f
+#define MAP_Y 42.0f
+#define LEGEND_X 430.0f
+
+static const SDL_Color MAP_PAPER = {216, 198, 158, 255}, MAP_EDGE = {150, 120, 80, 255}, MAP_INK = {58, 42, 28, 255},
+                       MAP_FADED = {150, 128, 96, 255}, MAP_WATER = {62, 104, 156, 255}, MAP_SEA = {150, 176, 182, 255},
+                       MAP_HILL = {128, 102, 70, 255}, MAP_ROUTE = {160, 40, 28, 255}, MAP_SOFT = {136, 112, 82, 255};
+
 static void map_line(App *app, float x0, float y0, float x1, float y1, SDL_Color c)
 {
     SDL_SetRenderDrawColor(app->renderer, c.r, c.g, c.b, c.a);
     SDL_RenderLine(app->renderer, x0, y0, x1, y1);
+}
+
+static void map_thick(App *app, float x0, float y0, float x1, float y1, SDL_Color c)
+{
+    map_line(app, x0, y0, x1, y1, c);
+    map_line(app, x0 + 1, y0, x1 + 1, y1, c);
+    map_line(app, x0, y0 + 1, x1, y1 + 1, c);
+}
+
+static void map_dotted(App *app, float x0, float y0, float x1, float y1, SDL_Color c)
+{
+    float dx = x1 - x0, dy = y1 - y0;
+    float len = sqrtf(dx * dx + dy * dy);
+    for (float t = 0; t < len; t += 4) {
+        draw_rect(&app->draw, (SDL_FRect){x0 + dx * t / len, y0 + dy * t / len, 1, 1}, c);
+    }
+}
+
+/* Text with a ring of paper round it, so it reads over lines and rivers. */
+static void map_label(App *app, TTF_Font *f, const char *s, float x, float y, SDL_Color c, TextAlign a)
+{
+    Draw *d = &app->draw;
+    static const float OFF[8][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
+    for (int i = 0; i < 8; i++) {
+        draw_text(d, f, s, x + OFF[i][0], y + OFF[i][1], MAP_PAPER, a);
+    }
+    draw_text(d, f, s, x, y, c, a);
+}
+
+static void map_peak(Draw *d, float x, float y)
+{
+    for (int i = 0; i < 4; i++) {
+        draw_rect(d, (SDL_FRect){x - i, y - 4 + i, 2 * i + 1, 1}, MAP_HILL);
+    }
+    draw_rect(d, (SDL_FRect){x, y - 4, 1, 1}, MAP_PAPER);
+}
+
+/* Small marks for each kind of place; `known` draws them in ink, otherwise faded. */
+static void map_mark(Draw *d, NodeKind kind, float x, float y, SDL_Color c)
+{
+    switch (kind) {
+    case NODE_TOWN: /* a little house */
+        draw_rect(d, (SDL_FRect){x - 3, y - 1, 7, 4}, c);
+        draw_rect(d, (SDL_FRect){x - 2, y - 2, 5, 1}, c);
+        draw_rect(d, (SDL_FRect){x - 1, y - 3, 3, 1}, c);
+        draw_rect(d, (SDL_FRect){x, y + 1, 1, 2}, MAP_PAPER);
+        break;
+    case NODE_MISSION: /* a church cross */
+        draw_rect(d, (SDL_FRect){x, y - 4, 1, 8}, c);
+        draw_rect(d, (SDL_FRect){x - 2, y - 2, 5, 1}, c);
+        break;
+    case NODE_RIVER: /* a drift: a ring on the water */
+        draw_rect(d, (SDL_FRect){x - 2, y - 3, 5, 7}, c);
+        draw_rect(d, (SDL_FRect){x - 3, y - 2, 7, 5}, c);
+        draw_rect(d, (SDL_FRect){x - 1, y - 1, 3, 3}, MAP_WATER);
+        break;
+    case NODE_END: /* a flag */
+        draw_rect(d, (SDL_FRect){x, y - 5, 1, 9}, c);
+        draw_rect(d, (SDL_FRect){x + 1, y - 5, 5, 3}, MAP_ROUTE);
+        break;
+    default: /* a landmark: a triangle */
+        for (int i = 0; i < 4; i++) {
+            draw_rect(d, (SDL_FRect){x - i, y - 2 + i, 2 * i + 1, 1}, c);
+        }
+        break;
+    }
+}
+
+static void map_wagon(Draw *d, float x, float y)
+{
+    SDL_Color canvas = {244, 236, 214, 255};
+    draw_rect(d, (SDL_FRect){x - 6, y - 6, 13, 12}, (SDL_Color){MAP_ROUTE.r, MAP_ROUTE.g, MAP_ROUTE.b, 90});
+    draw_rect(d, (SDL_FRect){x - 4, y - 4, 8, 4}, canvas);
+    draw_rect(d, (SDL_FRect){x - 3, y - 5, 6, 1}, canvas);
+    draw_rect(d, (SDL_FRect){x - 4, y, 8, 1}, MAP_INK);
+    draw_rect(d, (SDL_FRect){x - 4, y + 1, 2, 2}, MAP_INK);
+    draw_rect(d, (SDL_FRect){x + 2, y + 1, 2, 2}, MAP_INK);
+}
+
+static void map_grave(Draw *d, float x, float y)
+{
+    draw_rect(d, (SDL_FRect){x + 1, y, 1, 5}, MAP_INK);
+    draw_rect(d, (SDL_FRect){x, y + 1, 3, 1}, MAP_INK);
+}
+
+/* Whether a place is known: visited, or the next stop on a road from a visited place. */
+static bool map_known(const Game *g, int n)
+{
+    const GameData *data = g->data;
+    if (g->visited[n]) {
+        return true;
+    }
+    for (int e = 0; e < data->edge_count; e++) {
+        if (data->edges[e].to == n && g->visited[data->edges[e].from]) {
+            return true;
+        }
+    }
+    return false;
 }
 
 static void map_render(App *app)
@@ -256,55 +366,71 @@ static void map_render(App *app)
     Draw *d = &app->draw;
     Game *g = app->game;
     const GameData *data = app->data;
+    const MapData *m = &data->map;
     overlay_panel(app, app_text(app, "map.title"));
-    /* map_xy is on a 640x360 sheet; fit it into the panel */
-    float ox = 30, oy = 40, sx = 580.0f / 640.0f, sy = 290.0f / 360.0f;
-#define MX(x) (ox + (x) * sx)
-#define MY(y) (oy + (y) * sy)
-    /* rivers, schematic */
-    SDL_Color river = {90, 130, 170, 255};
-    map_line(app, MX(60), MY(225), MX(183), MY(210), river);
-    map_line(app, MX(183), MY(210), MX(347), MY(212), river);
-    map_line(app, MX(347), MY(212), MX(420), MY(200), river);
-    map_line(app, MX(347), MY(212), MX(390), MY(170), river);
-    map_line(app, MX(390), MY(170), MX(430), MY(120), river);
-    map_line(app, MX(330), MY(60), MX(443), MY(46), river);
-    map_line(app, MX(443), MY(46), MX(520), MY(30), river);
-    /* the peoples of the region, labelled softly over their country (no borders) */
-    static const struct { const char *key; float x, y; } PEOPLES[] = {
-        {"map.people.griqua", 120, 175}, {"map.people.barolong", 330, 132}, {"map.people.basotho", 450, 175},
-        {"map.people.ndebele", 400, 18}, {"map.people.xhosa", 520, 330}, {"map.people.colony", 160, 300}};
-    for (size_t i = 0; i < sizeof PEOPLES / sizeof PEOPLES[0]; i++) {
-        draw_text(d, d->font, app_text(app, PEOPLES[i].key), MX(PEOPLES[i].x), MY(PEOPLES[i].y), (SDL_Color){120, 104, 80, 255}, TEXT_CENTER);
+#define MX(x) (MAP_X + (x))
+#define MY(y) (MAP_Y + (y))
+    SDL_FRect sheet = {MAP_X, MAP_Y, m->w, m->h};
+    draw_rect(d, (SDL_FRect){sheet.x - 2, sheet.y - 2, sheet.w + 4, sheet.h + 4}, MAP_EDGE);
+    draw_rect(d, sheet, MAP_PAPER);
+    SDL_Rect clip = {(int)sheet.x, (int)sheet.y, (int)sheet.w, (int)sheet.h};
+    SDL_SetRenderClipRect(app->renderer, &clip);
+
+    /* the sea, below the coast */
+    const MapLine *coast = &m->coast;
+    if (coast->n >= 2) {
+        for (float x = coast->x[0]; x < m->w; x += 1) {
+            float y = coast->y[coast->n - 1];
+            for (int i = 0; i + 1 < coast->n; i++) {
+                if (x >= coast->x[i] && x <= coast->x[i + 1] && coast->x[i + 1] > coast->x[i]) {
+                    float f = (x - coast->x[i]) / (coast->x[i + 1] - coast->x[i]);
+                    y = coast->y[i] + (coast->y[i + 1] - coast->y[i]) * f;
+                }
+            }
+            draw_rect(d, (SDL_FRect){MX(x), MY(y), 1, m->h - y}, MAP_SEA);
+        }
+        for (int i = 0; i + 1 < coast->n; i++) {
+            map_line(app, MX(coast->x[i]), MY(coast->y[i]), MX(coast->x[i + 1]), MY(coast->y[i + 1]), MAP_WATER);
+        }
     }
-    /* roads */
+    /* mountains, rivers */
+    for (int i = 0; i < m->peak_count; i++) {
+        map_peak(d, MX(m->peak_x[i]), MY(m->peak_y[i]));
+    }
+    for (int r = 0; r < m->river_count; r++) {
+        const MapLine *rv = &m->rivers[r];
+        for (int i = 0; i + 1 < rv->n; i++) {
+            map_thick(app, MX(rv->x[i]), MY(rv->y[i]), MX(rv->x[i + 1]), MY(rv->y[i + 1]), MAP_WATER);
+        }
+    }
+    /* the peoples of the region and the mountain ranges, written softly with no borders */
+    for (int i = 0; i < m->text_count; i++) {
+        const MapText *t = &m->texts[i];
+        SDL_Color c = t->kind == MAP_TEXT_SEA ? MAP_WATER : (t->kind == MAP_TEXT_FEATURE ? MAP_HILL : MAP_SOFT);
+        draw_text(d, d->small, app_text(app, t->key), MX(t->x), MY(t->y) - 5, c, TEXT_CENTER);
+    }
+    for (int r = 0; r < m->river_count; r++) {
+        const MapLine *rv = &m->rivers[r];
+        int k = rv->label_at;
+        if (k < 0) {
+            continue;
+        }
+        map_label(app, d->small, app_text(app, rv->key), MX(rv->x[k]), MY(rv->y[k]) + 2, MAP_WATER, TEXT_CENTER);
+    }
+    /* roads: travelled in red, known in ink, the rest dotted */
     for (int e = 0; e < data->edge_count; e++) {
         const EdgeDef *ed = &data->edges[e];
         const NodeDef *a = &data->nodes[ed->from], *b = &data->nodes[ed->to];
-        bool known = g->visited[ed->from];
-        bool taken = g->visited[ed->from] && g->visited[ed->to];
-        SDL_Color c = taken ? COL_GOLD : (known ? COL_DIM : (SDL_Color){80, 68, 52, 255});
-        map_line(app, MX(a->map_x), MY(a->map_y), MX(b->map_x), MY(b->map_y), c);
-    }
-    /* places */
-    for (int n = 0; n < data->node_count; n++) {
-        const NodeDef *nd = &data->nodes[n];
-        bool near = g->visited[n];
-        for (int e = 0; e < data->edge_count && !near; e++) {
-            near = data->edges[e].to == n && g->visited[data->edges[e].from];
+        float x0 = MX(a->map_x), y0 = MY(a->map_y), x1 = MX(b->map_x), y1 = MY(b->map_y);
+        if (g->visited[ed->from] && g->visited[ed->to]) {
+            map_thick(app, x0, y0, x1, y1, MAP_ROUTE);
+        } else if (g->visited[ed->from]) {
+            map_line(app, x0, y0, x1, y1, MAP_INK);
+        } else {
+            map_dotted(app, x0, y0, x1, y1, MAP_FADED);
         }
-        SDL_Color c = g->visited[n] ? COL_GOLD : (near ? COL_TEXT : COL_LOCKED);
-        draw_rect(d, (SDL_FRect){MX(nd->map_x) - 2, MY(nd->map_y) - 2, 5, 5}, c);
-        draw_text(d, d->font, near ? app_text(app, nd->name_key) : "?", MX(nd->map_x) + 5, MY(nd->map_y) - 8, c, TEXT_LEFT);
     }
-    /* graves of this party */
-    for (int i = 0; i < g->grave_count; i++) {
-        const NodeDef *nd = &data->nodes[g->graves[i].node];
-        float gx = MX(nd->map_x) - 6, gy = MY(nd->map_y) + 4;
-        draw_rect(d, (SDL_FRect){gx + 1, gy, 1, 6}, COL_TEXT);
-        draw_rect(d, (SDL_FRect){gx, gy + 2, 3, 1}, COL_TEXT);
-    }
-    /* the wagon */
+    /* the road so far on the current leg */
     float wx, wy;
     const NodeDef *cur = &data->nodes[g->node];
     if (g->edge >= 0) {
@@ -312,14 +438,92 @@ static void map_render(App *app)
         float f = (float)(g->miles_along / data->edges[g->edge].miles);
         wx = cur->map_x + (to->map_x - cur->map_x) * f;
         wy = cur->map_y + (to->map_y - cur->map_y) * f;
+        map_thick(app, MX(cur->map_x), MY(cur->map_y), MX(wx), MY(wy), MAP_ROUTE);
     } else {
-        wx = (float)cur->map_x;
-        wy = (float)cur->map_y;
+        wx = cur->map_x;
+        wy = cur->map_y;
     }
-    draw_rect(d, (SDL_FRect){MX(wx) - 3, MY(wy) - 3, 7, 7}, COL_RED);
+    /* places: names only for places the party knows of */
+    for (int n = 0; n < data->node_count; n++) {
+        const NodeDef *nd = &data->nodes[n];
+        bool known = map_known(g, n);
+        float x = MX(nd->map_x), y = MY(nd->map_y);
+        map_mark(d, nd->kind, x, y, known ? MAP_INK : MAP_FADED);
+        if (!known) {
+            continue;
+        }
+        const char *name = app_text(app, nd->name_key);
+        switch (nd->map_label) {
+        case MAP_LABEL_LEFT: map_label(app, d->font, name, x - 7, y - 8, MAP_INK, TEXT_RIGHT); break;
+        case MAP_LABEL_ABOVE: map_label(app, d->font, name, x, y - 21, MAP_INK, TEXT_CENTER); break;
+        case MAP_LABEL_BELOW: map_label(app, d->font, name, x, y + 5, MAP_INK, TEXT_CENTER); break;
+        default: map_label(app, d->font, name, x + 7, y - 8, MAP_INK, TEXT_LEFT); break;
+        }
+    }
+    for (int i = 0; i < g->grave_count; i++) {
+        const NodeDef *nd = &data->nodes[g->graves[i].node];
+        map_grave(d, MX(nd->map_x) - 9, MY(nd->map_y) + 2);
+    }
+    map_wagon(d, MX(wx), MY(wy));
+    /* a north arrow */
+    float nx = MX(m->w) - 14, ny = MY(0) + 8;
+    draw_rect(d, (SDL_FRect){nx, ny + 4, 1, 10}, MAP_INK);
+    for (int i = 0; i < 3; i++) {
+        draw_rect(d, (SDL_FRect){nx - i, ny + 2 + i, 2 * i + 1, 1}, MAP_INK);
+    }
+    draw_text(d, d->small, app_text(app, "map.north"), nx + 1, ny - 9, MAP_INK, TEXT_CENTER);
+    SDL_SetRenderClipRect(app->renderer, NULL);
 #undef MX
 #undef MY
-    draw_text(d, d->font, app_text(app, "overlay.close"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
+
+    /* the legend */
+    float lx = LEGEND_X, ly = MAP_Y;
+    draw_text(d, d->font, app_text(app, "map.legend"), lx, ly, COL_GOLD, TEXT_LEFT);
+    ly += d->line_h + 2;
+    static const struct { NodeKind kind; const char *key; } MARKS[] = {
+        {NODE_TOWN, "map.legend.town"}, {NODE_MISSION, "map.legend.mission"}, {NODE_RIVER, "map.legend.drift"},
+        {NODE_LANDMARK, "map.legend.landmark"}, {NODE_END, "map.legend.end"}};
+    SDL_FRect key_box = {lx - 4, ly - 2, 186, 0};
+    float row = 13;
+    key_box.h = row * 9 + 6;
+    draw_rect(d, key_box, MAP_PAPER);
+    for (size_t i = 0; i < sizeof MARKS / sizeof MARKS[0]; i++) {
+        map_mark(d, MARKS[i].kind, lx + 6, ly + 6, MAP_INK);
+        draw_text(d, d->small, app_text(app, MARKS[i].key), lx + 18, ly, MAP_INK, TEXT_LEFT);
+        ly += row;
+    }
+    map_wagon(d, lx + 6, ly + 6);
+    draw_text(d, d->small, app_text(app, "map.legend.wagon"), lx + 18, ly, MAP_INK, TEXT_LEFT);
+    ly += row;
+    map_grave(d, lx + 5, ly + 3);
+    draw_text(d, d->small, app_text(app, "map.legend.grave"), lx + 18, ly, MAP_INK, TEXT_LEFT);
+    ly += row;
+    map_thick(app, lx, ly + 6, lx + 12, ly + 6, MAP_ROUTE);
+    draw_text(d, d->small, app_text(app, "map.legend.travelled"), lx + 18, ly, MAP_INK, TEXT_LEFT);
+    ly += row;
+    map_line(app, lx, ly + 6, lx + 12, ly + 6, MAP_INK);
+    map_dotted(app, lx, ly + 10, lx + 12, ly + 10, MAP_FADED);
+    draw_text(d, d->small, app_text(app, "map.legend.roads"), lx + 18, ly, MAP_INK, TEXT_LEFT);
+    ly += row + 10;
+
+    /* where the wagon is, and what comes next */
+    LocText t;
+    int next = game_next_node(g);
+    if (g->edge >= 0 && next >= 0) {
+        loctext_set(&t, "travel.next");
+        loctext_arg_key(&t, "place", data->nodes[next].name_key);
+        loctext_arg_int(&t, "miles", game_miles_to_next(g));
+    } else {
+        loctext_set(&t, "travel.at");
+        loctext_arg_key(&t, "place", data->nodes[g->node].name_key);
+    }
+    ly += draw_wrapped(d, d->font, app_fmt(app, &t), lx, ly, 180, COL_TEXT, false);
+    loctext_set(&t, "travel.done");
+    loctext_arg_int(&t, "miles", g->miles_total);
+    loctext_arg_int(&t, "days", g->day - g->start_day);
+    ly += draw_wrapped(d, d->font, app_fmt(app, &t), lx, ly, 180, COL_DIM, false);
+    draw_wrapped(d, d->small, app_text(app, "map.note"), lx, ly + 4, 180, COL_DIM, false);
+    draw_text(d, d->font, app_text(app, "overlay.close"), lx + 90, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
 }
 
 /* ---------------------------------------------------------------- journal */

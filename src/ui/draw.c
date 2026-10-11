@@ -81,13 +81,16 @@ static CacheEntry *get_text(SDL_Renderer *r, TTF_Font *f, const char *s, SDL_Col
 
 static int g_scale = 1; /* shared with the measuring helpers */
 
-void draw_init(Draw *d, SDL_Renderer *r, TTF_Font *font, TTF_Font *big, float font_pt, float big_pt)
+void draw_init(Draw *d, SDL_Renderer *r, TTF_Font *font, TTF_Font *big, TTF_Font *small, float font_pt, float big_pt,
+               float small_pt)
 {
     d->r = r;
     d->font = font;
     d->big = big;
+    d->small = small;
     d->font_pt = font_pt;
     d->big_pt = big_pt;
+    d->small_pt = small_pt;
     d->scale = 0;
     draw_update_scale(d);
 }
@@ -107,6 +110,7 @@ void draw_update_scale(Draw *d)
     g_scale = scale;
     TTF_SetFontSize(d->font, d->font_pt * scale);
     TTF_SetFontSize(d->big, d->big_pt * scale);
+    TTF_SetFontSize(d->small, d->small_pt * scale);
     d->line_h = TTF_GetFontLineSkip(d->font) / scale;
     draw_shutdown(); /* drop cached text rendered at the old size */
 }

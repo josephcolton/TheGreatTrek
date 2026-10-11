@@ -16,12 +16,14 @@ typedef struct {
     SDL_Renderer *r;
     TTF_Font *font;      /* body text */
     TTF_Font *big;       /* titles */
-    float font_pt, big_pt;
+    TTF_Font *small;     /* map labels */
+    float font_pt, big_pt, small_pt;
     int scale;           /* window pixels per logical pixel; text is rendered at this resolution */
     int line_h;          /* body line height, logical pixels */
 } Draw;
 
-void draw_init(Draw *d, SDL_Renderer *r, TTF_Font *font, TTF_Font *big, float font_pt, float big_pt);
+void draw_init(Draw *d, SDL_Renderer *r, TTF_Font *font, TTF_Font *big, TTF_Font *small, float font_pt, float big_pt,
+               float small_pt);
 /* Call when the window size changes: re-renders text at the new resolution. */
 void draw_update_scale(Draw *d);
 void draw_shutdown(void);

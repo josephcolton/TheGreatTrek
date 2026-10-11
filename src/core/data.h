@@ -163,7 +163,8 @@ typedef struct {
     char history_key[KEY_LEN];
     NodeKind kind;
     double lat, lon;
-    int map_x, map_y;
+    float map_x, map_y;         /* on the route map (map.json), from lat/lon */
+    int map_label;              /* MapLabelSide: where the name goes */
     int shop;                   /* -1 if none */
     int river;                  /* -1 if none */
     int setpiece;               /* event index played on first arrival, -1 if none */
@@ -414,6 +415,36 @@ typedef struct {
     int node_count;
 } EventDef;
 
+/* ---- the route map (map.json) ---- */
+#define MAP_MAX_LINES 12
+#define MAP_MAX_POINTS 16
+#define MAP_MAX_PEAKS 32
+#define MAP_MAX_LABELS 16
+typedef enum { MAP_LABEL_RIGHT, MAP_LABEL_LEFT, MAP_LABEL_ABOVE, MAP_LABEL_BELOW } MapLabelSide;
+typedef enum { MAP_TEXT_PEOPLE, MAP_TEXT_FEATURE, MAP_TEXT_SEA } MapTextKind;
+
+typedef struct {
+    char key[KEY_LEN];              /* the river's name on the map */
+    int label_at;                   /* point the name is written beside; -1 = none */
+    int n;
+    float x[MAP_MAX_POINTS], y[MAP_MAX_POINTS];
+} MapLine;
+
+typedef struct {
+    char key[KEY_LEN];
+    MapTextKind kind;
+    float x, y;
+} MapText;
+
+typedef struct {
+    float w, h;                     /* map size in screen pixels */
+    double lon0, lon1, lat0, lat1;  /* left, right, top, bottom */
+    MapLine rivers[MAP_MAX_LINES];  int river_count;
+    MapLine coast;                  /* the sea lies below and right of it */
+    float peak_x[MAP_MAX_PEAKS], peak_y[MAP_MAX_PEAKS]; int peak_count;
+    MapText texts[MAP_MAX_LABELS];  int text_count;
+} MapData;
+
 /* ---- everything ---- */
 typedef struct GameData {
     Rules rules;
@@ -433,6 +464,7 @@ typedef struct GameData {
     BarterPartner partners[MAX_PARTNERS]; int partner_count;
     int contraband[MAX_ITEMS];          int contraband_count;
     HuntRules hunt;
+    MapData map;
     /* well-known item indices, resolved at load */
     int item_oxen, item_water, item_vat, item_meat, item_medicine, item_sheep, item_tallow, item_iron, item_cows, item_biltong;
     int item_gunpowder, item_lead, item_horses, item_percussion, item_caps;

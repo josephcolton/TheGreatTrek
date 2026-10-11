@@ -731,6 +731,10 @@ static void grave_render(App *app)
 
 static void ending_event(App *app, const SDL_Event *e)
 {
+    if (key_is(e, SDLK_M)) {
+        app->overlay = OV_MAP; /* the whole road, once more */
+        return;
+    }
     if (is_confirm(e) || is_back(e) || is_click(e)) {
         app_close_game(app);
         trips_scan(app->pref_path, &app->trips);
