@@ -2,6 +2,7 @@
 #include "calendar.h"
 #include "data.h"
 #include "game.h"
+#include "game_internal.h"
 #include "test.h"
 
 #include <stdlib.h>
@@ -76,6 +77,21 @@ static void test_calendar(void)
     CHECK(cal_season(cal_day(1837, 7, 1)) == SEASON_WINTER);
 }
 
+/* Wagon trade-ins: the old wagon is worth wagon_trade_in of its new price. */
+static void test_wagon_trade(const GameData *d)
+{
+    Game *g = game_new(d, 5, data_find_family(d, "settler"), DIFF_NORMAL);
+    int kake = data_find_wagon(d, "kakebeenwa"), transport = data_find_wagon(d, "transport_wagon"),
+        cart = data_find_wagon(d, "scotch_cart");
+    CHECK(g->wagon == kake);
+    double old = d->wagons[kake].price_pence * d->rules.wagon_trade_in;
+    CHECK(g_wagon_trade_cost(g, transport) == d->wagons[transport].price_pence - (int)(old + 0.5));
+    CHECK(g_wagon_trade_cost(g, cart) < 0); /* the cart is cheaper: money back */
+    g->wagon = cart;
+    CHECK(game_capacity_lb(g) == d->wagons[cart].capacity_lb);
+    game_free(g);
+}
+
 int main(void)
 {
     test_calendar();
@@ -86,6 +102,7 @@ int main(void)
         fprintf(stderr, "%s\n", err);
         return TEST_REPORT();
     }
+    test_wagon_trade(d);
     for (int f = 0; f < d->family_count; f++) {
         for (uint64_t seed = 1; seed <= 3; seed++) {
             Game *a = play(d, seed, f, -1);
