@@ -1,14 +1,20 @@
-/* Player-facing text, looked up by key from data/locale/<lang>.json.
- * The file is one flat JSON object: { "key": "text", ... }. */
+/* Player-facing text, looked up by key. A language is a folder data/locale/<lang>/
+ * with index.json ({"files": [...]}) naming flat JSON files: { "key": "text", ... }. */
 #ifndef TREK_LOCALE_H
 #define TREK_LOCALE_H
 
+#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct Locale Locale;
 
-/* Parses locale JSON. On failure returns NULL and writes a message to err. */
+/* Parses one locale JSON object. On failure returns NULL and writes a message to err. */
 Locale     *locale_load(const char *json_text, char *err, size_t err_len);
+/* Loads every file listed in dir/index.json. */
+Locale     *locale_load_dir(const char *dir, char *err, size_t err_len);
+Locale     *locale_new(void);
+/* Adds the keys from one JSON object; fails on duplicates. */
+bool        locale_add(Locale *loc, const char *json_text, const char *name, char *err, size_t err_len);
 void        locale_free(Locale *loc);
 
 /* Text for key, or NULL if the key is missing. */

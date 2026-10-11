@@ -1,0 +1,63 @@
+{
+  "_about": "price_pence is the base price of one pack before side, distance, relation, scarcity and history modifiers. 'source' says where it comes from; 'estimate' means no period price has been found yet (05_research_pass2.md section 4).",
+  "items": [
+    { "id": "oxen", "category": "animals", "pack": 1, "pack_key": "unit.each", "weight_lb": 0, "price_pence": 810,
+      "source": "45 Rds each, 'considered high', near Grahamstown Dec 1838 (Backhouse); GT market 1832 GBP1 5s x3 for the war (Harris)" },
+    { "id": "cows", "category": "animals", "pack": 1, "pack_key": "unit.each", "weight_lb": 0, "price_pence": 648,
+      "source": "estimate: 1832 cow/ox ratio (Steedman) applied to the 1838 ox price" },
+    { "id": "sheep", "category": "animals", "pack": 1, "pack_key": "unit.each", "weight_lb": 0, "price_pence": 54,
+      "source": "3 Rds, 'the usual price throughout the country' (Steedman 1835; Harris 1836)" },
+    { "id": "horses", "category": "animals", "pack": 1, "pack_key": "unit.each", "weight_lb": 0, "price_pence": 1920,
+      "source": "GBP8 each, Albany, Jan 1839 (Backhouse)" },
+
+    { "id": "meal", "category": "food", "pack": 180, "pack_key": "unit.muid", "weight_lb": 1, "price_pence": 360, "food": 1.0, "eat_order": 3,
+      "source": "estimate: GT market 1832 GBP1 1s a muid (Steedman) plus a war rise; muid of meal about 180 lb (Backhouse)" },
+    { "id": "maize", "category": "food", "pack": 180, "pack_key": "unit.muid", "weight_lb": 1, "price_pence": 108, "food": 0.9, "eat_order": 4,
+      "source": "estimate: GT market 1832 Indian corn 6s 6d a muid (Steedman) plus a war rise" },
+    { "id": "biltong", "category": "food", "pack": 10, "pack_key": "unit.ten_lb", "weight_lb": 1, "price_pence": 40, "food": 1.2, "eat_order": 2,
+      "source": "estimate" },
+    { "id": "beskuit", "category": "food", "pack": 10, "pack_key": "unit.ten_lb", "weight_lb": 1, "price_pence": 40, "food": 1.0, "eat_order": 2,
+      "source": "estimate" },
+    { "id": "meat", "category": "food", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 0, "food": 1.0, "eat_order": 0,
+      "source": "not sold; from hunting and slaughter" },
+    { "id": "coffee", "category": "food", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 12, "food": 0, "morale": 1,
+      "source": "estimate" },
+    { "id": "sugar", "category": "food", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 6, "food": 0, "morale": 1,
+      "source": "estimate" },
+
+    { "id": "water", "category": "water", "pack": 1, "pack_key": "unit.gallon", "weight_lb": 10, "price_pence": 0,
+      "source": "free; filled at streams and springs" },
+    { "id": "water_vat", "category": "water", "pack": 1, "pack_key": "unit.each", "weight_lb": 15, "price_pence": 60, "water_capacity": 20,
+      "source": "estimate" },
+
+    { "id": "gunpowder", "category": "guns", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 24,
+      "source": "estimate" },
+    { "id": "lead", "category": "guns", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 6,
+      "source": "estimate" },
+    { "id": "flints", "category": "guns", "pack": 12, "pack_key": "unit.dozen", "weight_lb": 0.05, "price_pence": 6,
+      "source": "estimate" },
+
+    { "id": "spare_wheel", "category": "wagon", "pack": 1, "pack_key": "unit.each", "weight_lb": 60, "price_pence": 240,
+      "source": "estimate" },
+    { "id": "spare_axle", "category": "wagon", "pack": 1, "pack_key": "unit.each", "weight_lb": 50, "price_pence": 180,
+      "source": "estimate" },
+    { "id": "spare_dissel", "category": "wagon", "pack": 1, "pack_key": "unit.each", "weight_lb": 40, "price_pence": 120,
+      "source": "estimate" },
+    { "id": "canvas", "category": "wagon", "pack": 1, "pack_key": "unit.each", "weight_lb": 30, "price_pence": 240,
+      "source": "estimate" },
+    { "id": "iron", "category": "wagon", "pack": 10, "pack_key": "unit.ten_lb", "weight_lb": 1, "price_pence": 40,
+      "source": "estimate" },
+    { "id": "tallow", "category": "wagon", "pack": 10, "pack_key": "unit.ten_lb", "weight_lb": 1, "price_pence": 40,
+      "source": "estimate" },
+
+    { "id": "tobacco", "category": "trade", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 12,
+      "source": "estimate; Harris: tobacco 'the current coin of the realm' beyond the Colony" },
+    { "id": "beads", "category": "trade", "pack": 1, "pack_key": "unit.string", "weight_lb": 0.5, "price_pence": 6,
+      "source": "estimate; Harris: beads the usual medium among the Batswana" },
+    { "id": "cloth", "category": "trade", "pack": 1, "pack_key": "unit.bolt", "weight_lb": 8, "price_pence": 240,
+      "source": "estimate" },
+
+    { "id": "medicine", "category": "medicine", "pack": 1, "pack_key": "unit.dose", "weight_lb": 0.2, "price_pence": 12,
+      "source": "estimate; wagons carried medicine chests (02 section 3)" }
+  ]
+}

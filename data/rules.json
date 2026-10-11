@@ -1,0 +1,42 @@
+{
+  "_about": "Game tuning values. Unless a 'basis' says otherwise these are invented starting values for balancing (see docs/planning/04_game_design.md section 8.5).",
+  "start": { "date": "1837-04-03", "node": "grahamstown" },
+  "pace": {
+    "easy":   { "miles": 7,  "ox_cost": 1, "health_cost": 0 },
+    "normal": { "miles": 10, "ox_cost": 3, "health_cost": 0 },
+    "hard":   { "miles": 13, "ox_cost": 7, "health_cost": 1 },
+    "basis": "Pace calibrated so normal averages about 6.2 mi/day with rests: Uys party, Grahamstown to Sand River, Apr-29 Jun 1837 (05_research_pass2.md section 2); about 10 km/day with herds (02 section 3)."
+  },
+  "rations": {
+    "full":     { "food_lb": 2.0, "health": 1,  "morale": 0 },
+    "meagre":   { "food_lb": 1.5, "health": 0,  "morale": -1 },
+    "starving": { "food_lb": 1.0, "health": -2, "morale": -3 },
+    "basis": "invented"
+  },
+  "child_food": 0.6,
+  "water_gal_per_person": 1.0,
+  "oxen": {
+    "stamina_slow": 30, "stamina_collapse": 10, "collapse_chance": 0.15,
+    "rest_stamina": 12, "no_water_cost": 7,
+    "basis": "Harris (1836) lost many oxen on a fast march; rates invented."
+  },
+  "rest": { "health": 3, "morale": 4 },
+  "no_water_health": 4,
+  "laager": { "miles": 0.5, "ox_cost": 1 },
+  "guard_morale": -1,
+  "night_risk": { "rest": 1.0, "laager": 0.35, "guard": 0.6, "basis": "invented; Vegkop (1836) shows a laager's protective effect" },
+  "base_event_rate": 0.24,
+  "sabbath_morale": 3,
+  "breakage_per_mile": 0.0012,
+  "illness_per_day": { "summer": 0.0042, "autumn": 0.0034, "winter": 0.0040, "spring": 0.0034, "basis": "invented; tuned with trekbot so a careful Normal run loses about one person in five trips, near the child mortality of the period (about 160-200 per 1,000 births a year, Mamre 1837-46; 05 section 6)" },
+  "accident_per_day": 0.0008,
+  "difficulty": {
+    "easy":   { "harm": 0.5, "start_money": 1.25 },
+    "normal": { "harm": 1.0, "start_money": 1.0 },
+    "hard":   { "harm": 1.0, "start_money": 0.75 }
+  },
+  "warn_food_days": 7,
+  "warn_water_days": 2,
+  "servant_wage": { "dutch": 10, "english": 15, "basis": "10 Rds / 15s a month: Steedman (c. 1832), Backhouse (1838). Paid in sheep (about 3 Rds each, Steedman) when there is no cash: invented rule; paying servants in livestock is [recall, verify]." },
+  "rds_per_pound": 13.333
+}

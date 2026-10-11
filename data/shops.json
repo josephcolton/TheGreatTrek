@@ -1,0 +1,24 @@
+{
+  "_about": "Shop keepers are fictional. Stock is in packs (e.g. 20 muids of meal).",
+  "shops": [
+    { "id": "grahamstown_merchant", "group": "colonial_merchants", "keeper": "shop.grahamstown.keeper",
+      "stock": { "oxen": 30, "cows": 20, "sheep": 80, "horses": 6, "meal": 30, "maize": 20, "biltong": 30, "beskuit": 30,
+                 "coffee": 120, "sugar": 120, "water_vat": 12, "gunpowder": 60, "lead": 120, "flints": 20,
+                 "spare_wheel": 6, "spare_axle": 6, "spare_dissel": 6, "canvas": 4, "iron": 20, "tallow": 20,
+                 "tobacco": 100, "beads": 200, "cloth": 20, "medicine": 60 } },
+    { "id": "cradock_store", "group": "colonial_merchants", "keeper": "shop.cradock.keeper",
+      "stock": { "oxen": 12, "sheep": 40, "horses": 2, "meal": 12, "maize": 10, "biltong": 15, "beskuit": 10,
+                 "coffee": 40, "sugar": 40, "water_vat": 6, "gunpowder": 20, "lead": 40, "flints": 8,
+                 "spare_wheel": 2, "spare_axle": 2, "spare_dissel": 2, "iron": 8, "tallow": 8, "medicine": 20 } },
+    { "id": "colesberg_store", "group": "colonial_merchants", "keeper": "shop.colesberg.keeper",
+      "stock": { "oxen": 8, "sheep": 30, "meal": 8, "maize": 6, "biltong": 10, "beskuit": 6,
+                 "coffee": 30, "sugar": 30, "water_vat": 4, "gunpowder": 10, "lead": 20, "flints": 6,
+                 "spare_wheel": 1, "spare_axle": 1, "spare_dissel": 1, "tobacco": 30, "medicine": 10 } },
+    { "id": "philippolis_traders", "group": "griqua", "keeper": "shop.philippolis.keeper",
+      "stock": { "oxen": 10, "cows": 8, "sheep": 40, "horses": 3, "maize": 6, "meal": 3 } },
+    { "id": "thaba_nchu_mission", "group": "missionaries", "keeper": "shop.thaba_nchu.keeper",
+      "stock": { "oxen": 6, "sheep": 20, "maize": 10, "meal": 3, "coffee": 10, "sugar": 10, "medicine": 20 } },
+    { "id": "sand_river_laager", "group": "trekkers", "keeper": "shop.sand_river.keeper",
+      "stock": { "oxen": 8, "sheep": 30, "biltong": 10, "beskuit": 6, "meal": 4, "gunpowder": 8, "lead": 15, "spare_wheel": 1 } }
+  ]
+}

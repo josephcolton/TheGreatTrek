@@ -1,0 +1,20 @@
+{
+  "_about": "History-driven price changes (04_game_design.md section 7.1, 05_research_pass2.md section 5). The multiplier fades linearly from mul_start to mul_end across the dates.",
+  "shocks": [
+    { "id": "frontier_war_livestock", "from": "1837-01-01", "to": "1838-12-31",
+      "nodes": ["grahamstown", "cradock"], "category": "animals",
+      "mul_start": 1.1, "mul_end": 1.0,
+      "excuse": "shop.excuse.frontier_war", "history": "history.frontier_war_prices",
+      "sources": ["Harris (1839) ch. II: the war 'trebled the price of every thing, and of live stock in particular'; oxen still 'considered high' at 45 Rds in Dec 1838 (Backhouse). Base ox price already includes the war rise; this adds a small extra early in 1837 (invented)."] },
+    { "id": "vegkop_oxen", "from": "1837-01-01", "to": "1837-09-30",
+      "nodes": ["thaba_nchu", "sand_river"], "item": "oxen",
+      "mul_start": 1.6, "mul_end": 1.1,
+      "excuse": "shop.excuse.vegkop", "history": "history.vegkop_prices",
+      "sources": ["Potgieter lost 5,000 sheep, 300 cattle and 100 draught oxen at Vegkop, Oct 1836 (SA Military History). Multiplier invented."] },
+    { "id": "frontier_grain", "from": "1837-01-01", "to": "1839-12-31",
+      "nodes": ["colesberg"], "category": "food",
+      "mul_start": 1.4, "mul_end": 1.8,
+      "excuse": "shop.excuse.grain", "history": "history.colesberg_grain",
+      "sources": ["Meal at Colesberg 75s a muid, June 1839, against an 'old price' of 6-10 Rds (Backhouse). The cause is not recorded; the rise over 1837-39 is invented."] }
+  ]
+}

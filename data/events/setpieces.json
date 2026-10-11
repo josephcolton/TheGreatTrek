@@ -1,0 +1,155 @@
+{
+  "_about": "Scenes played on first arrival at a place (route.json 'setpiece'). Every event lists its sources.",
+  "events": [
+    {
+      "id": "grahamstown_bible", "setpiece": true,
+      "history": "history.grahamstown_bible",
+      "sources": ["02_research_resources.md section 6: the 1820 Settlers' Bible for the Uys trek, April 1837 (Wikipedia: Uys; SA Military History vol036iu; Grocott's Mail)",
+                  "The family's presence and choices are invented."],
+      "text": "event.grahamstown_bible.body",
+      "choices": [
+        { "text": "event.grahamstown_bible.attend",
+          "outcomes": [ { "text": "event.grahamstown_bible.attend.done",
+                          "effects": [ { "morale": 5 }, { "relation": "trekkers", "add": 5 }, { "flag": "saw_bible_gift" } ] } ] },
+        { "text": "event.grahamstown_bible.talk", "requires": [ { "side": "english" } ], "locked": "lock.english_only",
+          "outcomes": [ { "text": "event.grahamstown_bible.talk.done",
+                          "effects": [ { "relation": "trekkers", "add": 8 }, { "flag": "saw_bible_gift" }, { "flag": "knows_uys_party" } ] } ] },
+        { "text": "event.grahamstown_bible.prepare",
+          "outcomes": [ { "text": "event.grahamstown_bible.prepare.done", "effects": [ { "ox_stamina": 5 } ] } ] }
+      ]
+    },
+    {
+      "id": "colesberg_edge", "setpiece": true,
+      "history": "history.colesberg_edge",
+      "sources": ["Cape of Good Hope Punishment Act, 6 & 7 Will. IV c. 57, 13 Aug 1836 (05_research_pass2.md section 7)",
+                  "Colesberg as the edge of the Colony: 03_development_plan.md section 3. The scene is invented."],
+      "text": "event.colesberg_edge.body",
+      "choices": [
+        { "text": "event.colesberg_edge.ask_road",
+          "outcomes": [ { "text": "event.colesberg_edge.ask_road.done", "effects": [ { "flag": "knows_orange_drift" } ] } ] },
+        { "text": "event.colesberg_edge.letter",
+          "outcomes": [ { "text": "event.colesberg_edge.letter.done", "effects": [ { "morale": 4 } ] } ] },
+        { "text": "event.colesberg_edge.magistrate",
+          "outcomes": [ { "text": "event.colesberg_edge.magistrate.done", "effects": [ { "relation": "british", "add": 3 } ] } ] }
+      ]
+    },
+    {
+      "id": "philippolis_arrival", "setpiece": true,
+      "history": "history.place.philippolis",
+      "sources": ["Philippolis as a Griqua town: 01_gemini_review.md section 3, 02_research_resources.md section 4. The scene is invented."],
+      "text": "event.philippolis_arrival.body",
+      "choices": [
+        { "text": "event.philippolis_arrival.respects",
+          "outcomes": [ { "text": "event.philippolis_arrival.respects.done", "effects": [ { "relation": "griqua", "add": 8 }, { "flag": "met_griqua" } ] } ] },
+        { "text": "event.philippolis_arrival.news",
+          "outcomes": [ { "text": "event.philippolis_arrival.news.done", "effects": [ { "flag": "heard_vegkop" } ] } ] }
+      ]
+    },
+    {
+      "id": "stormberg_pass", "setpiece": true,
+      "history": "history.place.stormberg",
+      "sources": ["invented: a mountain crossing on the eastern road. Cold and snow on the Stormberg in winter is [recall, verify]."],
+      "text": "event.stormberg_pass.body",
+      "choices": [
+        { "text": "event.stormberg_pass.double",
+          "requires": [ { "item_gte": ["oxen", 12] } ], "locked": "lock.need_12_oxen",
+          "outcomes": [ { "text": "event.stormberg_pass.double.done", "effects": [ { "ox_stamina": -12 }, { "time_days": 0.5 } ] } ] },
+        { "text": "event.stormberg_pass.push",
+          "outcomes": [
+            { "weight": 70, "skill": "voorloper", "per_point": 5, "text": "event.stormberg_pass.push.ok", "effects": [ { "ox_stamina": -6 } ] },
+            { "weight": 30, "text": "event.stormberg_pass.push.bad", "effects": [ { "wagon_damage": "axle", "amount": 45 }, { "ox_stamina": -8 } ] } ] }
+      ]
+    },
+    {
+      "id": "buffelsvlei_news", "setpiece": true,
+      "history": "history.buffelsvlei",
+      "sources": ["Retief's party crossed the Orange at Buffelsvlei (later Aliwal North) in March 1837: weet.co.za Retief biography (05_research_pass2.md sections 2-3). The meeting is invented."],
+      "text": "event.buffelsvlei_news.body",
+      "choices": [
+        { "text": "event.buffelsvlei_news.listen",
+          "outcomes": [ { "text": "event.buffelsvlei_news.listen.done", "effects": [ { "morale": 3 }, { "flag": "heard_retief" } ] } ] },
+        { "text": "event.buffelsvlei_news.go",
+          "outcomes": [ { "text": "event.buffelsvlei_news.go.done" } ] }
+      ]
+    },
+    {
+      "id": "thaba_nchu_moroka", "setpiece": true,
+      "history": "history.thaba_nchu",
+      "sources": ["After Vegkop (Oct 1836) Moroka of the Barolong sent oxen to bring the stranded trek to Thaba Nchu (02_research_resources.md section 1; Wikipedia: Battle of Vegkop)",
+                  "Barolong and Wesleyan missionaries moved to Thaba Nchu from Platberg in 1833 (05_research_pass2.md section 7). The family's visit is invented."],
+      "nodes": [
+        { "id": "start", "text": "event.thaba_nchu_moroka.body",
+          "choices": [
+            { "text": "event.thaba_nchu_moroka.respects",
+              "outcomes": [ { "text": "event.thaba_nchu_moroka.respects.done", "next": "gift",
+                              "effects": [ { "relation": "barolong", "add": 6 }, { "flag": "met_moroka" } ] } ] },
+            { "text": "event.thaba_nchu_moroka.mission",
+              "outcomes": [ { "text": "event.thaba_nchu_moroka.mission.done",
+                              "effects": [ { "relation": "missionaries", "add": 6 }, { "item": "medicine", "add": 2 } ] } ] },
+            { "text": "event.thaba_nchu_moroka.trekkers",
+              "outcomes": [ { "text": "event.thaba_nchu_moroka.trekkers.done",
+                              "effects": [ { "flag": "heard_vegkop" }, { "relation": "trekkers", "add": 3 } ] } ] }
+          ] },
+        { "id": "gift", "text": "event.thaba_nchu_moroka.gift",
+          "choices": [
+            { "text": "event.thaba_nchu_moroka.gift.tobacco", "requires": [ { "item_gte": ["tobacco", 3] } ], "locked": "lock.need_tobacco",
+              "outcomes": [ { "text": "event.thaba_nchu_moroka.gift.thanks", "effects": [ { "item": "tobacco", "add": -3 }, { "relation": "barolong", "add": 6 } ] } ] },
+            { "text": "event.thaba_nchu_moroka.gift.coffee", "requires": [ { "item_gte": ["coffee", 4] } ], "locked": "lock.need_coffee",
+              "outcomes": [ { "text": "event.thaba_nchu_moroka.gift.thanks", "effects": [ { "item": "coffee", "add": -4 }, { "relation": "barolong", "add": 5 } ] } ] },
+            { "text": "event.thaba_nchu_moroka.gift.none",
+              "outcomes": [ { "text": "event.thaba_nchu_moroka.gift.none.done" } ] }
+          ] }
+      ]
+    },
+    {
+      "id": "sand_river_laager", "setpiece": true,
+      "history": "history.sand_river",
+      "sources": ["The Uys party reached the united laager at the Sand River on 29 June 1837 (Wikipedia: Piet Uys; NWU paper gives Thaba Nchu, Aug 1837 [conflict]) - 05_research_pass2.md section 3",
+                  "English settlers were rare among the trekkers and had to earn trust (03_development_plan.md section 4). The family's welcome is invented."],
+      "nodes": [
+        { "id": "start", "text": "event.sand_river_laager.body",
+          "choices": [
+            { "text": "event.sand_river_laager.join", "requires": [ { "side": "dutch" } ], "locked": "lock.dutch_only",
+              "outcomes": [ { "text": "event.sand_river_laager.join.done", "effects": [ { "flag": "joined_laager" }, { "relation": "trekkers", "add": 8 }, { "morale": 6 } ] } ] },
+            { "text": "event.sand_river_laager.ask", "requires": [ { "side": "english" }, { "relation_gte": ["trekkers", 20] } ], "locked": "lock.not_trusted",
+              "outcomes": [ { "text": "event.sand_river_laager.ask.done", "effects": [ { "flag": "joined_laager" }, { "relation": "trekkers", "add": 5 }, { "morale": 6 } ] } ] },
+            { "text": "event.sand_river_laager.outside",
+              "outcomes": [ { "text": "event.sand_river_laager.outside.done", "next": "question" } ] }
+          ] },
+        { "id": "question", "speaker_key": "speaker.trekker_elder", "text": "event.sand_river_laager.question",
+          "choices": [
+            { "text": "event.sand_river_laager.question.honest",
+              "outcomes": [ { "text": "event.sand_river_laager.question.honest.done", "effects": [ { "relation": "trekkers", "add": 4 } ] } ] },
+            { "text": "event.sand_river_laager.question.help",
+              "requires": [ { "item_gte": ["gunpowder", 4] } ], "locked": "lock.need_powder",
+              "outcomes": [ { "text": "event.sand_river_laager.question.help.done",
+                              "effects": [ { "item": "gunpowder", "add": -4 }, { "relation": "trekkers", "add": 8 } ] } ] },
+            { "text": "event.sand_river_laager.question.leave",
+              "outcomes": [ { "text": "event.sand_river_laager.question.leave.done" } ] }
+          ] }
+      ]
+    },
+    {
+      "id": "vaal_news", "setpiece": true,
+      "history": "history.vaal_news",
+      "sources": ["Mosega, 17 Jan 1837: a trekker commando with Barolong and Griqua allies attacked the Ndebele town and took about 6,000-6,500 cattle; the American missionaries left with the commando (Wikipedia: Battle of Vegkop; SA Military History vol172jr) - 05_research_pass2.md section 3",
+                  "The herder's account is invented, written to give the Ndebele side of the story."],
+      "text": "event.vaal_news.body",
+      "choices": [
+        { "text": "event.vaal_news.listen",
+          "outcomes": [ { "text": "event.vaal_news.listen.done", "effects": [ { "flag": "heard_mosega" }, { "relation": "barolong", "add": 2 } ] } ] },
+        { "text": "event.vaal_news.cross",
+          "outcomes": [ { "text": "event.vaal_news.cross.done" } ] }
+      ]
+    },
+    {
+      "id": "mooi_arrival", "setpiece": true,
+      "history": "history.mooi_river",
+      "sources": ["Potgieter settled on the Mooi River; Potchefstroom founded Dec 1838 or June 1839 [conflict]; Barolong and Bahurutshe lived in the area before the trekkers (02_research_resources.md section 6b)"],
+      "text": "event.mooi_arrival.body",
+      "choices": [
+        { "text": "event.mooi_arrival.unyoke", "outcomes": [ { "text": "event.mooi_arrival.unyoke.done", "effects": [ { "morale": 10 } ] } ] }
+      ]
+    }
+  ]
+}

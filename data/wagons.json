@@ -1,0 +1,8 @@
+{
+  "_about": "Capacities and spans are invented starting values; 12-16 oxen per wagon is commonly cited (01_gemini_review.md section 3). Kakebeenwa price: a travelling wagon made to order in Cape Town, Aug 1838, cost GBP67 10s (Backhouse).",
+  "wagons": [
+    { "id": "kakebeenwa", "capacity_lb": 3000, "min_oxen": 10, "full_span": 14, "speed": 1.0, "fragility": 1.0, "price_pence": 16200 },
+    { "id": "transport_wagon", "capacity_lb": 4500, "min_oxen": 14, "full_span": 18, "speed": 0.9, "fragility": 0.9, "price_pence": 21600 },
+    { "id": "scotch_cart", "capacity_lb": 1200, "min_oxen": 4, "full_span": 6, "speed": 1.1, "fragility": 1.6, "price_pence": 4800 }
+  ]
+}

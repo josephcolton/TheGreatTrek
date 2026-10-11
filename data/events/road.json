@@ -1,0 +1,328 @@
+{
+  "_about": "Random events on the road. Outcome weights are invented starting values unless a source is given (04_game_design.md section 8.5).",
+  "events": [
+    {
+      "id": "karoo_stagnant_water", "regions": ["karoo"], "weight": 12, "cooldown_days": 15, "harmful": true,
+      "requires": [ { "edge_water": "dry" } ],
+      "weight_mods": [ { "if": { "weather": "hot" }, "mul": 1.5 } ],
+      "speaker": { "pick": "skill", "skill": "voorloper" },
+      "history": "history.karoo_water",
+      "sources": ["invented: Gemini seed 1 (01_gemini_review.md section 2). Dysentery as a major killer is plausible but not sourced (01 section 3)."],
+      "text": "event.karoo_stagnant_water.body",
+      "choices": [
+        { "text": "event.karoo_stagnant_water.drink",
+          "outcomes": [
+            { "weight": 65, "text": "event.karoo_stagnant_water.drink.ok", "effects": [ { "item": "water", "add": 40 } ] },
+            { "weight": 35, "text": "event.karoo_stagnant_water.drink.sick", "effects": [ { "item": "water", "add": 40 }, { "illness": "flux", "who": "random", "count": 2 } ] } ] },
+        { "text": "event.karoo_stagnant_water.boil",
+          "outcomes": [ { "text": "event.karoo_stagnant_water.boil.ok", "effects": [ { "item": "water", "add": 40 }, { "time_days": 0.5 } ] } ] },
+        { "text": "event.karoo_stagnant_water.push_on",
+          "outcomes": [ { "text": "event.karoo_stagnant_water.push_on.done", "effects": [ { "ox_stamina": -5 } ] } ] },
+        { "text": "event.karoo_stagnant_water.ask", "requires": [ { "member_skill_gte": ["voorloper", 2] } ], "locked": "lock.need_voorloper",
+          "outcomes": [
+            { "weight": 60, "skill": "voorloper", "per_point": 8, "text": "event.karoo_stagnant_water.ask.spring", "effects": [ { "item": "water", "add": 60 }, { "morale": 3 } ] },
+            { "weight": 40, "text": "event.karoo_stagnant_water.ask.none", "effects": [ { "time_days": 0.5 } ] } ] }
+      ]
+    },
+    {
+      "id": "oxen_stray", "time": "night", "weight": 8, "cooldown_days": 30, "harmful": true,
+      "speaker": { "pick": "skill", "skill": "herding" },
+      "history": "history.oxen_stray",
+      "sources": ["Backhouse (1844), June 1839: 'detained by the straying of the oxen, which had smelt grass at a considerable distance' (05_research_pass2.md section 10). Outcome weights invented."],
+      "text": "event.oxen_stray.body",
+      "choices": [
+        { "text": "event.oxen_stray.track",
+          "outcomes": [
+            { "weight": 55, "skill": "tracking", "per_point": 8, "text": "event.oxen_stray.track.found", "effects": [ { "time_days": 0.5 } ] },
+            { "weight": 45, "text": "event.oxen_stray.track.lost", "effects": [ { "time_days": 0.5 }, { "item": "oxen", "add": -2 } ] } ] },
+        { "text": "event.oxen_stray.wait",
+          "outcomes": [
+            { "weight": 50, "text": "event.oxen_stray.wait.back", "effects": [ { "time_days": 1 } ] },
+            { "weight": 50, "text": "event.oxen_stray.wait.lost", "effects": [ { "item": "oxen", "add": -3 } ] } ] }
+      ]
+    },
+    {
+      "id": "horses_go_home", "time": "night", "regions": ["eastern_frontier", "karoo"], "weight": 6, "once": true, "harmful": true,
+      "requires": [ { "item_gte": ["horses", 2] } ],
+      "history": "history.horses_go_home",
+      "sources": ["Harris (1839) ch. V: two horses 'absconded' in the night, thought to have gone back to the grazing where they were bred (05_research_pass2.md section 10)."],
+      "text": "event.horses_go_home.body",
+      "choices": [
+        { "text": "event.horses_go_home.send",
+          "outcomes": [
+            { "weight": 70, "text": "event.horses_go_home.send.found", "effects": [ { "time_days": 1 } ] },
+            { "weight": 30, "text": "event.horses_go_home.send.lost", "effects": [ { "time_days": 1 }, { "item": "horses", "add": -2 } ] } ] },
+        { "text": "event.horses_go_home.let_go",
+          "outcomes": [ { "text": "event.horses_go_home.let_go.done", "effects": [ { "item": "horses", "add": -2 } ] } ] }
+      ]
+    },
+    {
+      "id": "wagon_hole", "regions": ["eastern_frontier", "stormberg"], "weight": 6, "once": true, "harmful": true,
+      "history": "history.wagon_hole",
+      "sources": ["Harris (1839) ch. II: near Graham's Town 'the baggage-waggon was accidentally upset in a deep hole by the road-side, and the upper works completely broken' (05_research_pass2.md section 10)."],
+      "text": "event.wagon_hole.body",
+      "choices": [
+        { "text": "event.wagon_hole.unload",
+          "outcomes": [ { "text": "event.wagon_hole.unload.done", "effects": [ { "time_days": 1 }, { "wagon_damage": "tent", "amount": 30 } ] } ] },
+        { "text": "event.wagon_hole.pull",
+          "outcomes": [
+            { "weight": 60, "skill": "herding", "per_point": 5, "text": "event.wagon_hole.pull.ok", "effects": [ { "ox_stamina": -10 }, { "wagon_damage": "tent", "amount": 30 } ] },
+            { "weight": 40, "text": "event.wagon_hole.pull.bad", "effects": [ { "ox_stamina": -10 }, { "wagon_damage": "wheels", "amount": 50 }, { "wagon_damage": "tent", "amount": 30 } ] } ] }
+      ]
+    },
+    {
+      "id": "quicksand", "regions": ["eastern_frontier"], "weight": 5, "once": true, "harmful": true,
+      "requires": [ { "item_gte": ["horses", 1] } ],
+      "history": "history.quicksand",
+      "sources": ["Harris (1839) ch. IV: crossing the Little Fish River 'my horse was suddenly engulphed in a quicksand, and nearly drowned' (05_research_pass2.md section 10)."],
+      "text": "event.quicksand.body",
+      "choices": [
+        { "text": "event.quicksand.riems",
+          "outcomes": [
+            { "weight": 80, "skill": "herding", "per_point": 4, "text": "event.quicksand.riems.ok", "effects": [ { "time_days": 0.5 } ] },
+            { "weight": 20, "text": "event.quicksand.riems.lost", "effects": [ { "item": "horses", "add": -1 } ] } ] }
+      ]
+    },
+    {
+      "id": "mirage", "regions": ["karoo"], "weight": 6, "once": true,
+      "requires": [ { "edge_water": "dry" } ],
+      "weight_mods": [ { "if": { "weather": "hot" }, "mul": 2.0 } ],
+      "history": "history.mirage",
+      "sources": ["Harris (1839) ch. VI: thirsty oxen ran for water that was 'a mere mineral efflorescence in the desert' (05_research_pass2.md section 10)."],
+      "text": "event.mirage.body",
+      "choices": [
+        { "text": "event.mirage.hold",
+          "outcomes": [
+            { "weight": 60, "skill": "herding", "per_point": 8, "text": "event.mirage.hold.ok", "effects": [ { "ox_stamina": -3 } ] },
+            { "weight": 40, "text": "event.mirage.hold.bad", "effects": [ { "ox_stamina": -12 }, { "time_days": 0.5 } ] } ] },
+        { "text": "event.mirage.let",
+          "outcomes": [ { "text": "event.mirage.let.done", "effects": [ { "ox_stamina": -15 }, { "time_days": 0.5 } ] } ] }
+      ]
+    },
+    {
+      "id": "dogs_paws", "regions": ["karoo"], "weight": 4, "once": true,
+      "requires": [ { "weather": "hot" } ],
+      "history": "history.dogs_paws",
+      "sources": ["Harris (1839) ch. VI: the dogs' paws were burned raw by the hot ground; treated with the tar-and-fat axle grease, they came back holding out a paw for more (05_research_pass2.md section 10)."],
+      "text": "event.dogs_paws.body",
+      "choices": [
+        { "text": "event.dogs_paws.grease", "requires": [ { "item_gte": ["tallow", 1] } ], "locked": "lock.need_tallow",
+          "outcomes": [ { "text": "event.dogs_paws.grease.done", "effects": [ { "item": "tallow", "add": -1 }, { "morale": 4 } ] } ] },
+        { "text": "event.dogs_paws.carry",
+          "outcomes": [ { "text": "event.dogs_paws.carry.done", "effects": [ { "morale": 2 } ] } ] }
+      ]
+    },
+    {
+      "id": "hyenas_night", "time": "night", "weight": 6, "cooldown_days": 35, "harmful": true,
+      "history": "history.hyenas",
+      "sources": ["Harris (1839) ch. VI: hyenas 'attracted by the smell of our mutton' came into camp at night (05_research_pass2.md section 10). Outcome weights invented."],
+      "text": "event.hyenas_night.body",
+      "choices": [
+        { "text": "event.hyenas_night.shot", "requires": [ { "item_gte": ["gunpowder", 1] } ], "locked": "lock.need_powder",
+          "outcomes": [ { "text": "event.hyenas_night.shot.done", "effects": [ { "item": "gunpowder", "add": -1 } ] } ] },
+        { "text": "event.hyenas_night.fire",
+          "outcomes": [
+            { "weight": 60, "text": "event.hyenas_night.fire.ok" },
+            { "weight": 40, "text": "event.hyenas_night.fire.bad", "effects": [ { "item": "meat", "add": -30 }, { "item": "biltong", "add": -15 } ] } ] }
+      ]
+    },
+    {
+      "id": "storm_cattle", "time": "night", "weight": 10, "cooldown_days": 15, "harmful": true,
+      "requires": [ { "weather": "storm" } ],
+      "speaker": { "pick": "skill", "skill": "herding" },
+      "history": "history.storm_cattle",
+      "sources": ["Harris (1839): in a storm the thrashing reeds 'so alarmed the cattle that they thrice broke loose' (05_research_pass2.md section 10). Losses invented."],
+      "text": "event.storm_cattle.body",
+      "choices": [
+        { "text": "event.storm_cattle.chase",
+          "outcomes": [
+            { "weight": 60, "skill": "herding", "per_point": 8, "text": "event.storm_cattle.chase.ok", "effects": [ { "health": -5, "who": "speaker" } ] },
+            { "weight": 40, "text": "event.storm_cattle.chase.lost", "effects": [ { "item": "cows", "add": -3 }, { "item": "sheep", "add": -5 } ] } ] },
+        { "text": "event.storm_cattle.wait",
+          "outcomes": [ { "text": "event.storm_cattle.wait.done", "effects": [ { "item": "cows", "add": -4 }, { "item": "sheep", "add": -8 }, { "item": "oxen", "add": -1 } ] } ] }
+      ]
+    },
+    {
+      "id": "quagga_sunrise", "regions": ["karoo", "transorangia"], "weight": 5, "once": true,
+      "history": "history.quagga",
+      "sources": ["Backhouse (1844), June 1839, Colesberg district: 'A troop of Quaggas, with their foals, were near us at sunrise.' Extinct in the wild by about 1878 (Wikipedia: Quagga) - 05_research_pass2.md section 7."],
+      "text": "event.quagga_sunrise.body",
+      "choices": [
+        { "text": "event.quagga_sunrise.watch",
+          "outcomes": [ { "text": "event.quagga_sunrise.watch.done", "effects": [ { "morale": 4 } ] } ] },
+        { "text": "event.quagga_sunrise.go",
+          "outcomes": [ { "text": "event.quagga_sunrise.go.done" } ] }
+      ]
+    },
+    {
+      "id": "lions_herd", "time": "night", "regions": ["transorangia", "highveld"], "weight": 6, "cooldown_days": 40, "harmful": true,
+      "history": "history.lions",
+      "sources": ["invented: Gemini seed 2 (01_gemini_review.md section 2). Lions on the Highveld in the 1830s are described by Harris (1839)."],
+      "text": "event.lions_herd.body",
+      "choices": [
+        { "text": "event.lions_herd.fire_guns", "requires": [ { "item_gte": ["gunpowder", 2] } ], "locked": "lock.need_powder",
+          "outcomes": [
+            { "weight": 70, "skill": "shooting", "per_point": 5, "text": "event.lions_herd.fire_guns.ok", "effects": [ { "item": "gunpowder", "add": -2 } ] },
+            { "weight": 30, "text": "event.lions_herd.fire_guns.bad", "effects": [ { "item": "gunpowder", "add": -2 }, { "item": "oxen", "add": -1 } ] } ] },
+        { "text": "event.lions_herd.fires",
+          "outcomes": [
+            { "weight": 55, "text": "event.lions_herd.fires.ok", "effects": [ { "morale": -2 } ] },
+            { "weight": 45, "text": "event.lions_herd.fires.bad", "effects": [ { "item": "cows", "add": -1 } ] } ] }
+      ]
+    },
+    {
+      "id": "servant_wages", "weight": 5, "cooldown_days": 60,
+      "requires": [ { "member_role": "servant" }, { "days_gte": 20 } ],
+      "speaker": { "pick": "role", "role": "servant" },
+      "history": "history.servant_wages",
+      "sources": ["Wages: 10 Rds (15s) a month for a cattle leader or wagon driver (Steedman c. 1832; Backhouse 1838); farm hands could earn far more elsewhere, and after Ordinance 50 (1828) Khoikhoi could leave (05_research_pass2.md sections 4.3, 7). The conversation is invented."],
+      "text": "event.servant_wages.body",
+      "choices": [
+        { "text": "event.servant_wages.raise", "requires": [ { "money_gte": 15 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.servant_wages.raise.done", "effects": [ { "money_pence": -180 }, { "loyalty": 20, "who": "speaker" } ] } ] },
+        { "text": "event.servant_wages.promise",
+          "outcomes": [ { "text": "event.servant_wages.promise.done", "effects": [ { "loyalty": 5, "who": "speaker" }, { "flag": "promised_wages" } ] } ] },
+        { "text": "event.servant_wages.refuse",
+          "outcomes": [ { "text": "event.servant_wages.refuse.done", "effects": [ { "loyalty": -20, "who": "speaker" } ] } ] }
+      ]
+    },
+    {
+      "id": "smous_visit", "weight": 6, "cooldown_days": 30,
+      "requires": [ { "days_gte": 5 } ],
+      "history": "history.smous",
+      "sources": ["Smouse (travelling traders) took goods to farmers in exchange for sheep (Steedman 1835) and went far beyond the Colony (Harris 1839) - 05_research_pass2.md. The visit and prices are invented."],
+      "text": "event.smous_visit.body",
+      "choices": [
+        { "text": "event.smous_visit.coffee", "requires": [ { "money_gte": 10 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.smous_visit.coffee.done", "effects": [ { "money_pence": -180 }, { "item": "coffee", "add": 6 }, { "item": "sugar", "add": 6 } ] } ] },
+        { "text": "event.smous_visit.medicine", "requires": [ { "money_gte": 10 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.smous_visit.medicine.done", "effects": [ { "money_pence": -144 }, { "item": "medicine", "add": 4 } ] } ] },
+        { "text": "event.smous_visit.news",
+          "outcomes": [ { "text": "event.smous_visit.news.done", "effects": [ { "relation": "smouse", "add": 2 } ] } ] }
+      ]
+    },
+    {
+      "id": "child_wanders", "weight": 4, "cooldown_days": 40, "harmful": true,
+      "requires": [ { "member_role": "child" } ],
+      "history": "history.child_wanders",
+      "sources": ["invented"],
+      "text": "event.child_wanders.body",
+      "choices": [
+        { "text": "event.child_wanders.search",
+          "outcomes": [
+            { "weight": 80, "skill": "tracking", "per_point": 5, "text": "event.child_wanders.search.found", "effects": [ { "time_days": 0.5 } ] },
+            { "weight": 20, "text": "event.child_wanders.search.night", "effects": [ { "time_days": 1 }, { "health": -15, "who": "child" }, { "morale": -5 } ] } ] }
+      ]
+    },
+    {
+      "id": "snakebite", "regions": ["karoo", "transorangia", "eastern_frontier"], "months": [10, 11, 12, 1, 2, 3, 4], "weight": 3, "cooldown_days": 40, "harmful": true,
+      "history": "history.snakebite",
+      "sources": ["invented. Backhouse (1844) describes the spitting snake (rinkhals/cobra) on the frontier."],
+      "text": "event.snakebite.body",
+      "choices": [
+        { "text": "event.snakebite.treat", "requires": [ { "item_gte": ["medicine", 1] } ], "locked": "lock.need_medicine",
+          "outcomes": [ { "text": "event.snakebite.treat.done", "effects": [ { "item": "medicine", "add": -1 }, { "illness": "injury", "who": "random" } ] } ] },
+        { "text": "event.snakebite.rest",
+          "outcomes": [ { "text": "event.snakebite.rest.done", "effects": [ { "illness": "snakebite", "who": "random" }, { "time_days": 1 } ] } ] }
+      ]
+    },
+    {
+      "id": "frost_night", "time": "night", "regions": ["highveld", "stormberg", "transorangia"], "months": [6, 7, 8], "weight": 6, "cooldown_days": 30, "harmful": true,
+      "history": "history.frost",
+      "sources": ["invented. Highveld winter frost: general climate [recall, verify]."],
+      "text": "event.frost_night.body",
+      "choices": [
+        { "text": "event.frost_night.fires",
+          "outcomes": [ { "text": "event.frost_night.fires.done", "effects": [ { "time_days": 0.5 } ] } ] },
+        { "text": "event.frost_night.huddle",
+          "outcomes": [
+            { "weight": 60, "text": "event.frost_night.huddle.ok", "effects": [ { "morale": -2 } ] },
+            { "weight": 40, "text": "event.frost_night.huddle.bad", "effects": [ { "illness": "exposure", "who": "random" } ] } ] }
+      ]
+    },
+    {
+      "id": "griqua_riders", "regions": ["transorangia"], "weight": 6, "once": true,
+      "history": "history.griqua",
+      "sources": ["Griqua lived around the Orange River and Philippolis (01_gemini_review.md section 3); they were allies at Mosega in 1837 (05 section 3). The meeting is invented."],
+      "text": "event.griqua_riders.body",
+      "choices": [
+        { "text": "event.griqua_riders.welcome",
+          "outcomes": [ { "text": "event.griqua_riders.welcome.done", "effects": [ { "relation": "griqua", "add": 5 }, { "flag": "met_griqua" } ] } ] },
+        { "text": "event.griqua_riders.trade", "requires": [ { "item_gte": ["tobacco", 2] } ], "locked": "lock.need_tobacco",
+          "outcomes": [ { "text": "event.griqua_riders.trade.done", "effects": [ { "item": "tobacco", "add": -2 }, { "item": "meat", "add": 40 }, { "relation": "griqua", "add": 3 } ] } ] },
+        { "text": "event.griqua_riders.wary",
+          "outcomes": [ { "text": "event.griqua_riders.wary.done", "effects": [ { "relation": "griqua", "add": -3 } ] } ] }
+      ]
+    },
+    {
+      "id": "barolong_herders", "regions": ["transorangia", "highveld"], "weight": 6, "cooldown_days": 30,
+      "history": "history.barolong",
+      "sources": ["Barolong under Moroka at Thaba Nchu (02_research_resources.md section 5); beads and tobacco as trade goods among the Batswana (Harris 1839). The meeting is invented."],
+      "text": "event.barolong_herders.body",
+      "choices": [
+        { "text": "event.barolong_herders.beads", "requires": [ { "item_gte": ["beads", 2] } ], "locked": "lock.need_beads",
+          "outcomes": [ { "text": "event.barolong_herders.beads.done", "effects": [ { "item": "beads", "add": -2 }, { "item": "meat", "add": 30 }, { "morale": 2 }, { "relation": "barolong", "add": 3 } ] } ] },
+        { "text": "event.barolong_herders.tobacco", "requires": [ { "item_gte": ["tobacco", 1] } ], "locked": "lock.need_tobacco",
+          "outcomes": [ { "text": "event.barolong_herders.tobacco.done", "effects": [ { "item": "tobacco", "add": -1 }, { "item": "maize", "add": 40 }, { "relation": "barolong", "add": 2 } ] } ] },
+        { "text": "event.barolong_herders.greet",
+          "outcomes": [ { "text": "event.barolong_herders.greet.done", "effects": [ { "relation": "barolong", "add": 1 } ] } ] }
+      ]
+    },
+    {
+      "id": "vegkop_survivor", "regions": ["transorangia", "highveld"], "weight": 8, "once": true,
+      "requires": [ { "not_flag": "heard_vegkop" } ],
+      "history": "history.vegkop",
+      "sources": ["Vegkop, Oct 1836: Potgieter's laager attacked by the Ndebele; 2 trekkers killed; Potgieter lost 5,000 sheep, 300 cattle and 100 draught oxen; Moroka's oxen brought the trek to Thaba Nchu (Wikipedia: Battle of Vegkop; SA Military History) - 05_research_pass2.md section 3. The family met is invented."],
+      "text": "event.vegkop_survivor.body",
+      "choices": [
+        { "text": "event.vegkop_survivor.listen",
+          "outcomes": [ { "text": "event.vegkop_survivor.listen.done", "effects": [ { "flag": "heard_vegkop" }, { "morale": -2 } ] } ] },
+        { "text": "event.vegkop_survivor.share", "requires": [ { "item_gte": ["meal", 90] } ], "locked": "lock.need_meal",
+          "outcomes": [ { "text": "event.vegkop_survivor.share.done", "effects": [ { "flag": "heard_vegkop" }, { "item": "meal", "add": -90 }, { "relation": "trekkers", "add": 8 }, { "flag": "helped_trekkers" } ] } ] }
+      ]
+    },
+    {
+      "id": "retief_manifesto", "sides": ["dutch"], "regions": ["eastern_frontier", "karoo", "stormberg"], "weight": 8, "once": true,
+      "requires": [ { "date_gte": "1837-02-02" } ],
+      "history": "history.retief_manifesto",
+      "sources": ["Retief's manifesto was printed in the Graham's Town Journal in early 1837 (Jan or 2 Feb [conflict]); it gives labour, frontier-security and British-rule grievances (02_research_resources.md section 1). The reading is invented."],
+      "text": "event.retief_manifesto.body",
+      "choices": [
+        { "text": "event.retief_manifesto.agree",
+          "outcomes": [ { "text": "event.retief_manifesto.agree.done", "effects": [ { "morale": 4 }, { "relation": "trekkers", "add": 3 } ] } ] },
+        { "text": "event.retief_manifesto.doubt",
+          "outcomes": [ { "text": "event.retief_manifesto.doubt.done" } ] }
+      ]
+    },
+    {
+      "id": "governors_man", "sides": ["english"], "regions": ["transorangia", "highveld"], "weight": 8, "once": true,
+      "requires": [ { "relation_lt": ["trekkers", 30] } ],
+      "speaker": { "pick": "role", "role": "head" },
+      "history": "history.governors_man",
+      "sources": ["English settlers were tolerated or suspected among the trekkers (03_development_plan.md section 4); English speakers on the trek were rare (02 section 6b). The scene is invented."],
+      "text": "event.governors_man.body",
+      "choices": [
+        { "text": "event.governors_man.honest",
+          "outcomes": [
+            { "weight": 60, "skill": "interpreting", "per_point": 8, "text": "event.governors_man.honest.ok", "effects": [ { "relation": "trekkers", "add": 6 } ] },
+            { "weight": 40, "text": "event.governors_man.honest.cool", "effects": [ { "relation": "trekkers", "add": 1 } ] } ] },
+        { "text": "event.governors_man.angry",
+          "outcomes": [ { "text": "event.governors_man.angry.done", "effects": [ { "relation": "trekkers", "add": -6 } ] } ] }
+      ]
+    },
+    {
+      "id": "stuck_wagon", "regions": ["transorangia", "highveld"], "weight": 7, "cooldown_days": 30,
+      "requires": [ { "not_flag": "helped_stuck_wagon" } ],
+      "history": "history.stuck_wagon",
+      "sources": ["invented: a way for the English side to earn the trekkers' trust (04_game_design.md section 12.1)."],
+      "text": "event.stuck_wagon.body",
+      "choices": [
+        { "text": "event.stuck_wagon.help",
+          "outcomes": [ { "text": "event.stuck_wagon.help.done",
+                          "effects": [ { "ox_stamina": -8 }, { "time_days": 0.5 }, { "relation": "trekkers", "add": 10 }, { "flag": "helped_stuck_wagon" }, { "flag": "helped_trekkers" } ] } ] },
+        { "text": "event.stuck_wagon.pass",
+          "outcomes": [ { "text": "event.stuck_wagon.pass.done", "effects": [ { "relation": "trekkers", "add": -3 } ] } ] }
+      ]
+    }
+  ]
+}
