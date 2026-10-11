@@ -1,0 +1,29 @@
+{
+  "event.sunday_work.body": "It is Sunday, and the wagons stand still. But the iron band on a back wheel has worked loose, and one of the men says that if he mends it today the party can roll at first light tomorrow. Others say the Lord's day is not for working.",
+  "event.sunday_work.wait": "Keep the Sunday; mend it tomorrow",
+  "event.sunday_work.wait.done": "The family keeps the day: a reading from the Bible, a psalm, a long rest. On Monday the men heat the band and shrink it back on, and the wagons leave half a day late.",
+  "event.sunday_work.work": "Mend it today",
+  "event.sunday_work.work.done": "The fire is lit and the band is mended by evening. The wagons will leave on time, but some of the party are uneasy, and word gets round the other wagons.",
+  "history.sunday_work": "Louis Tregardt kept a diary on his trek in 1836-38. He would not work on a Sunday, writing that it would only bring bad luck 'because we anger God by it'. Not everyone agreed: an older man in his party mended a wheel on a Sunday, because people said Sunday work saved a weekday. This broken band is invented.",
+
+  "event.horse_sickness.body": "One of the horses stands with its head low, breathing hard, its eyes swollen. The herders know the signs: horse-sickness, which comes in the late summer and autumn and kills most of the horses it takes.",
+  "event.horse_sickness.stable": "Keep the horses in close at night, on high ground",
+  "event.horse_sickness.stable.ok": "For a day the horses are kept in close, blanketed, and grazed only after the dew has gone. The sick horse pulls through, and no other falls ill.",
+  "event.horse_sickness.stable.lost": "The horses are kept in close and watched, but the sick horse dies in the night. The others stay well.",
+  "event.horse_sickness.push": "Keep moving and hope",
+  "event.horse_sickness.push.ok": "The sick horse stumbles along behind the wagon and, by some luck, recovers.",
+  "event.horse_sickness.push.lost": "The horse goes down on the road and does not get up. The family moves on, quieter than before.",
+  "history.horse_sickness": "African horse-sickness was a dreaded disease of the Cape's horses. In the Graaff-Reinet district it broke out every year or two between 1819 and 1829 and killed most horses it reached; it was worst in late summer and autumn. Tregardt's diary records horses dying of 'the horse-sickness' in 1837. Farmers kept horses in at night and on high ground, which later science suggests helped, because the disease is carried by small biting midges that fly in the evening. The chances in this event are invented.",
+
+  "event.lead_runs_short.body": "Counting the shot bag at night, you find there is little lead left. Powder you have, but nothing to shoot with it, and the hunting is still a long way from done.",
+  "event.lead_runs_short.melt": "Melt down the pewter plates and a copper pot",
+  "event.lead_runs_short.melt.done": "The family eats from wooden bowls now, but the bullet mould has been busy, and there is shot in the bag again.",
+  "event.lead_runs_short.save": "Keep what there is for danger",
+  "event.lead_runs_short.save.done": "You decide to save the last of the lead and to hunt only when you must.",
+  "history.lead_runs_short": "Lead and powder could not be bought north of the Orange. In Tregardt's party the powder ran down to little more than a single keg, and lead was so short that they melted tin and copper to cast bullets. The pewter plates in this event are invented.",
+
+  "event.kings_law.body": "At the outspan an old trekker points north with his pipe. 'They say in Graham's Town that the King's law follows us to the twenty-fifth degree,' he says. 'We are not there yet. Under their Act we are still British subjects, even here.' Another man laughs: 'Then let the King send a magistrate to the Mooi River.'",
+  "event.kings_law.listen": "Listen, and say nothing",
+  "event.kings_law.listen.done": "The talk goes on into the night: about who rules this land, the King, the trekkers' own council, or the people who were living here first.",
+  "history.kings_law": "The Cape of Good Hope Punishment Act of 13 August 1836 let colonial courts try British subjects for crimes committed anywhere in South Africa as far north as 25 degrees south. Its authors meant it to protect African peoples from white settlers, but it also meant that Britain never accepted that the trekkers had stopped being British subjects. The Mooi River is at about 26.7 degrees south, inside that line. In practice the Act was hardly enforced against the trekkers. The conversation is invented."
+}

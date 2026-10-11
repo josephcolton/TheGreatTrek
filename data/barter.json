@@ -1,18 +1,18 @@
 {
-  "_about": "Barter partners north of the Orange (04_game_design.md section 7.4). Values are in pence, so they compare with shop prices. Harris (1839): beyond the Colony 'no circulating medium exists'; among the Batswana beads were the usual medium because tobacco was now grown locally; gunpowder was so wanted that 'a single pound would have given us the choice of the stud', but selling it beyond the frontier was contraband. Exact values are estimates.",
+  "_about": "Barter partners north of the Orange (04_game_design.md section 7.4). Values are in pence, so they compare with shop prices. Harris (1839): beyond the Colony 'no circulating medium exists'; among the Batswana beads were the usual medium because tobacco was now grown locally; gunpowder was so wanted that 'a single pound would have given us the choice of the stud', but selling it beyond the frontier was contraband. Gunpowder values follow Pringle (half a pound of powder for a leopard skin worth 12s) and Harris (a sturdy ox for a small canister); see 05_research_pass2.md section 14.1. Other values are estimates.",
   "contraband": ["gunpowder"],
   "partners": [
     { "id": "griqua_philippolis", "group": "griqua", "node": "philippolis", "fairness": 0.95,
-      "wants": { "tobacco": 24, "beads": 10, "cloth": 300, "coffee": 16, "sugar": 9, "iron": 6, "gunpowder": 180 },
+      "wants": { "tobacco": 24, "beads": 10, "cloth": 300, "coffee": 16, "sugar": 9, "iron": 6, "gunpowder": 300 },
       "offers": { "oxen": [6, 760], "horses": [2, 1900], "sheep": [30, 50], "meat": [80, 2], "maize": [360, 0.7] } },
     { "id": "barolong_thaba_nchu", "group": "barolong", "node": "thaba_nchu", "fairness": 0.95,
-      "wants": { "beads": 16, "tobacco": 8, "cloth": 280, "coffee": 12, "iron": 8, "gunpowder": 200 },
+      "wants": { "beads": 16, "tobacco": 8, "cloth": 280, "coffee": 12, "iron": 8, "gunpowder": 300 },
       "offers": { "oxen": [8, 720], "cows": [6, 600], "sheep": [40, 45], "maize": [540, 0.6], "meat": [60, 2] } },
     { "id": "basotho_caledon", "group": "basotho", "node": "caledon_drift", "fairness": 1.0,
-      "wants": { "beads": 12, "cloth": 300, "tobacco": 14, "iron": 10, "gunpowder": 200 },
+      "wants": { "beads": 12, "cloth": 300, "tobacco": 14, "iron": 10, "gunpowder": 300 },
       "offers": { "maize": [720, 0.6], "oxen": [4, 760], "sheep": [20, 50] } },
     { "id": "trekkers_sand_river", "group": "trekkers", "node": "sand_river", "fairness": 1.0,
-      "wants": { "coffee": 18, "sugar": 10, "tobacco": 12, "cloth": 260, "gunpowder": 36, "lead": 9 },
+      "wants": { "coffee": 18, "sugar": 10, "tobacco": 12, "cloth": 260, "gunpowder": 48, "lead": 9 },
       "offers": { "oxen": [6, 900], "sheep": [20, 60], "biltong": [100, 4], "beskuit": [60, 4] } }
   ]
 }

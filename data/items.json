@@ -31,7 +31,7 @@
       "source": "estimate" },
 
     { "id": "gunpowder", "category": "guns", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 24,
-      "source": "estimate" },
+      "source": "estimate for the shop price; in barter on the frontier half a pound bought a 12s leopard skin (Pringle; Steedman), 05 section 14.1" },
     { "id": "lead", "category": "guns", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 6,
       "source": "estimate" },
     { "id": "flints", "category": "guns", "pack": 12, "pack_key": "unit.dozen", "weight_lb": 0.05, "price_pence": 6,
@@ -51,7 +51,7 @@
       "source": "estimate" },
 
     { "id": "tobacco", "category": "trade", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 12,
-      "source": "estimate; Harris: tobacco 'the current coin of the realm' beyond the Colony" },
+      "source": "estimate, near the Graham's Town market price of 1831-32 (about 6-8d a lb, scan unclear; Steedman); Harris: tobacco 'the current coin of the realm' beyond the Colony" },
     { "id": "beads", "category": "trade", "pack": 1, "pack_key": "unit.string", "weight_lb": 0.5, "price_pence": 6,
       "source": "estimate; Harris: beads the usual medium among the Batswana" },
     { "id": "cloth", "category": "trade", "pack": 1, "pack_key": "unit.bolt", "weight_lb": 8, "price_pence": 240,

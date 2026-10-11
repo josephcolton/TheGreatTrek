@@ -1,0 +1,59 @@
+{
+  "_about": "Events drawn from research pass 3: the Tregardt diary (1836-38), horse-sickness, and the reach of the Punishment Act (05_research_pass2.md section 14).",
+  "events": [
+    {
+      "id": "sunday_work", "weight": 8, "once": true,
+      "requires": [ { "weekday": 0 }, { "sabbath": true }, { "days_gte": 10 } ],
+      "history": "history.sunday_work",
+      "sources": ["Tregardt diary (Preller ed., 1938), Jul-Oct 1837: Tregardt would not work on Sundays, 'om dat wij God daar mee vertorend' (because it angers God), while old Strijdom mended a wheel on a Sunday, since men believed Sunday work saved a weekday. The wheel band here is invented."],
+      "text": "event.sunday_work.body",
+      "choices": [
+        { "text": "event.sunday_work.wait",
+          "outcomes": [ { "text": "event.sunday_work.wait.done", "effects": [ { "time_days": 1 }, { "morale": 2 } ] } ] },
+        { "text": "event.sunday_work.work",
+          "outcomes": [ { "text": "event.sunday_work.work.done", "effects": [ { "morale": -2 }, { "relation": "trekkers", "add": -1 } ] } ] }
+      ]
+    },
+    {
+      "id": "horse_sickness", "regions": ["karoo", "transorangia", "highveld", "stormberg"], "months": [3, 4, 5], "weight": 7, "once": true, "harmful": true,
+      "requires": [ { "item_gte": ["horses", 1] } ],
+      "history": "history.horse_sickness",
+      "sources": ["Horse-sickness outbreaks with very high mortality every year or two in Graaff-Reinet, 1819-29, worst in late summer and autumn (05 section 6). Tregardt's diary records horses dying of 'de paarde siekte' in 1837. Keeping horses in at night and on high ground was the period remedy; that it helps is [recall, verify]. The odds here are invented."],
+      "text": "event.horse_sickness.body",
+      "choices": [
+        { "text": "event.horse_sickness.stable",
+          "outcomes": [
+            { "weight": 75, "text": "event.horse_sickness.stable.ok", "effects": [ { "time_days": 1 } ] },
+            { "weight": 25, "text": "event.horse_sickness.stable.lost", "effects": [ { "time_days": 1 }, { "item": "horses", "add": -1 } ] } ] },
+        { "text": "event.horse_sickness.push",
+          "outcomes": [
+            { "weight": 45, "text": "event.horse_sickness.push.ok" },
+            { "weight": 55, "text": "event.horse_sickness.push.lost", "effects": [ { "item": "horses", "add": -1 }, { "morale": -2 } ] } ] }
+      ]
+    },
+    {
+      "id": "lead_runs_short", "regions": ["transorangia", "highveld"], "weight": 6, "once": true,
+      "requires": [ { "item_lt": ["lead", 6] }, { "item_gte": ["gunpowder", 2] } ],
+      "history": "history.lead_runs_short",
+      "sources": ["Preller's introduction to the Tregardt diary (1938): the party's powder was down to little more than a full keg, and lead was so short that they melted tin and copper to cast bullets. The pewter plates here are invented."],
+      "text": "event.lead_runs_short.body",
+      "choices": [
+        { "text": "event.lead_runs_short.melt",
+          "outcomes": [ { "text": "event.lead_runs_short.melt.done", "effects": [ { "item": "lead", "add": 4 }, { "morale": -1 } ] } ] },
+        { "text": "event.lead_runs_short.save",
+          "outcomes": [ { "text": "event.lead_runs_short.save.done" } ] }
+      ]
+    },
+    {
+      "id": "kings_law", "regions": ["highveld"], "weight": 12, "once": true,
+      "requires": [ { "any": [ { "node": "sand_river" }, { "node": "vaal_drift" } ] } ],
+      "history": "history.kings_law",
+      "sources": ["Cape of Good Hope Punishment Act, 13 Aug 1836: colonial courts could try British subjects for crimes 'in any part of South Africa' up to 25 degrees south (Encyclopaedia Britannica 1911, 'South Africa'; Davenport 1987, via the O'Malley archive). The Mooi River lies near 26.7 degrees south, inside that line. The conversation is invented."],
+      "text": "event.kings_law.body",
+      "choices": [
+        { "text": "event.kings_law.listen",
+          "outcomes": [ { "text": "event.kings_law.listen.done", "effects": [ { "morale": 1 } ] } ] }
+      ]
+    }
+  ]
+}

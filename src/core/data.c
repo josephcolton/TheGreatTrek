@@ -980,6 +980,14 @@ static bool parse_cond(Loader *L, const cJSON *o, Cond *c, const char *ctx)
     } else if (strcmp(k, "month") == 0) {
         c->type = COND_MONTH;
         c->b = v->valueint;
+    } else if (strcmp(k, "weekday") == 0) {
+        c->type = COND_WEEKDAY; /* 0 = Sunday */
+        c->b = v->valueint;
+        if (c->b < 0 || c->b > 6) { fail(L, "%s: weekday must be 0 (Sunday) to 6", ctx); }
+    } else if (strcmp(k, "sabbath") == 0) {
+        c->type = COND_SABBATH; /* true: the party keeps Sunday rest */
+        if (!cJSON_IsBool(v)) { fail(L, "%s: sabbath needs true or false", ctx); }
+        c->b = cJSON_IsTrue(v);
     } else if (strcmp(k, "days_gte") == 0) {
         c->type = COND_DAYS_GTE;
         c->b = v->valueint;

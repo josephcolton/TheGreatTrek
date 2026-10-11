@@ -57,7 +57,7 @@ The modern places stand in for 1837 crossing points; which drift a given party u
 | 29 Jun 1837 | Uys party reaches the united laager at the Sand River | **[sourced: Wikipedia]**; an NWU paper says they joined at Thaba Nchu in **Aug 1837** **[conflict]** |
 | Oct 1837 | Kerkspruit church near Thaba Nchu: first Communion north of the Orange | **[sourced: SA Military History]** |
 | Oct–Nov 1837 | Retief's camp at Kerkenberg; descent into Natal | **[sourced]** |
-| Nov 1837 | Marico campaign: Ndebele driven north | **[recall, verify]** |
+| Nov 1837 | Marico campaign: a commando under Potgieter and Uys leaves the Suikerbosrand in November and drives the Ndebele north. Popular accounts speak of a "nine-day battle"; Doucakis (*Historia*, 2021) argues the fighting lasted three days, 28–30 Nov. | **[sourced: Britannica; Doucakis]**; length of the fighting **[conflict]** |
 | 22 Dec 1838 or Jun 1839 | Potchefstroom founded on the Mooi River | **[conflict]** |
 
 Game use: news of these events arrives by messenger, smous or laager gossip **a few weeks after** the date, as it really would have.
@@ -189,10 +189,10 @@ What exists so far (§8.5 of the design):
 | Horse-sickness in summer | **[sourced]** outbreaks mainly in late summer and autumn (modern record); repeated outbreaks in the 1820s (Perry 1830). People then blamed "the night air" in "a season of general malaria"; a good History note. |
 | Lungsickness must not appear | **[sourced]** first found at Mossel Bay in Sept 1853 (some sources say 1854). Correct to exclude it. |
 | Ordinance 50 (1828) | **[sourced]** removed pass rules for Khoikhoi and other free people of colour. It did **not** cover Africans (Ordinance 49 governed them). Servants who were Mfengu or Xhosa had fewer rights, and the game should show that difference. |
-| Punishment Act 1836 | **[sourced]** 6 & 7 Will. IV c. 57, 13 Aug 1836, covering offences by British subjects in territories next to the Colony. The "25° S" limit is still **[recall, verify]**. |
+| Punishment Act 1836 | **[sourced]** 6 & 7 Will. IV c. 57, 13 Aug 1836. Colonial courts could try British subjects for offences "in any part of South Africa" up to **25° S** (Encyclopaedia Britannica 1911, "South Africa"; Davenport 1987, quoted by the O'Malley archive: jurisdiction "but not sovereignty"). Meant to protect African peoples from settlers; in practice hardly enforced against the trekkers. The Mooi River (~26.7° S) lies inside the line. |
 | Thaba Nchu mission | **[sourced]** Barolong and Wesleyan missionaries (Archbell) moved there from Platberg in 1833. |
 | Guns | **[sourced]** trekkers used flintlock muzzle-loaders (*sanna*, *roer*, *sterloop*); percussion came in slowly in the 1840s. **Percussion guns should be rare and costly in 1837**, an English-side luxury at most. |
-| Sabbath rest on trek | **not confirmed**. The Grahamstown market closed on Sundays, and the Kerkspruit church shows how central church was. Keep the Sabbath option but don't claim every party stopped every Sunday. |
+| Sabbath rest on trek | **[sourced, one party]** Tregardt's diary (1836–38): he refused Sunday work because "we anger God by it", but an older man in his party mended a wheel on a Sunday, since people believed Sunday work saved a weekday. So Sunday rest was a matter of conscience and varied between families; the game's option fits. |
 | Panic of 1837 at the Cape | **not found**. Drop it. |
 | Orange River in flood in summer | partly: a podcast says Potgieter's crossing (Dec 1835) was in flood, with stock swimming and wagons on willow-log rafts; Harris needed raised platforms inside his wagons to keep goods dry. **Good event material; the seasonal pattern itself is still [recall, verify].** |
 
@@ -269,7 +269,7 @@ Each family's servants get a short origin too, in their own voice where possible
 - a **formerly enslaved** woman freed in 1834 (still bound as an "apprentice" until 1838), now paid wages, whose grandparents were brought from the East Indies or Mozambique;
 - an **Mfengu** herder who came into the Colony during the 1835 war and works under a contract that gives him fewer rights than the Khoikhoi.
 
-The details of the 1834–38 apprenticeship period are **[recall, verify]**.
+**[sourced]** Slavery ended in law at the Cape on **1 December 1834**; the freed people were then bound to their former owners as unpaid "apprentices" until **1 December 1838** (Iziko Slave Lodge; Ekama et al., AEHN working paper 53, 2020). So in April 1837 such a woman would **still be an apprentice**, not a free wage-earner: she could travel with a family only as an apprentice of her former owner, or if she had bought her freedom. The servant stories must say which.
 
 ---
 
@@ -403,9 +403,56 @@ Secondary:
 
 ## 13. Still to do
 
-- Gunpowder, lead, coffee, sugar, tea, tobacco, beads, cloth, iron and medicine prices (see §4.4).
-- The 1838 *Graham's Town Journal* market column.
-- The Tregardt diary (book; not free online): Sunday practice, daily distances, illnesses.
-- The 25° S limit in the Punishment Act; the apprenticeship years (1834–38); the Marico campaign date.
+- Shop prices of gunpowder, lead, coffee, sugar, tea, beads, cloth, iron and medicine: still estimates (see §14.1 for what was found).
+- The 1838 *Graham's Town Journal* market column; Greig's *South African Almanack* (1830s) may have price lists.
+- The Tregardt diary: read in part (§14.3). Daily distances are given in hours, not miles, and were not extracted.
 - Check the isiXhosa names with a speaker or a period register.
 - Check each origin story in §8.3 with a second reader for tone and accuracy.
+
+---
+
+## 14. Research pass 3 (October 2026)
+
+### 14.1 Goods prices and barter values
+
+No 1830s shop price for gunpowder, coffee or sugar was found online. What turned up:
+
+| Item | Finding | Where / when | Source |
+|---|---|---|---|
+| Salt | **3½d a lb** (1,840 lb sold) | Graham's Town market, 1831–32 | Steedman (1835) market table **[sourced]** |
+| Raisins | **3¾d a lb** | same | Steedman **[sourced]** |
+| Tobacco | 14,944 lb sold; the price column reads "0 6 8" in the scan, which cannot be 6s 8d a lb for colonial leaf. Probably about **6–8d a lb**. | same | Steedman **[scan unclear]** |
+| Tiger (leopard) skins | 12s each | same | Steedman **[sourced]** |
+| Gunpowder, barter | a leopard skin bought from a frontier Boer **for half a pound of gunpowder** | Baviaans River, 1820s | Pringle **[sourced]**; with Steedman's 12s a skin, powder was worth about **24s a lb** in trade on the frontier |
+| Gunpowder, barter | a Griqua man "considered himself well repaid for a sturdy ox by a small canister of gunpowder" | Griqua country, 1836 | Harris **[sourced]** |
+| Tea | three fat oxen for a stamped tablecloth and **a pound of tea** | Griqua country, 1836 | Harris **[sourced]** |
+| Buttons | "a dozen buttons, which in Caffraria are equal in value to threepence" | Xhosa country, 1839 | Backhouse **[sourced]** |
+| Tobacco roll | a hunter going into the Kalahari takes "a roll of tobacco, weighing about 7 lbs" | Griqua country, 1839 | Backhouse **[sourced]** |
+| Coffee | coffee imports and re-exports at the Cape spiked in 1836–41 (a tax loophole) | Cape Colony | *South African Historical Journal* 72 (2020), "Coffee, Slavery and a Tax Loophole" **[sourced, abstract only]**; no retail price |
+
+**Game use:** shop prices for powder, lead, coffee and sugar stay estimates. Barter values for gunpowder north of the Orange were raised toward the Pringle and Harris figures (about 300d a lb), which makes selling powder, a crime under colonial law, more tempting, as it was.
+
+### 14.2 Dates checked
+
+- **Punishment Act, 25° S:** confirmed (§7).
+- **Apprenticeship:** 1 Dec 1834 to 1 Dec 1838 (§8.4).
+- **Marico campaign:** November 1837 (§3).
+
+### 14.3 Tregardt's diary
+
+The 1938 edition (Preller, ed., *Dagboek van Louis Trichardt 1836–1838*, Nasionale Pers) is free on DBNL: https://www.dbnl.org/tekst/tric015dagb01_01/ . It covers Tregardt's party in the far north in 1836–38, not our route, so it is used for **daily life**, not for places:
+- **Sunday:** see §7. Tregardt kept it; others did not always.
+- **Animals:** horses died of "de paarde siekte" (horse-sickness); cattle died of a "stop siekte"; he counted his cattle often (454 head in Sept 1837). Used for the horse-sickness event.
+- **Powder and lead:** by 1837–38 the party's powder was down to about one keg and they melted tin and copper for bullets (Preller's introduction). Used for the "lead runs short" event.
+- **Daily work:** the diary is full of wheel bands burnt and reset, hides pegged out, soap boiled, sheep slaughtered, hunting for eland and quagga, and lost cattle searched for. Good material for small road events.
+- **Births and deaths** are recorded plainly (twins born and one dying days later, Oct 1836). The game keeps such things in text and non-graphic.
+
+Sources added in this pass:
+- Tregardt diary (DBNL): https://www.dbnl.org/tekst/tric015dagb01_01/
+- EB1911, "South Africa": https://en.wikisource.org/wiki/Page:EB1911_-_Volume_25.djvu/490
+- O'Malley archive, Punishment Act: https://omalley.nelsonmandela.org/index.php/site/q/03lv01538/04lv01646/05lv01666.htm
+- Iziko, end of slavery: https://slavery.iziko.org.za/end_of_enslavement/
+- Ekama et al., "When Cape Slavery Ended" (2020): https://www.aehnetwork.org/wp-content/uploads/2020/07/AEHN-WP-53.pdf
+- Doucakis on Maritz's laager and the Marico campaign: https://upjournals.up.ac.za/index.php/historia/article/view/1796
+- Britannica (Marico, Nov 1837): https://www.britannica.com/print/article/472707
+- Coffee trade article: https://www.tandfonline.com/doi/full/10.1080/02582473.2020.1714706

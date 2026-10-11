@@ -29,6 +29,8 @@ bool g_eval(const Game *g, const Cond *c)
     case COND_NODE: return g->node == c->a;
     case COND_EDGE_WATER: return g->edge >= 0 && (int)g->data->edges[g->edge].water == c->a;
     case COND_MONTH: return cal_month(g->day) == c->b;
+    case COND_WEEKDAY: return cal_weekday(g->day) == c->b;
+    case COND_SABBATH: return g->sabbath == (c->b != 0);
     case COND_SEASON: return (int)cal_season(g->day) == c->a;
     case COND_WEATHER: return (int)g->weather == c->a;
     case COND_FLAG: return game_has_flag(g, c->str);
