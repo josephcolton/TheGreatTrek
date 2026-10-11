@@ -182,20 +182,23 @@ docs/planning/                   (these planning docs)
 
 ## 7. Milestones
 
+Status on 2026-10-11 (in brackets after each milestone).
+
 | # | Milestone | Done when |
 |---|---|---|
-| 1 | **Build skeleton** | CMake + FetchContent builds a window with text on Windows. `core` library, `trekbot` and `datacheck` stubs, and CTest all run. |
-| 2 | **Research pass 2** | Route checked on a real map with distances. Calendar for 1837. Glossary of period terms. Tregardt diary and Harris's *Narrative* skimmed for events. |
-| 3 | **Core loop** | Outfit → travel → landmark → end works with placeholder text, both sides, seeded RNG, save/load. The bot can finish runs. |
-| 4 | **Vertical slice** | Grahamstown → Orange River playable for **both sides**: about 15 events, shop with side pricing, laager, oxen, illness, tombstone. Family playtest. |
-| 5 | **Full route** | Through to the Mooi River: Thaba Nchu, Vaal crossing, hunting, smous, barter, about 50 events, endings. Balance with the bot. |
-| 6 | **Accuracy & perspective pass** | Check that African groups, servants and the 1837 conflicts are shown fairly. "History behind this event" notes. |
-| 7 | **Polish & release** | Pixel art, route map, sound, tombstone screen. GitHub release with a Windows build (zip with the exe and SDL DLLs). |
+| 1 | **Build skeleton** [done] | CMake + FetchContent builds a window with text on Windows. `core` library, `trekbot` and `datacheck` stubs, and CTest all run. |
+| 2 | **Research pass 2** [done, except the Tregardt diary, which is not free online; see `05_research_pass2.md` section 13] | Route checked on a real map with distances. Calendar for 1837. Glossary of period terms. Tregardt diary and Harris's *Narrative* skimmed for events. |
+| 3 | **Core loop** [done] | Outfit → travel → landmark → end works with placeholder text, both sides, seeded RNG, save/load. The bot can finish runs. |
+| 4 | **Vertical slice** [built; the family playtest is still to do] | Grahamstown → Orange River playable for **both sides**: about 15 events, shop with side pricing, laager, oxen, illness, tombstone. Family playtest. |
+| 5 | **Full route** [done: both roads to the Mooi River, hunting, barter, 54 events, five endings, bot-balanced; more events welcome] | Through to the Mooi River: Thaba Nchu, Vaal crossing, hunting, smous, barter, about 50 events, endings. Balance with the bot. |
+| 6 | **Accuracy & perspective pass** [history notes written for every event; a careful second read by a person is still needed] | Check that African groups, servants and the 1837 conflicts are shown fairly. "History behind this event" notes. |
+| 7 | **Polish & release** [drawn scenes, map, graves, glossary and a release zip done; sound and finer pixel art to do] | Pixel art, route map, sound, tombstone screen. GitHub release with a Windows build (zip with the exe and SDL DLLs). |
 | 8 | *(Later)* | Natal fork over the Drakensberg; Dutch or Afrikaans translation; Linux and macOS builds. |
 
 ---
 
 ## 8. Next steps
-1. You: delete `Gemini/` and the old `The_Great_Trek/` folder when ready.
-2. Next session: milestone 1 (build skeleton). Choose the Windows toolchain at that point (see `CLAUDE.md`).
-3. Research pass 2, then port the Gemini events into JSON with corrected facts.
+1. A family playtest (milestone 4), then balance from what the family finds.
+2. A second reader for the history notes and the origin stories (milestone 6).
+3. Sound, finer art, and a first GitHub release (milestone 7).
+4. Research still open: prices of powder, coffee, sugar and trade goods; the Tregardt diary; see `05_research_pass2.md` section 13.

@@ -63,3 +63,6 @@ out/
 .idea/
 CMakeUserPresets.json
 compile_commands.json
+
+# Release packages
+dist/

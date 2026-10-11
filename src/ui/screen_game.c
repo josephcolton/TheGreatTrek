@@ -610,7 +610,7 @@ static void store_render(App *app)
     int shown = sv.row_count < STORE_ROWS ? sv.row_count : STORE_ROWS;
     float by = STORE_Y + shown * d->line_h + 4;
     if (sv.row_count > STORE_ROWS) {
-        char more[32];
+        char more[64];
         snprintf(more, sizeof more, "%d-%d / %d", app->scroll + 1, app->scroll + shown, sv.row_count);
         draw_text(d, d->font, more, 620, by, COL_DIM, TEXT_RIGHT);
     }

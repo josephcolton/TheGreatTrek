@@ -189,7 +189,7 @@ static void start_trip(App *app)
     }
     for (int i = 0; i < g->party_count; i++) {
         if (new_names[i][0]) {
-            snprintf(g->party[i].name, sizeof g->party[i].name, "%s", new_names[i]);
+            snprintf(g->party[i].name, sizeof g->party[i].name, "%.31s", new_names[i]);
         }
     }
     app_close_game(app);
