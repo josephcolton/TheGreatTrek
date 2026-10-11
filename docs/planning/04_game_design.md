@@ -921,7 +921,13 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
 - **Art:** 640×360 pixel scenes per region and time of day; portraits for named people (drawn, not photographs); Harris plates as reference for animals; a pixel route map. Every asset goes in `CREDITS.md`.
   - **Built:** sprites are text files in `assets/sprites/` (a palette of one character per colour, then rows of pixels; `.` is transparent), loaded by `src/ui/sprites.c`. Wagons (trek wagon, transport wagon, Scotch cart, with turning wheels), red and black oxen in yoked pairs with walking legs, the voorloper, Cape Dutch and settler houses, a stone church, a mission church, round houses, thorn trees, bushes, aloes, koppies, a campfire, people at the fire, and ten game animals (walk, walk, graze, fallen). Skies, hills and the river are drawn in code, layered so that near things slide past faster when the wagon moves; each region has its own plants and hills (Karoo mesas, frontier thorn trees and aloes). Night tints everything blue except the fire.
   - The animals' hit boxes in `animals.json` (`body`) match the sprite sizes.
-  - Not yet: portraits of named people; finer town scenes per place.
+  - Each town has its own picture (`town()` in `src/ui/scene.c`, sprites in `towns.txt`):
+    - **Grahamstown:** settler cottages, a Cape Dutch house and a stone church.
+    - **Cradock:** flat-roofed Karoo houses, a small gabled church, willows and water furrows.
+    - **Colesberg:** a few houses under Coleskop, the flat-capped hill.
+    - **Philippolis:** the mission church, Griqua clay houses, reed-mat houses and a stone cattle kraal.
+    These are drawn to suggest the places, not to record what each building looked like in 1837 (that is unchecked).
+  - Not yet: portraits of named people.
 - **Sound (WAV, SDL audio):** wagon creak and ox lowing on travel, whip crack at start of a day, river water, gunshot and misfire click, wind, a short concertina or hymn tune for Sundays and the epilogue (public-domain melodies only).
 
 ---

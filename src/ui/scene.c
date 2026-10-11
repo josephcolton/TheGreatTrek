@@ -280,6 +280,96 @@ static void stars_and_moon(Draw *d, SDL_FRect r, float horizon)
     draw_rect(d, (SDL_FRect){mx + 3, my + 1, 6, 6}, (SDL_Color){20, 24, 44, 255}); /* a crescent */
 }
 
+/* Each town on the road has its own picture; Grahamstown's is the default. */
+typedef enum { TOWN_GRAHAMSTOWN, TOWN_CRADOCK, TOWN_COLESBERG, TOWN_PHILIPPOLIS } TownLook;
+
+static TownLook town_look(const App *app)
+{
+    const char *id = app->game ? app->data->nodes[app->game->node].id : "";
+    if (strcmp(id, "cradock") == 0) {
+        return TOWN_CRADOCK;
+    }
+    if (strcmp(id, "colesberg") == 0) {
+        return TOWN_COLESBERG;
+    }
+    if (strcmp(id, "philippolis") == 0) {
+        return TOWN_PHILIPPOLIS;
+    }
+    return TOWN_GRAHAMSTOWN;
+}
+
+/* Coleskop, the steep hill with a flat cap of rock that stands over Colesberg. */
+static void coleskop(Draw *d, SDL_FRect r, float horizon, SDL_Color c)
+{
+    SDL_Color dark = shade(c, 0.72f), cap = shade(c, 0.6f);
+    for (float dx = -70; dx <= 70; dx += 1) {
+        float u = fabsf(dx) / 70.0f;
+        float h = 52 * powf(1 - u, 1.4f) + 1.2f * sinf(dx * 0.5f);
+        if (h > 36) {
+            h = 36 + (h - 36) * 0.1f; /* the flat top */
+        }
+        float x = r.x + 440 + dx;
+        /* lit from the left: the shadow side starts a little right of the middle and widens downward */
+        float lit = h - (36 - 0.6f * dx);
+        draw_rect(d, (SDL_FRect){x, horizon - h, 1, h + 1}, dark);
+        if (lit < h) {
+            draw_rect(d, (SDL_FRect){x, horizon - h, 1, h - fmaxf(lit, 0) + 1}, c);
+        }
+        if (h > 30) {
+            float band = fminf(5, h - 30) + (((int)dx * 7) % 3 == 0 ? 1 : 0);
+            draw_rect(d, (SDL_FRect){x, horizon - h, 1, band}, cap);
+        }
+    }
+}
+
+static void town(SDL_Renderer *rd, Draw *d, TownLook look, SDL_FRect r, float base, WagonShape ws, int pairs,
+                 SDL_Color tint)
+{
+    switch (look) {
+    case TOWN_CRADOCK:
+        /* a Karoo town on the Great Fish River: flat-roofed houses, a church, willows on the furrows */
+        sprite_stand(rd, "willow", r.x + 34, base - 12, 1, false, tint);
+        sprite_stand(rd, "church_karoo", r.x + 112, base - 8, 1, false, tint);
+        sprite_stand(rd, "house_flat", r.x + 186, base - 10, 1, false, tint);
+        sprite_stand(rd, "house_flat_small", r.x + 470, base - 10, 1, true, tint);
+        sprite_stand(rd, "house_flat", r.x + 530, base - 12, 1, false, tint);
+        sprite_stand(rd, "willow", r.x + 606, base - 8, 1, true, tint);
+        /* water furrows along the gardens on either side of the road */
+        draw_rect(d, (SDL_FRect){r.x, base - 5, 230, 2}, (SDL_Color){84, 120, 150, 255});
+        draw_rect(d, (SDL_FRect){r.x + 440, base - 5, r.w - 440, 2}, (SDL_Color){84, 120, 150, 255});
+        break;
+    case TOWN_COLESBERG:
+        /* a young frontier town in a hollow under Coleskop (drawn with the hills) */
+        sprite_stand(rd, "koppie", r.x + 40, base - 16, 1, false, tint);
+        sprite_stand(rd, "house_flat_small", r.x + 92, base - 12, 1, false, tint);
+        sprite_stand(rd, "house_flat", r.x + 160, base - 9, 1, true, tint);
+        sprite_stand(rd, "house_flat_small", r.x + 470, base - 14, 1, true, tint);
+        sprite_stand(rd, "house_cape", r.x + 540, base - 10, 1, false, tint);
+        sprite_stand(rd, "house_flat_small", r.x + 612, base - 7, 1, false, tint);
+        break;
+    case TOWN_PHILIPPOLIS:
+        /* the mission among the Griqua: clay houses, reed-mat houses and a stone cattle kraal */
+        sprite_stand(rd, "mat_house", r.x + 26, base - 14, 1, false, tint);
+        sprite_stand(rd, "house_griqua", r.x + 78, base - 10, 1, false, tint);
+        sprite_stand(rd, "church_mission", r.x + 160, base - 6, 1, false, tint);
+        sprite_stand(rd, "house_griqua", r.x + 450, base - 12, 1, true, tint);
+        sprite_stand(rd, "ox_red_0", r.x + 543, base - 8, 1, true, tint);
+        sprite_stand(rd, "ox_black_0", r.x + 578, base - 7, 1, false, tint);
+        sprite_stand(rd, "kraal", r.x + 560, base - 6, 1, false, tint);
+        sprite_stand(rd, "mat_house", r.x + 622, base - 9, 1, true, tint);
+        break;
+    case TOWN_GRAHAMSTOWN:
+    default:
+        sprite_stand(rd, "house_cottage", r.x + 70, base - 8, 1, false, tint);
+        sprite_stand(rd, "house_cape", r.x + 150, base - 4, 1, false, tint);
+        sprite_stand(rd, "tree_small", r.x + 214, base - 6, 1, false, tint);
+        sprite_stand(rd, "church", r.x + 556, base - 2, 1, false, tint);
+        sprite_stand(rd, "house_cottage", r.x + 480, base - 6, 1, true, tint);
+        break;
+    }
+    wagon(rd, d, ws, r.x + 250, base + 6, pairs > 4 ? 4 : pairs, false, 0, tint);
+}
+
 void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
 {
     Draw *d = &app->draw;
@@ -337,6 +427,9 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
             draw_rect(d, (SDL_FRect){r.x + 470 + dx, horizon - h, 1, h + 1}, dx < -40 ? gully : dark);
             draw_rect(d, (SDL_FRect){r.x + 470 + dx, horizon - h, 1, 1}, shade(near_hill, 0.8f));
         }
+    } else if (kind == SCENE_TOWN && town_look(app) == TOWN_COLESBERG) {
+        hills(d, r, horizon + 1, far_hill, 14, 0.017f, 0.7f * region, 0, true);
+        coleskop(d, r, horizon + 1, near_hill);
     } else {
         hills(d, r, horizon + 1, far_hill, karoo ? 22 : 14, 0.017f, 0.7f * region, (float)(t * 2), karoo);
         hills(d, r, horizon + 1, near_hill, karoo ? 12 : 8, 0.029f, 2.1f + region, (float)(t * 6), false);
@@ -356,12 +449,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
         if (pass == 1) {
             switch (kind) {
             case SCENE_TOWN:
-                sprite_stand(rd, "house_cottage", r.x + 70, base - 8, 1, false, tint);
-                sprite_stand(rd, "house_cape", r.x + 150, base - 4, 1, false, tint);
-                sprite_stand(rd, "tree_small", r.x + 214, base - 6, 1, false, tint);
-                sprite_stand(rd, "church", r.x + 556, base - 2, 1, false, tint);
-                sprite_stand(rd, "house_cottage", r.x + 480, base - 6, 1, true, tint);
-                wagon(rd, d, ws, r.x + 250, base + 6, pairs > 4 ? 4 : pairs, false, 0, tint);
+                town(rd, d, town_look(app), r, base, ws, pairs, tint);
                 break;
             case SCENE_MISSION:
                 for (int i = 0; i < 7; i++) {

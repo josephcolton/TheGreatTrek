@@ -21,6 +21,7 @@ SDL libraries are fetched by CMake at build time and are not stored in this repo
 | `assets/sprites/wagons.txt` (wagons, oxen, the voorloper) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
 | `assets/sprites/scenery.txt` (houses, churches, huts, trees, the camp) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
 | `assets/sprites/animals.txt` (the game animals) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
+| `assets/sprites/towns.txt` (Karoo houses, a Karoo church, willows, Griqua houses, mat houses, a kraal) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
 
 The sprites are text files (one character per pixel), so they can be edited in any text editor. Skies, hills, rivers and the map are drawn in code (`src/ui/scene.c`, `src/ui/screen_overlay.c`), and the sound effects are synthesised in `src/ui/sound.c`. Every image or sound file added later must be listed here with its author, source and licence.
 
