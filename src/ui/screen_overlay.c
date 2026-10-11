@@ -23,12 +23,13 @@ static void overlay_panel(App *app, const char *title)
 
 /* ---------------------------------------------------------------- pause */
 
-typedef enum { PA_RESUME, PA_SAVE_QUIT, PA_SETTINGS, PA_COUNT } PauseItem;
+typedef enum { PA_RESUME, PA_SAVE_QUIT, PA_GLOSSARY, PA_SETTINGS, PA_COUNT } PauseItem;
 
 static void pause_items(App *app, ChoiceItem *items)
 {
     items[PA_RESUME] = (ChoiceItem){app_text(app, "pause.resume"), NULL};
     items[PA_SAVE_QUIT] = (ChoiceItem){app_text(app, "pause.save_quit"), NULL};
+    items[PA_GLOSSARY] = (ChoiceItem){app_text(app, "glossary.title"), NULL};
     items[PA_SETTINGS] = (ChoiceItem){app_text(app, "pause.settings"), NULL};
 }
 
@@ -42,9 +43,43 @@ static void pause_activate(App *app, int item)
         trips_scan(app->pref_path, &app->trips);
         app_switch(app, SCR_TITLE);
         break;
+    case PA_GLOSSARY: app->overlay = OV_GLOSSARY; app->scroll = 0; break;
     case PA_SETTINGS: app_switch(app, SCR_SETTINGS); break;
     default: break;
     }
+}
+
+/* ---------------------------------------------------------------- glossary */
+
+static int glossary_terms(App *app, char ids[][32], int max)
+{
+    const char *list = app_text(app, "glossary.list");
+    int n = 0;
+    const char *p = list;
+    while (*p && n < max) {
+        const char *comma = strchr(p, ',');
+        size_t len = comma ? (size_t)(comma - p) : strlen(p);
+        snprintf(ids[n++], 32, "%.*s", (int)len, p);
+        p += len + (comma ? 1 : 0);
+    }
+    return n;
+}
+
+static void glossary_render(App *app)
+{
+    Draw *d = &app->draw;
+    overlay_panel(app, app_text(app, "glossary.title"));
+    char ids[40][32];
+    int n = glossary_terms(app, ids, 40);
+    float y = 42;
+    for (int i = app->scroll; i < n && y < TREK_LOGICAL_H - 50; i++) {
+        char key[64];
+        snprintf(key, sizeof key, "glossary.%s.term", ids[i]);
+        draw_text(d, d->font, app_text(app, key), 36, y, COL_GOLD, TEXT_LEFT);
+        snprintf(key, sizeof key, "glossary.%s.text", ids[i]);
+        y += draw_wrapped(d, d->font, app_text(app, key), 200, y, 404, COL_TEXT, false) + 4;
+    }
+    draw_text(d, d->font, app_text(app, "glossary.footer"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
 }
 
 /* ---------------------------------------------------------------- orders */
@@ -338,7 +373,7 @@ void overlay_event(App *app, const SDL_Event *e)
         } else if (is_back(e)) {
             close_overlay(app);
         } else if (is_click(e)) {
-            int hit = choices_hit(&app->draw, items, PA_COUNT, 190, 120, 260, app->mx, app->my, true);
+            int hit = choices_hit(&app->draw, items, PA_COUNT, 190, 110, 260, app->mx, app->my, true);
             if (hit >= 0) {
                 pause_activate(app, hit);
             }
@@ -361,6 +396,20 @@ void overlay_event(App *app, const SDL_Event *e)
             } else {
                 close_overlay(app);
             }
+        }
+        break;
+    case OV_GLOSSARY:
+        if (key_is(e, SDLK_DOWN)) {
+            app->scroll++;
+        } else if (key_is(e, SDLK_UP) && app->scroll > 0) {
+            app->scroll--;
+        } else if (e->type == SDL_EVENT_MOUSE_WHEEL) {
+            app->scroll -= (int)e->wheel.y;
+            if (app->scroll < 0) {
+                app->scroll = 0;
+            }
+        } else if (e->type == SDL_EVENT_KEY_DOWN || is_click(e)) {
+            close_overlay(app);
         }
         break;
     case OV_JOURNAL:
@@ -402,8 +451,8 @@ void overlay_render(App *app)
         overlay_panel(app, app_text(app, "pause.title"));
         ChoiceItem items[PA_COUNT];
         pause_items(app, items);
-        draw_choices(&app->draw, items, PA_COUNT, 190, 120, 260, app->mx, app->my, app->sel, true, NULL);
-        draw_wrapped(&app->draw, app->font, app_text(app, "pause.about"), 120, 220, 400, COL_DIM, false);
+        draw_choices(&app->draw, items, PA_COUNT, 190, 110, 260, app->mx, app->my, app->sel, true, NULL);
+        draw_wrapped(&app->draw, app->font, app_text(app, "pause.about"), 120, 240, 400, COL_DIM, false);
         break;
     }
     case OV_ORDERS: orders_render(app); break;
@@ -412,6 +461,7 @@ void overlay_render(App *app)
     case OV_MAP: map_render(app); break;
     case OV_JOURNAL: journal_render(app); break;
     case OV_HISTORY: history_render(app); break;
+    case OV_GLOSSARY: glossary_render(app); break;
     default: break;
     }
 }

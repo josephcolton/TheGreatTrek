@@ -2,6 +2,7 @@ add_executable(TheGreatTrek WIN32
     main.c
     app.c
     draw.c
+    scene.c
     trips.c
     screen_menu.c
     screen_new.c

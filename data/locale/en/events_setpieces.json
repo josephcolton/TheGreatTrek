@@ -11,7 +11,7 @@
   "event.grahamstown_bible.prepare.done": "While the town is busy at the gathering, you grease the axles, check the yokes, and let the oxen graze.",
 
   "event.colesberg_edge.body": "Colesberg sits at the very edge of the Colony. Men in the street talk of nothing but the trek: who has gone, who is going, and whether the Governor will try to stop them. The magistrate says that, under the new Punishment Act, the King's law follows his subjects even beyond the Orange.",
-  "event.colesberg_edge.ask_road": "Ask about the drifts on the Orange",
+  "event.colesberg_edge.ask_road": "Ask about the [[drifts]] on the Orange",
   "event.colesberg_edge.ask_road.done": "A transport rider tells you which drift is best at this time of year and how to read the water.",
   "event.colesberg_edge.letter": "Write a last letter to send back down the road",
   "event.colesberg_edge.letter.done": "Everyone adds a line, and the children draw pictures in the margin. The letter goes south with a wagon tomorrow.",
@@ -51,7 +51,7 @@
   "event.thaba_nchu_moroka.trekkers": "Go among the trekker camps for news",
   "event.thaba_nchu_moroka.trekkers.done": "Families who were at Vegkop tell you about the battle: the laager of wagons, the long day, and the cattle driven away afterwards. Without Moroka's oxen they could not have moved.",
 
-  "event.sand_river_laager.body": "By the Sand River the trekker parties have gathered into one great laager. Leaders are being chosen, and men argue loudly over where the trek should go next: north over the Vaal, or east over the mountains to Natal.",
+  "event.sand_river_laager.body": "By the Sand River the trekker parties have gathered into one great [[laager]]. Leaders are being chosen, and men argue loudly over where the trek should go next: north over the Vaal, or east over the mountains to Natal.",
   "event.sand_river_laager.body@english": "By the Sand River the trekker parties have gathered into one great laager. Heads turn as your wagon comes in. An English family here is something new, and not everyone is pleased.",
   "event.sand_river_laager.join": "Join the laager and take your place in the council",
   "event.sand_river_laager.join.done": "You draw your wagon into the ring, and that night {head} sits with the other men at the council fire. You are among your own people.",

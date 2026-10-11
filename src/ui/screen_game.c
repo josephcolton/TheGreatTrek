@@ -2,6 +2,7 @@
  * travel, dialog (events, places, rivers, roads), store, grave, ending. */
 #include "calendar.h"
 #include "format.h"
+#include "scene.h"
 #include "screens.h"
 
 #include <math.h>
@@ -155,6 +156,9 @@ static void travel_event(App *app, const SDL_Event *e)
     } else if (key_is(e, SDLK_J)) {
         app->overlay = OV_JOURNAL;
         app->scroll = 0;
+    } else if (key_is(e, SDLK_G)) {
+        app->overlay = OV_GLOSSARY;
+        app->scroll = 0;
     } else if (is_click(e)) {
         int hit = choices_hit(&app->draw, items, TR_COUNT, MENU_X, MENU_Y, MENU_W, app->mx, app->my, true);
         if (hit >= 0) {
@@ -241,70 +245,6 @@ static void draw_trail(App *app, float y)
     draw_rect(dr, (SDL_FRect){wx - 3, y - 2, 7, 6}, COL_TEXT);
 }
 
-/* A very simple scene: sky by weather, the veld, a wagon and its span. */
-static void draw_scene(App *app, SDL_FRect r)
-{
-    Draw *d = &app->draw;
-    Game *g = app->game;
-    SDL_Color sky = COL_SKY;
-    switch (g->weather) {
-    case WEATHER_RAIN: sky = (SDL_Color){96, 106, 116, 255}; break;
-    case WEATHER_STORM: sky = (SDL_Color){62, 66, 80, 255}; break;
-    case WEATHER_HOT: sky = (SDL_Color){178, 170, 132, 255}; break;
-    case WEATHER_FROST:
-    case WEATHER_COLD: sky = (SDL_Color){150, 168, 182, 255}; break;
-    default: break;
-    }
-    int region = g->edge >= 0 ? app->data->edges[g->edge].region : 0;
-    const char *rid = app->data->regions[region].id;
-    SDL_Color ground = COL_GROUND;
-    if (strcmp(rid, "highveld") == 0) {
-        ground = (SDL_Color){164, 150, 92, 255};
-    } else if (strcmp(rid, "eastern_frontier") == 0 || strcmp(rid, "stormberg") == 0) {
-        ground = (SDL_Color){104, 120, 70, 255};
-    } else if (strcmp(rid, "karoo") == 0) {
-        ground = (SDL_Color){170, 136, 92, 255};
-    }
-    float horizon = r.y + r.h * 0.55f;
-    draw_rect(d, (SDL_FRect){r.x, r.y, r.w, horizon - r.y}, sky);
-    draw_rect(d, (SDL_FRect){r.x, horizon, r.w, r.y + r.h - horizon}, ground);
-    /* distant hills */
-    SDL_Color hill = {(Uint8)(sky.r * 0.7), (Uint8)(sky.g * 0.7), (Uint8)(sky.b * 0.7), 255};
-    for (int i = 0; i < 6; i++) {
-        float hx = r.x + i * 120.0f - 30;
-        draw_rect(d, (SDL_FRect){hx, horizon - 10 - (i % 3) * 4, 90, 10 + (i % 3) * 4.0f}, hill);
-    }
-    /* grass tufts that scroll while travelling */
-    double t = app->travelling ? SDL_GetTicks() / 1000.0 : 0;
-    SDL_Color tuft = {(Uint8)(ground.r * 0.75), (Uint8)(ground.g * 0.75), (Uint8)(ground.b * 0.75), 255};
-    for (int i = 0; i < 24; i++) {
-        float tx = (float)fmod(i * 53.0 + t * 30.0, r.w);
-        float ty = horizon + 8 + (i * 37) % (int)(r.y + r.h - horizon - 12);
-        draw_rect(d, (SDL_FRect){r.x + r.w - tx, ty, 3, 2}, tuft);
-    }
-    /* the wagon: tent, bed, wheels; oxen ahead of it */
-    float wy = horizon + 18;
-    float wx = r.x + r.w * 0.55f;
-    float bob = app->travelling ? (float)((int)(t * 4) % 2) : 0;
-    SDL_Color canvas = {226, 216, 190, 255}, wood = {98, 70, 44, 255}, ox = {74, 52, 36, 255};
-    draw_rect(d, (SDL_FRect){wx, wy - 18 + bob, 56, 16}, canvas);
-    draw_rect(d, (SDL_FRect){wx - 2, wy - 2 + bob, 60, 6}, wood);
-    draw_rect(d, (SDL_FRect){wx + 2, wy + 4, 10, 10}, wood);
-    draw_rect(d, (SDL_FRect){wx + 44, wy + 4, 12, 12}, wood);
-    int oxen = g->inv[app->data->item_oxen];
-    int pairs = oxen / 2 > 7 ? 7 : oxen / 2;
-    for (int p = 0; p < pairs; p++) {
-        float ox_x = wx - 18 - p * 16.0f;
-        float leg = app->travelling ? (float)((int)(t * 6 + p) % 2) : 0;
-        draw_rect(d, (SDL_FRect){ox_x, wy + 2, 13, 7}, ox);
-        draw_rect(d, (SDL_FRect){ox_x + 1, wy + 9, 2, 4 + leg}, ox);
-        draw_rect(d, (SDL_FRect){ox_x + 10, wy + 9, 2, 5 - leg}, ox);
-    }
-    if (pairs > 0) {
-        draw_rect(d, (SDL_FRect){wx - 18 - (pairs - 1) * 16.0f - 2, wy + 5, (pairs - 1) * 16.0f + 20, 1}, wood);
-    }
-}
-
 static void draw_status(App *app, float x, float y)
 {
     Draw *d = &app->draw;
@@ -361,7 +301,9 @@ static void travel_render(App *app)
     Draw *d = &app->draw;
     Game *g = app->game;
     header_for_game(app);
-    draw_scene(app, (SDL_FRect){0, 19, TREK_LOGICAL_W, 132});
+    int region = g->edge >= 0 ? app->data->edges[g->edge].region : -1;
+    bool mountains = region >= 0 && strcmp(app->data->regions[region].id, "stormberg") == 0;
+    scene_draw(app, (SDL_FRect){0, 19, TREK_LOGICAL_W, 132}, mountains ? SCENE_MOUNTAIN : SCENE_ROAD, -1, app->travelling);
     draw_rect(d, (SDL_FRect){0, 151, TREK_LOGICAL_W, 1}, COL_BORDER);
     draw_trail(app, 160);
     LocText t;
@@ -429,11 +371,13 @@ static void build_choices(App *app, const DialogView *v, DialogChoices *dc)
     }
 }
 
-/* Lays out the dialog; returns the y where choices start. */
-static float dialog_layout(App *app, const DialogView *v, bool draw)
+#define SCENE_H 76.0f
+
+/* Lays out the dialog from y0; returns the y where choices start. */
+static float dialog_layout(App *app, const DialogView *v, bool draw, float y0)
 {
     Draw *d = &app->draw;
-    float y = 26;
+    float y = y0;
     if (v->title.key[0]) {
         if (draw) {
             draw_text(d, d->font, app_fmt(app, &v->title), DLG_X, y, COL_GOLD, TEXT_LEFT);
@@ -450,6 +394,25 @@ static float dialog_layout(App *app, const DialogView *v, bool draw)
         y += draw_wrapped(d, d->font, app_fmt(app, &v->body[i]), DLG_X, y, DLG_W, COL_TEXT, !draw) + 6;
     }
     return y + 6;
+}
+
+static float choices_bottom(App *app, const DialogChoices *dc, float y)
+{
+    float h = y;
+    for (int i = 0; i < dc->n; i++) {
+        h += draw_wrapped(&app->draw, app->font, dc->items[i].text, 0, 0, DLG_W - 28, COL_TEXT, true) + 4;
+        if (dc->items[i].locked && dc->items[i].locked[0]) {
+            h += app->draw.line_h;
+        }
+    }
+    return h;
+}
+
+static float text_start(App *app, const DialogView *v, const DialogChoices *dc)
+{
+    float y = dialog_layout(app, v, false, 26);
+    float bottom = choices_bottom(app, dc, y);
+    return bottom + SCENE_H <= TREK_LOGICAL_H - 22 ? 26 + SCENE_H : 26;
 }
 
 static void dialog_event(App *app, const SDL_Event *e)
@@ -478,6 +441,11 @@ static void dialog_event(App *app, const SDL_Event *e)
         app->overlay = OV_PARTY;
         return;
     }
+    if (key_is(e, SDLK_G)) {
+        app->overlay = OV_GLOSSARY;
+        app->scroll = 0;
+        return;
+    }
     if (key_is(e, SDLK_S)) {
         app->overlay = OV_SUPPLIES;
         return;
@@ -490,7 +458,7 @@ static void dialog_event(App *app, const SDL_Event *e)
     } else if (is_confirm(e)) {
         pick = dc.n == 1 ? 0 : app->sel;
     } else if (is_click(e)) {
-        float y = dialog_layout(app, &v, false);
+        float y = dialog_layout(app, &v, false, text_start(app, &v, &dc));
         pick = choices_hit(&app->draw, dc.items, dc.n, DLG_X, y, DLG_W, app->mx, app->my, true);
     }
     if (pick >= 0 && pick < dc.n && !dc.items[pick].locked) {
@@ -511,7 +479,12 @@ static void dialog_render(App *app)
     }
     DialogChoices dc;
     build_choices(app, &v, &dc);
-    float y = dialog_layout(app, &v, true);
+    float top = text_start(app, &v, &dc);
+    if (top > 26) {
+        scene_draw(app, (SDL_FRect){0, 19, TREK_LOGICAL_W, SCENE_H}, scene_for_game(app), -1, false);
+        draw_rect(&app->draw, (SDL_FRect){0, 19 + SCENE_H, TREK_LOGICAL_W, 1}, COL_BORDER);
+    }
+    float y = dialog_layout(app, &v, true, top);
     draw_rect(&app->draw, (SDL_FRect){DLG_X, y - 4, DLG_W, 1}, COL_BORDER);
     draw_choices(&app->draw, dc.items, dc.n, DLG_X, y, DLG_W, app->mx, app->my, app->sel, true, NULL);
     draw_footer(app, app_text(app, v.history_key[0] ? "dialog.footer_history" : "dialog.footer"));

@@ -71,7 +71,7 @@
   "travel.next": "Next: {place}, {miles} miles",
   "travel.at": "At {place}",
   "travel.done": "{miles} miles in {days} days",
-  "travel.footer": "Choose with 1-8, arrows or the mouse.  M: map  J: journal  Esc: menu",
+  "travel.footer": "Choose with 1-8 or the mouse.  M: map  J: journal  G: words  Esc: menu",
   "travel.footer_moving": "On the road... press any key to stop.",
 
   "status.food": "Food: {days} days ({lb} lb, {sheep} sheep)",
@@ -102,8 +102,8 @@
   "orders.sabbath.about": "Resting on Sundays costs a day a week, but lifts everyone's spirits and is expected among the trekkers.",
   "orders.footer": "Up/down to choose, left/right to change. Enter or Esc to close.",
 
-  "dialog.footer": "Choose with the number keys or the mouse.  P: party  S: supplies  M: map",
-  "dialog.footer_history": "Choose with the number keys or the mouse.  H: the history behind this  M: map",
+  "dialog.footer": "Choose with the number keys or the mouse.  P: party  S: supplies  M: map  G: words",
+  "dialog.footer_history": "Choose with the number keys or the mouse.  H: the history behind this  G: words",
 
   "store.money": "You have {n}",
   "store.col.item": "Goods",

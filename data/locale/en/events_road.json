@@ -15,7 +15,7 @@
 
   "event.oxen_stray.body": "At first light the oxen are gone. {speaker} finds their tracks leading away into the veld; they must have smelt good grass somewhere in the night.",
   "event.oxen_stray.track": "Follow the tracks at once (half a day)",
-  "event.oxen_stray.track.found": "The spoor leads to a green valley, and there are the oxen, grazing as though nothing had happened.",
+  "event.oxen_stray.track.found": "The [[spoor]] leads to a green valley, and there are the oxen, grazing as though nothing had happened.",
   "event.oxen_stray.track.lost": "You find most of them, but two oxen are never seen again.",
   "event.oxen_stray.wait": "Wait for them to wander back",
   "event.oxen_stray.wait.back": "Late the next day the oxen come straggling back on their own.",
@@ -90,7 +90,7 @@
   "event.servant_wages.refuse": "Refuse",
   "event.servant_wages.refuse.done": "{speaker} says nothing more, but works in silence from then on.",
 
-  "event.smous_visit.body": "A smous comes along the track with a wagon full of goods: coffee, sugar, cloth, buttons, needles and medicines. He has news from every farm between here and Graaff-Reinet.",
+  "event.smous_visit.body": "A [[smous]] comes along the track with a wagon full of goods: coffee, sugar, cloth, buttons, needles and medicines. He has news from every farm between here and Graaff-Reinet.",
   "event.smous_visit.coffee": "Buy coffee and sugar (6 lb each)",
   "event.smous_visit.coffee.done": "The price is high, as a smous's prices always are, but tonight there will be coffee.",
   "event.smous_visit.medicine": "Buy medicines (4 doses)",
