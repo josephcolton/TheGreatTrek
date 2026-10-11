@@ -20,6 +20,21 @@ Pick a side and one of seven fictional families, read how they came to be in Gra
 | P / S | party / supplies (in an event) |
 | F11 | full screen |
 
+### Trying the beta (Windows)
+
+1. Download `TheGreatTrek-<version>-windows.zip` from the [Releases](https://github.com/josephcolton/TheGreatTrek/releases) page.
+2. Unzip it anywhere, keep the folder together, and run `TheGreatTrek.exe`. Nothing needs installing.
+3. The program isn't signed, so Windows may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
+
+Saves are kept in `%APPDATA%\TheGreatTrek\TheGreatTrek\trips`. Deleting the game folder does not delete them.
+
+If something goes wrong or reads oddly, please open an [issue](https://github.com/josephcolton/TheGreatTrek/issues) or tell the person who sent you the game. Say:
+- what you were doing
+- which family you were playing
+- what you expected to happen
+
+If you can, attach the trip's save file from the folder above.
+
 Every event says where its history comes from; press H to read it. The families are invented; the places, prices and much of what happens are taken from period sources such as Captain Harris (1836-37) and James Backhouse (1838-39).
 
 ## Building
