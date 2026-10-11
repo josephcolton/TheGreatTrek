@@ -28,6 +28,7 @@ typedef struct {
     bool show_odds;         /* off by default */
     bool fullscreen;
     int travel_speed;       /* 0 slow, 1 normal, 2 fast */
+    bool sound;
 } Settings;
 
 #define MAX_NAME_LIST 64

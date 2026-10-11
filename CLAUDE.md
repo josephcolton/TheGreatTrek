@@ -89,7 +89,7 @@ Testing the front end without a person: `--keys` replays key presses (1-9, a-z, 
 
 ### This machine (Windows 11), checked 2026-10-11
 - **Toolchain in use:** `gcc` 13.2 (MinGW-w64 UCRT), `cmake` 3.29 and `ninja` from **Strawberry Perl** (`C:/Strawberry/c/bin`), first on PATH. Chosen because it works with no setup; the CMake files are portable to MSVC and other platforms.
-- Also installed: MSYS2 at `C:/msys64`, Visual Studio 2022 Community. SDL is not installed system-wide (FetchContent fetches it).
+- Also installed: MSYS2 at `C:/msys64`, Visual Studio 2022 Community **without the C++ workload** (no `cl.exe`), so MSVC builds cannot be tested here until "Desktop development with C++" is added. SDL is not installed system-wide (FetchContent fetches it).
 - **Build outside Google Drive**, in `%LOCALAPPDATA%\TheGreatTrek-build\`, so sync doesn't slow the build.
 - Shells: both Git Bash and PowerShell are available. Paths contain spaces, so quote them.
 - Backslash escapes written through Bash heredocs or Python strings can get collapsed (`'\\'` became `'\'`); prefer the Write/Edit tools for source files.

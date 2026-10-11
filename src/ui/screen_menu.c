@@ -268,7 +268,9 @@ void trips_render(App *app)
 
 /* ---------------------------------------------------------------- settings */
 
-typedef enum { ST_ODDS, ST_FULLSCREEN, ST_SPEED, ST_BACK, ST_COUNT } SettingItem;
+#include "sound.h"
+
+typedef enum { ST_ODDS, ST_FULLSCREEN, ST_SPEED, ST_SOUND, ST_BACK, ST_COUNT } SettingItem;
 
 static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128])
 {
@@ -279,6 +281,8 @@ static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128]
     char key[48];
     snprintf(key, sizeof key, "settings.speed.%d", app->settings.travel_speed);
     snprintf(bufs[ST_SPEED], 128, "%s %s", app_text(app, "settings.speed"), app_text(app, key));
+    snprintf(bufs[ST_SOUND], 128, "%s %s", app_text(app, "settings.sound"),
+             app_text(app, app->settings.sound ? "settings.on" : "settings.off"));
     snprintf(bufs[ST_BACK], 128, "%s", app_text(app, "settings.back"));
     for (int i = 0; i < ST_COUNT; i++) {
         items[i] = (ChoiceItem){bufs[i], NULL};
@@ -294,6 +298,11 @@ static void settings_activate(App *app, int item)
         SDL_SetWindowFullscreen(app->window, app->settings.fullscreen);
         break;
     case ST_SPEED: app->settings.travel_speed = (app->settings.travel_speed + 1) % 3; break;
+    case ST_SOUND:
+        app->settings.sound = !app->settings.sound;
+        sound_set_enabled(app->settings.sound);
+        sound_play(SFX_CLICK);
+        break;
     case ST_BACK:
         app_switch(app, app->game ? SCR_GAME : SCR_TITLE);
         break;

@@ -4,6 +4,7 @@
 #include "format.h"
 #include "scene.h"
 #include "screens.h"
+#include "sound.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -740,8 +741,53 @@ void game_screen_event(App *app, const SDL_Event *e)
     }
 }
 
+/* Plays sounds when the game changes: a whip as the wagons start, a shot or a misfire,
+ * the river, an ox lowing when one dies, a bell for a grave. */
+static void sound_watch(App *app)
+{
+    static const Game *last_game;
+    static DialogKind last_dlg;
+    static int last_shots, last_notices, last_graves;
+    static bool last_travelling;
+    Game *g = app->game;
+    if (g != last_game) {
+        last_game = g;
+        last_dlg = g ? g->dlg.kind : DLG_NONE;
+        last_shots = g ? g->hunt.shots : 0;
+        last_notices = g ? g->notice_count : 0;
+        last_graves = g ? g->pending_grave_count : 0;
+        last_travelling = app->travelling;
+        return;
+    }
+    if (!g) {
+        return;
+    }
+    if (app->travelling && !last_travelling) {
+        sound_play(SFX_WHIP);
+    }
+    if (g->hunt.shots > last_shots && g->hunt.log_count > 0) {
+        bool misfire = strcmp(g->hunt.log[g->hunt.log_count - 1].key, "hunt.misfire") == 0;
+        sound_play(misfire ? SFX_MISFIRE : SFX_GUNSHOT);
+    }
+    if (g->dlg.kind == DLG_RIVER && last_dlg != DLG_RIVER) {
+        sound_play(SFX_WATER);
+    }
+    if (g->notice_count > last_notices && strcmp(g->notices[g->notice_count - 1].key, "notice.ox_died") == 0) {
+        sound_play(SFX_LOWING);
+    }
+    if (g->pending_grave_count > last_graves) {
+        sound_play(SFX_BELL);
+    }
+    last_dlg = g->dlg.kind;
+    last_shots = g->hunt.shots;
+    last_notices = g->notice_count;
+    last_graves = g->pending_grave_count;
+    last_travelling = app->travelling;
+}
+
 void game_screen_update(App *app, double dt)
 {
+    sound_watch(app);
     Game *g = app->game;
     if (!g || !app->travelling || app->overlay != OV_NONE) {
         return;

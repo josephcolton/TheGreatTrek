@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include "format.h"
+#include "sound.h"
 #include "util.h"
 
 #include <cJSON.h>
@@ -33,6 +34,7 @@ static void load_settings(App *app)
     s->show_odds = false;
     s->fullscreen = false;
     s->travel_speed = 1;
+    s->sound = true;
     char *path = util_path_join(app->pref_path, "settings.json");
     char *json = util_read_file(path, NULL);
     free(path);
@@ -51,6 +53,9 @@ static void load_settings(App *app)
     }
     s->show_odds = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "show_odds"));
     s->fullscreen = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "fullscreen"));
+    if (cJSON_IsBool(v = cJSON_GetObjectItemCaseSensitive(o, "sound"))) {
+        s->sound = cJSON_IsTrue(v);
+    }
     if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "travel_speed"))) {
         s->travel_speed = v->valueint < 0 ? 0 : (v->valueint > 2 ? 2 : v->valueint);
     }
@@ -64,6 +69,7 @@ void app_save_settings(App *app)
     cJSON_AddBoolToObject(o, "show_odds", app->settings.show_odds);
     cJSON_AddBoolToObject(o, "fullscreen", app->settings.fullscreen);
     cJSON_AddNumberToObject(o, "travel_speed", app->settings.travel_speed);
+    cJSON_AddBoolToObject(o, "sound", app->settings.sound);
     char *json = cJSON_Print(o);
     cJSON_Delete(o);
     char *path = util_path_join(app->pref_path, "settings.json");
@@ -156,6 +162,8 @@ bool app_init(App *app)
     }
     load_settings(app);
     load_names(app);
+    sound_init(); /* the game works without sound if there is no audio device */
+    sound_set_enabled(app->settings.sound);
 
     if (!SDL_CreateWindowAndRenderer(locale_get(app->loc, "app.title"), TREK_LOGICAL_W * 2, TREK_LOGICAL_H * 2,
                                      SDL_WINDOW_RESIZABLE, &app->window, &app->renderer)) {
@@ -192,6 +200,7 @@ void app_close_game(App *app)
 void app_shutdown(App *app)
 {
     app_close_game(app);
+    sound_shutdown();
     draw_shutdown();
     if (app->font) {
         TTF_CloseFont(app->font);
