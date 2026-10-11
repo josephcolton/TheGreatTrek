@@ -236,6 +236,11 @@ void g_event_view(const Game *g, DialogView *v)
     const EventNode *node = &ev->nodes[g->dlg.node];
     v->kind = DLG_EVENT;
     snprintf(v->image, sizeof v->image, "%s", node->image);
+    if (node->portrait[0]) {
+        snprintf(v->portrait, sizeof v->portrait, "%s", node->portrait);
+    } else if (!node->speaker_key[0] && g->dlg.speaker >= 0) {
+        snprintf(v->portrait, sizeof v->portrait, "%s", g->party[g->dlg.speaker].portrait);
+    }
     snprintf(v->history_key, sizeof v->history_key, "%s", ev->history_key);
     speaker_text(g, &v->speaker, node);
     if (g->dlg.showing_result) {

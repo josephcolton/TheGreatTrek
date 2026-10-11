@@ -61,6 +61,7 @@ typedef struct {
     Pronoun pronoun;
     int birth_year;
     uint8_t skills[SKILL_COUNT];
+    char portrait[ID_LEN];    /* from the family; stays with the person if renamed */
     int health;               /* 0..100 */
     MemberCond conds[MAX_MEMBER_CONDS];
     int cond_count;
@@ -250,6 +251,7 @@ typedef struct {
     ChoiceView choices[MAX_CHOICES];
     int choice_count;
     char image[ID_LEN];
+    char portrait[ID_LEN];    /* who is speaking or met; empty = none */
     char history_key[KEY_LEN];
 } DialogView;
 

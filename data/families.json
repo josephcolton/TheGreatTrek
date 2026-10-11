@@ -1,17 +1,17 @@
 {
-  "_about": "All families and their members are fictional (CLAUDE.md). Flocks are large because trekkers lived largely off their sheep (Backhouse 1839: \"we had always been able to procure sheep\"; Potgieter alone lost 5,000 sheep at Vegkop). Exact numbers are invented. Stories are in the locale file (story.<id>.1-3), drafted in 05_research_pass2.md section 8.3. Money is in the side's unit: rixdollars (Dutch) or shillings (English). Skills 0-5: shooting, herding, voorloper, interpreting, nursing, smithing, tracking.",
+  "_about": "All families and their members are fictional (CLAUDE.md). Flocks are large because trekkers lived largely off their sheep (Backhouse 1839: \"we had always been able to procure sheep\"; Potgieter alone lost 5,000 sheep at Vegkop). Exact numbers are invented. Stories are in the locale file (story.<id>.1-3), drafted in 05_research_pass2.md section 8.3. Money is in the side's unit: rixdollars (Dutch) or shillings (English). Skills 0-5: shooting, herding, voorloper, interpreting, nursing, smithing, tracking. portrait names the sprite portrait_<id> in assets/sprites/portraits.txt.",
   "families": [
     { "id": "grensboer", "side": "dutch", "surname": "Badenhorst", "wagon": "kakebeenwa", "money": 150,
       "perks": { "illness": 1.0 },
       "members": [
-        { "name": "Gerrit",   "role": "head",    "age": "adult", "pronoun": "he",  "born": 1795, "skills": { "shooting": 3, "herding": 4 } },
-        { "name": "Susanna",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1799, "skills": { "nursing": 3 } },
-        { "name": "Johannes", "role": "child",   "age": "adult", "pronoun": "he",  "born": 1821, "skills": { "shooting": 2, "herding": 2 } },
-        { "name": "Maria",    "role": "child",   "age": "child", "pronoun": "she", "born": 1825, "skills": { "nursing": 1 } },
-        { "name": "Hendrik",  "role": "child",   "age": "child", "pronoun": "he",  "born": 1829, "skills": {} },
-        { "name": "Klaas",    "role": "servant", "age": "adult", "pronoun": "he",  "born": 1792, "skills": { "voorloper": 4, "herding": 3, "tracking": 2 } },
-        { "name": "Dina",     "role": "servant", "age": "adult", "pronoun": "she", "born": 1797, "skills": { "nursing": 2 } },
-        { "name": "Jantjie",  "role": "servant", "age": "child", "pronoun": "he",  "born": 1823, "skills": { "herding": 2, "voorloper": 2 } }
+        { "name": "Gerrit", "portrait": "grensboer_gerrit",   "role": "head",    "age": "adult", "pronoun": "he",  "born": 1795, "skills": { "shooting": 3, "herding": 4 } },
+        { "name": "Susanna", "portrait": "grensboer_susanna",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1799, "skills": { "nursing": 3 } },
+        { "name": "Johannes", "portrait": "grensboer_johannes", "role": "child",   "age": "adult", "pronoun": "he",  "born": 1821, "skills": { "shooting": 2, "herding": 2 } },
+        { "name": "Maria", "portrait": "grensboer_maria",    "role": "child",   "age": "child", "pronoun": "she", "born": 1825, "skills": { "nursing": 1 } },
+        { "name": "Hendrik", "portrait": "grensboer_hendrik",  "role": "child",   "age": "child", "pronoun": "he",  "born": 1829, "skills": {} },
+        { "name": "Klaas", "portrait": "grensboer_klaas",    "role": "servant", "age": "adult", "pronoun": "he",  "born": 1792, "skills": { "voorloper": 4, "herding": 3, "tracking": 2 } },
+        { "name": "Dina", "portrait": "grensboer_dina",     "role": "servant", "age": "adult", "pronoun": "she", "born": 1797, "skills": { "nursing": 2 } },
+        { "name": "Jantjie", "portrait": "grensboer_jantjie",  "role": "servant", "age": "child", "pronoun": "he",  "born": 1823, "skills": { "herding": 2, "voorloper": 2 } }
       ],
       "items": { "oxen": 16, "cows": 20, "sheep": 140, "horses": 3, "meal": 360, "biltong": 60, "beskuit": 40, "coffee": 15, "sugar": 15,
                  "water_vat": 3, "water": 60, "gunpowder": 10, "lead": 20, "flints": 24, "spare_wheel": 1, "medicine": 4, "tallow": 10 } },
@@ -19,13 +19,13 @@
     { "id": "smid", "side": "dutch", "surname": "Kotzé", "wagon": "kakebeenwa", "money": 250,
       "perks": { "repair": 0.5 },
       "members": [
-        { "name": "Hendrik",  "role": "head",    "age": "adult", "pronoun": "he",  "born": 1802, "skills": { "smithing": 5, "shooting": 2 } },
-        { "name": "Aletta",   "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1806, "skills": { "nursing": 2 } },
-        { "name": "Gerrit",   "role": "child",   "age": "child", "pronoun": "he",  "born": 1827, "skills": {} },
-        { "name": "Anna",     "role": "child",   "age": "child", "pronoun": "she", "born": 1830, "skills": {} },
-        { "name": "Cornelia", "role": "child",   "age": "child", "pronoun": "she", "born": 1834, "skills": {} },
-        { "name": "Booi",     "role": "servant", "age": "adult", "pronoun": "he",  "born": 1805, "skills": { "herding": 3, "voorloper": 3 } },
-        { "name": "Leentjie", "role": "servant", "age": "adult", "pronoun": "she", "born": 1812, "skills": { "nursing": 1 } }
+        { "name": "Hendrik", "portrait": "smid_hendrik",  "role": "head",    "age": "adult", "pronoun": "he",  "born": 1802, "skills": { "smithing": 5, "shooting": 2 } },
+        { "name": "Aletta", "portrait": "smid_aletta",   "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1806, "skills": { "nursing": 2 } },
+        { "name": "Gerrit", "portrait": "smid_gerrit",   "role": "child",   "age": "child", "pronoun": "he",  "born": 1827, "skills": {} },
+        { "name": "Anna", "portrait": "smid_anna",     "role": "child",   "age": "child", "pronoun": "she", "born": 1830, "skills": {} },
+        { "name": "Cornelia", "portrait": "smid_cornelia", "role": "child",   "age": "child", "pronoun": "she", "born": 1834, "skills": {} },
+        { "name": "Booi", "portrait": "smid_booi",     "role": "servant", "age": "adult", "pronoun": "he",  "born": 1805, "skills": { "herding": 3, "voorloper": 3 } },
+        { "name": "Leentjie", "portrait": "smid_leentjie", "role": "servant", "age": "adult", "pronoun": "she", "born": 1812, "skills": { "nursing": 1 } }
       ],
       "items": { "oxen": 14, "cows": 6, "sheep": 70, "horses": 1, "meal": 360, "biltong": 40, "beskuit": 40, "coffee": 10, "sugar": 10,
                  "water_vat": 3, "water": 60, "gunpowder": 8, "lead": 15, "flints": 12, "spare_wheel": 2, "spare_axle": 2, "spare_dissel": 1,
@@ -34,12 +34,12 @@
     { "id": "jagter", "side": "dutch", "surname": "du Plessis", "wagon": "kakebeenwa", "money": 120,
       "perks": { "hunt": 1.4, "morale": -5 },
       "members": [
-        { "name": "Barend",  "role": "head",    "age": "adult", "pronoun": "he",  "born": 1807, "skills": { "shooting": 5, "tracking": 4, "herding": 1 } },
-        { "name": "Hester",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1809, "skills": { "shooting": 2, "nursing": 2 } },
-        { "name": "Pieter",  "role": "child",   "age": "child", "pronoun": "he",  "born": 1828, "skills": { "shooting": 1 } },
-        { "name": "Sannie",  "role": "child",   "age": "child", "pronoun": "she", "born": 1832, "skills": {} },
-        { "name": "Kiewiet", "role": "servant", "age": "adult", "pronoun": "he",  "born": 1800, "skills": { "tracking": 4, "voorloper": 3, "interpreting": 2 } },
-        { "name": "Rosina",  "role": "servant", "age": "adult", "pronoun": "she", "born": 1807, "skills": { "herding": 2, "nursing": 1 } }
+        { "name": "Barend", "portrait": "jagter_barend",  "role": "head",    "age": "adult", "pronoun": "he",  "born": 1807, "skills": { "shooting": 5, "tracking": 4, "herding": 1 } },
+        { "name": "Hester", "portrait": "jagter_hester",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1809, "skills": { "shooting": 2, "nursing": 2 } },
+        { "name": "Pieter", "portrait": "jagter_pieter",  "role": "child",   "age": "child", "pronoun": "he",  "born": 1828, "skills": { "shooting": 1 } },
+        { "name": "Sannie", "portrait": "jagter_sannie",  "role": "child",   "age": "child", "pronoun": "she", "born": 1832, "skills": {} },
+        { "name": "Kiewiet", "portrait": "jagter_kiewiet", "role": "servant", "age": "adult", "pronoun": "he",  "born": 1800, "skills": { "tracking": 4, "voorloper": 3, "interpreting": 2 } },
+        { "name": "Rosina", "portrait": "jagter_rosina",  "role": "servant", "age": "adult", "pronoun": "she", "born": 1807, "skills": { "herding": 2, "nursing": 1 } }
       ],
       "items": { "oxen": 14, "cows": 8, "sheep": 60, "horses": 4, "meal": 270, "biltong": 80, "beskuit": 20, "coffee": 10, "sugar": 10,
                  "water_vat": 3, "water": 60, "gunpowder": 25, "lead": 50, "flints": 36, "spare_wheel": 1, "medicine": 2, "tallow": 10 } },
@@ -47,14 +47,14 @@
     { "id": "predikant", "side": "dutch", "surname": "Marais", "wagon": "kakebeenwa", "money": 80,
       "perks": { "morale": 10 },
       "members": [
-        { "name": "Daniël",    "role": "head",    "age": "adult", "pronoun": "he",  "born": 1792, "skills": { "nursing": 2, "interpreting": 1 } },
-        { "name": "Johanna",   "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1796, "skills": { "nursing": 4 } },
-        { "name": "Engela",    "role": "child",   "age": "adult", "pronoun": "she", "born": 1820, "skills": { "nursing": 2 } },
-        { "name": "Lodewyk",   "role": "child",   "age": "adult", "pronoun": "he",  "born": 1822, "skills": { "shooting": 2, "herding": 1 } },
-        { "name": "Petronella","role": "child",   "age": "child", "pronoun": "she", "born": 1826, "skills": {} },
-        { "name": "Adriaan",   "role": "child",   "age": "child", "pronoun": "he",  "born": 1831, "skills": {} },
-        { "name": "Februarie", "role": "servant", "age": "elder", "pronoun": "he",  "born": 1787, "skills": { "herding": 3, "voorloper": 3 } },
-        { "name": "Philida",   "role": "servant", "age": "adult", "pronoun": "she", "born": 1802, "skills": { "nursing": 2 } }
+        { "name": "Daniël", "portrait": "predikant_daniel",    "role": "head",    "age": "adult", "pronoun": "he",  "born": 1792, "skills": { "nursing": 2, "interpreting": 1 } },
+        { "name": "Johanna", "portrait": "predikant_johanna",   "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1796, "skills": { "nursing": 4 } },
+        { "name": "Engela", "portrait": "predikant_engela",    "role": "child",   "age": "adult", "pronoun": "she", "born": 1820, "skills": { "nursing": 2 } },
+        { "name": "Lodewyk", "portrait": "predikant_lodewyk",   "role": "child",   "age": "adult", "pronoun": "he",  "born": 1822, "skills": { "shooting": 2, "herding": 1 } },
+        { "name": "Petronella", "portrait": "predikant_petronella","role": "child",   "age": "child", "pronoun": "she", "born": 1826, "skills": {} },
+        { "name": "Adriaan", "portrait": "predikant_adriaan",   "role": "child",   "age": "child", "pronoun": "he",  "born": 1831, "skills": {} },
+        { "name": "Februarie", "portrait": "predikant_februarie", "role": "servant", "age": "elder", "pronoun": "he",  "born": 1787, "skills": { "herding": 3, "voorloper": 3 } },
+        { "name": "Philida", "portrait": "predikant_philida",   "role": "servant", "age": "adult", "pronoun": "she", "born": 1802, "skills": { "nursing": 2 } }
       ],
       "items": { "oxen": 12, "cows": 6, "sheep": 90, "horses": 1, "meal": 360, "biltong": 30, "beskuit": 40, "coffee": 10, "sugar": 10,
                  "water_vat": 3, "water": 60, "gunpowder": 5, "lead": 10, "flints": 12, "medicine": 8, "tallow": 10 } },
@@ -62,13 +62,13 @@
     { "id": "settler", "side": "english", "surname": "Ashworth", "wagon": "kakebeenwa", "money": 1200,
       "perks": {},
       "members": [
-        { "name": "Thomas",  "role": "head",    "age": "adult", "pronoun": "he",  "born": 1785, "skills": { "herding": 2, "shooting": 2, "interpreting": 2 } },
-        { "name": "Mary",    "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1788, "skills": { "nursing": 3 } },
-        { "name": "William", "role": "child",   "age": "adult", "pronoun": "he",  "born": 1815, "skills": { "shooting": 3, "herding": 2, "interpreting": 2 } },
-        { "name": "Sarah",   "role": "child",   "age": "child", "pronoun": "she", "born": 1822, "skills": { "nursing": 1 } },
-        { "name": "Jane",    "role": "child",   "age": "child", "pronoun": "she", "born": 1827, "skills": {} },
-        { "name": "Cupido",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1800, "skills": { "voorloper": 3, "herding": 2 } },
-        { "name": "Lena",    "role": "servant", "age": "adult", "pronoun": "she", "born": 1806, "skills": { "nursing": 1, "herding": 1 } }
+        { "name": "Thomas", "portrait": "settler_thomas",  "role": "head",    "age": "adult", "pronoun": "he",  "born": 1785, "skills": { "herding": 2, "shooting": 2, "interpreting": 2 } },
+        { "name": "Mary", "portrait": "settler_mary",    "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1788, "skills": { "nursing": 3 } },
+        { "name": "William", "portrait": "settler_william", "role": "child",   "age": "adult", "pronoun": "he",  "born": 1815, "skills": { "shooting": 3, "herding": 2, "interpreting": 2 } },
+        { "name": "Sarah", "portrait": "settler_sarah",   "role": "child",   "age": "child", "pronoun": "she", "born": 1822, "skills": { "nursing": 1 } },
+        { "name": "Jane", "portrait": "settler_jane",    "role": "child",   "age": "child", "pronoun": "she", "born": 1827, "skills": {} },
+        { "name": "Cupido", "portrait": "settler_cupido",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1800, "skills": { "voorloper": 3, "herding": 2 } },
+        { "name": "Lena", "portrait": "settler_lena",    "role": "servant", "age": "adult", "pronoun": "she", "born": 1806, "skills": { "nursing": 1, "herding": 1 } }
       ],
       "items": { "oxen": 14, "cows": 4, "sheep": 50, "horses": 2, "meal": 360, "biltong": 30, "beskuit": 30, "coffee": 15, "sugar": 20,
                  "water_vat": 3, "water": 60, "gunpowder": 8, "lead": 15, "flints": 12, "spare_wheel": 1, "spare_axle": 1, "medicine": 6, "tallow": 10 } },
@@ -76,11 +76,11 @@
     { "id": "trader", "side": "english", "surname": "Pascoe", "wagon": "transport_wagon", "money": 800,
       "perks": { "barter": 1.2 },
       "members": [
-        { "name": "Samuel", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1808, "skills": { "interpreting": 3, "shooting": 2 } },
-        { "name": "Ellen",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1812, "skills": { "nursing": 2 } },
-        { "name": "Grace",  "role": "child",   "age": "child", "pronoun": "she", "born": 1835, "skills": {} },
-        { "name": "Jan",    "role": "servant", "age": "adult", "pronoun": "he",  "born": 1810, "skills": { "voorloper": 3, "herding": 2 } },
-        { "name": "Adam",   "role": "servant", "age": "adult", "pronoun": "he",  "born": 1815, "skills": { "herding": 3, "voorloper": 1 } }
+        { "name": "Samuel", "portrait": "trader_samuel", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1808, "skills": { "interpreting": 3, "shooting": 2 } },
+        { "name": "Ellen", "portrait": "trader_ellen",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1812, "skills": { "nursing": 2 } },
+        { "name": "Grace", "portrait": "trader_grace",  "role": "child",   "age": "child", "pronoun": "she", "born": 1835, "skills": {} },
+        { "name": "Jan", "portrait": "trader_jan",    "role": "servant", "age": "adult", "pronoun": "he",  "born": 1810, "skills": { "voorloper": 3, "herding": 2 } },
+        { "name": "Adam", "portrait": "trader_adam",   "role": "servant", "age": "adult", "pronoun": "he",  "born": 1815, "skills": { "herding": 3, "voorloper": 1 } }
       ],
       "items": { "oxen": 18, "sheep": 40, "horses": 1, "meal": 360, "biltong": 30, "beskuit": 30, "coffee": 60, "sugar": 60,
                  "water_vat": 3, "water": 60, "gunpowder": 30, "lead": 40, "flints": 24, "spare_wheel": 1, "spare_axle": 1,
@@ -89,10 +89,10 @@
     { "id": "hunter", "side": "english", "surname": "Fenwick", "wagon": "kakebeenwa", "money": 1600,
       "perks": { "hunt": 1.3 },
       "members": [
-        { "name": "Edward", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1812, "skills": { "shooting": 4, "tracking": 2 } },
-        { "name": "James",  "role": "child",   "age": "adult", "pronoun": "he",  "born": 1818, "skills": { "shooting": 3 } },
-        { "name": "Ruiter", "role": "servant", "age": "adult", "pronoun": "he",  "born": 1803, "skills": { "tracking": 4, "voorloper": 3, "interpreting": 3 } },
-        { "name": "Kobus",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1814, "skills": { "herding": 3, "voorloper": 2 } }
+        { "name": "Edward", "portrait": "hunter_edward", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1812, "skills": { "shooting": 4, "tracking": 2 } },
+        { "name": "James", "portrait": "hunter_james",  "role": "child",   "age": "adult", "pronoun": "he",  "born": 1818, "skills": { "shooting": 3 } },
+        { "name": "Ruiter", "portrait": "hunter_ruiter", "role": "servant", "age": "adult", "pronoun": "he",  "born": 1803, "skills": { "tracking": 4, "voorloper": 3, "interpreting": 3 } },
+        { "name": "Kobus", "portrait": "hunter_kobus",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1814, "skills": { "herding": 3, "voorloper": 2 } }
       ],
       "items": { "oxen": 12, "sheep": 30, "horses": 4, "meal": 180, "biltong": 40, "beskuit": 20, "coffee": 10, "sugar": 10,
                  "water_vat": 2, "water": 40, "gunpowder": 30, "lead": 60, "flints": 36, "spare_wheel": 1, "medicine": 4, "tallow": 10 } }

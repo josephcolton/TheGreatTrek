@@ -90,7 +90,7 @@
               "outcomes": [ { "text": "event.thaba_nchu_moroka.trekkers.done",
                               "effects": [ { "flag": "heard_vegkop" }, { "relation": "trekkers", "add": 3 } ] } ] }
           ] },
-        { "id": "gift", "text": "event.thaba_nchu_moroka.gift",
+        { "id": "gift", "speaker_key": "speaker.moroka", "portrait": "moroka", "text": "event.thaba_nchu_moroka.gift",
           "choices": [
             { "text": "event.thaba_nchu_moroka.gift.tobacco", "requires": [ { "item_gte": ["tobacco", 3] } ], "locked": "lock.need_tobacco",
               "outcomes": [ { "text": "event.thaba_nchu_moroka.gift.thanks", "effects": [ { "item": "tobacco", "add": -3 }, { "relation": "barolong", "add": 6 } ] } ] },
@@ -116,7 +116,7 @@
             { "text": "event.sand_river_laager.outside",
               "outcomes": [ { "text": "event.sand_river_laager.outside.done", "next": "question" } ] }
           ] },
-        { "id": "question", "speaker_key": "speaker.trekker_elder", "text": "event.sand_river_laager.question",
+        { "id": "question", "speaker_key": "speaker.trekker_elder", "portrait": "trekker_elder", "text": "event.sand_river_laager.question",
           "choices": [
             { "text": "event.sand_river_laager.question.honest",
               "outcomes": [ { "text": "event.sand_river_laager.question.honest.done", "effects": [ { "relation": "trekkers", "add": 4 } ] } ] },

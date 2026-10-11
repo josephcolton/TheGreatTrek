@@ -215,6 +215,43 @@ static void test_mend(const GameData *d)
     game_free(g);
 }
 
+/* Every member has a portrait from the family; it survives a save, and a save from before
+ * portraits gets them back from the family. */
+static void test_portraits(const GameData *d)
+{
+    for (int f = 0; f < d->family_count; f++) {
+        Game *g = play(d, 5, f, 30);
+        const FamilyDef *fam = &d->families[f];
+        for (int i = 0; i < g->party_count; i++) {
+            CHECK(g->party[i].portrait[0] != '\0');
+            CHECK(strcmp(g->party[i].portrait, fam->members[i].portrait) == 0);
+        }
+        char *json = game_save_json(g);
+        /* blank every portrait id, as an old save would have none */
+        for (int i = 0; i < fam->member_count; i++) {
+            char want[48];
+            snprintf(want, sizeof want, "\"%s\"", fam->members[i].portrait);
+            for (char *at = strstr(json, want); at; at = strstr(at, want)) {
+                size_t n = strlen(want);
+                memmove(at + 2, at + n, strlen(at + n) + 1);
+                at[0] = '"';
+                at[1] = '"';
+            }
+        }
+        char err[256];
+        Game *h = game_load_json(d, json, err, sizeof err);
+        CHECK(h != NULL);
+        if (h) {
+            for (int i = 0; i < h->party_count; i++) {
+                CHECK(strcmp(h->party[i].portrait, fam->members[i].portrait) == 0);
+            }
+            game_free(h);
+        }
+        free(json);
+        game_free(g);
+    }
+}
+
 int main(void)
 {
     test_calendar();
@@ -228,6 +265,7 @@ int main(void)
     test_wagon_trade(d);
     test_hunt(d);
     test_mend(d);
+    test_portraits(d);
     for (int f = 0; f < d->family_count; f++) {
         for (uint64_t seed = 1; seed <= 3; seed++) {
             Game *a = play(d, seed, f, -1);

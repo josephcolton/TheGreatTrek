@@ -2,6 +2,7 @@
  * - every JSON file loads and every id it refers to exists (data_load does this)
  * - every event has sources (data_load refuses events without them)
  * - every locale key the data or the code refers to exists in locale/en.json
+ * - every family member and every event node's portrait is drawn in assets/sprites/portraits.txt
  * - reports how many prices come from a period source and how many are estimates */
 #include "data.h"
 #include "locale.h"
@@ -64,6 +65,53 @@ static const char *CODE_KEYS[] = {
     NULL
 };
 
+/* Is there a "sprite portrait_<id>" line in the sprite file? */
+static bool has_portrait(const char *sheet, const char *id)
+{
+    char want[64];
+    snprintf(want, sizeof want, "sprite portrait_%s", id);
+    size_t n = strlen(want);
+    for (const char *p = strstr(sheet, want); p; p = strstr(p + 1, want)) {
+        if ((p == sheet || p[-1] == '\n') && (p[n] == '\n' || p[n] == '\r' || p[n] == '\0')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static int check_portraits(const GameData *d, const char *data_dir)
+{
+    char *path = util_path_join(data_dir, "../assets/sprites/portraits.txt");
+    char *sheet = util_read_file(path, NULL);
+    int missing = 0;
+    if (!sheet) {
+        fprintf(stderr, "cannot read %s\n", path);
+        free(path);
+        return 1;
+    }
+    for (int f = 0; f < d->family_count; f++) {
+        for (int m = 0; m < d->families[f].member_count; m++) {
+            const MemberDef *md = &d->families[f].members[m];
+            if (!md->portrait[0] || !has_portrait(sheet, md->portrait)) {
+                fprintf(stderr, "family %s: %s has no portrait \"%s\"\n", d->families[f].id, md->name, md->portrait);
+                missing++;
+            }
+        }
+    }
+    for (int e = 0; e < d->event_count; e++) {
+        for (int k = 0; k < d->events[e].node_count; k++) {
+            const char *id = d->events[e].nodes[k].portrait;
+            if (id[0] && !has_portrait(sheet, id)) {
+                fprintf(stderr, "event %s: no portrait \"%s\"\n", d->events[e].id, id);
+                missing++;
+            }
+        }
+    }
+    free(sheet);
+    free(path);
+    return missing;
+}
+
 int main(int argc, char **argv)
 {
     const char *data_dir = argc > 1 ? argv[1] : "data";
@@ -100,6 +148,10 @@ int main(int argc, char **argv)
         printf("locale: %lu keys, %d missing\n", (unsigned long)locale_count(loc), kc.missing);
         locale_free(loc);
     }
+
+    int no_portrait = check_portraits(d, data_dir);
+    printf("portraits: %d missing\n", no_portrait);
+    errors += no_portrait;
 
     int sourced = 0, estimated = 0;
     for (int i = 0; i < d->item_count; i++) {

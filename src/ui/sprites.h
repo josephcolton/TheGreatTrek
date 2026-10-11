@@ -24,4 +24,11 @@ void sprite_draw_tinted(SDL_Renderer *r, const Sprite *s, float x, float y, floa
 /* Draws by name with the bottom middle at (x, y): the usual way to stand a thing on the ground. */
 void sprite_stand(SDL_Renderer *r, const char *name, float x, float y, float scale, bool flip, SDL_Color tint);
 
+/* A portrait in a frame: prefix is "portrait_" (40x48) or "face_" (24x26), id is the person's
+ * portrait id. faded draws it greyed (for the dead and the gone). Returns the framed size, or
+ * {0, 0} if there is no such sprite. */
+SDL_FPoint portrait_draw(SDL_Renderer *r, const char *prefix, const char *id, float x, float y, float scale,
+                         bool faded);
+bool portrait_exists(const char *prefix, const char *id);
+
 #endif

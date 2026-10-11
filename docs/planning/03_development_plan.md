@@ -192,7 +192,7 @@ Status on 2026-10-11 (in brackets after each milestone).
 | 4 | **Vertical slice** [built; the family playtest is still to do] | Grahamstown → Orange River playable for **both sides**: about 15 events, shop with side pricing, laager, oxen, illness, tombstone. Family playtest. |
 | 5 | **Full route** [done: both roads to the Mooi River, hunting, barter, 54 events, five endings, bot-balanced; more events welcome] | Through to the Mooi River: Thaba Nchu, Vaal crossing, hunting, smous, barter, about 50 events, endings. Balance with the bot. |
 | 6 | **Accuracy & perspective pass** [history notes written for every event; a careful second read by a person is still needed] | Check that African groups, servants and the 1837 conflicts are shown fairly. "History behind this event" notes. |
-| 7 | **Polish & release** [pixel-art sprites for wagons, oxen, buildings, plants and animals, layered scenes, a parchment route map, graves, glossary, synthesised sound effects and a release zip done; portraits and a GitHub release to do] | Pixel art, route map, sound, tombstone screen. GitHub release with a Windows build (zip with the exe and SDL DLLs). |
+| 7 | **Polish & release** [pixel-art sprites for wagons, oxen, buildings, plants and animals, layered scenes, a parchment route map, graves, glossary, synthesised sound effects, portraits of the named people and a release zip done; a GitHub release to do] | Pixel art, route map, sound, tombstone screen. GitHub release with a Windows build (zip with the exe and SDL DLLs). |
 | 8 | *(Later)* | Natal fork over the Drakensberg; Dutch or Afrikaans translation; Linux and macOS builds. |
 
 ---
@@ -200,5 +200,5 @@ Status on 2026-10-11 (in brackets after each milestone).
 ## 8. Next steps
 1. A family playtest (milestone 4), then balance from what the family finds.
 2. A second reader for the history notes and the origin stories (milestone 6).
-3. Portraits of named people and a first GitHub release (milestone 7). An MSVC build test needs the C++ tools added to Visual Studio.
+3. A first GitHub release (milestone 7). An MSVC build test needs the C++ tools added to Visual Studio.
 4. Research still open: shop prices of powder, coffee, sugar and trade goods; isiXhosa names; see `05_research_pass2.md` sections 13 and 14.

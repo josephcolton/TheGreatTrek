@@ -109,6 +109,7 @@ typedef struct {
     Pronoun pronoun;
     int birth_year;
     uint8_t skills[SKILL_COUNT];
+    char portrait[ID_LEN];        /* sprite portrait_<id> in assets/sprites/portraits.txt */
 } MemberDef;
 
 typedef struct {
@@ -386,6 +387,7 @@ typedef struct {
     char speaker_key[KEY_LEN];  /* fixed speaker, or empty to use the event's speaker pick */
     char text_key[KEY_LEN];
     char image[ID_LEN];
+    char portrait[ID_LEN];      /* someone met on the road (e.g. moroka); empty = the speaker's own */
     Choice choices[MAX_EVENT_CHOICES];
     int choice_count;
 } EventNode;

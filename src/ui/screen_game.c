@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "screens.h"
 #include "sound.h"
+#include "sprites.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -412,27 +413,41 @@ static void build_choices(App *app, const DialogView *v, DialogChoices *dc)
 
 #define SCENE_H 76.0f
 
-/* Lays out the dialog from y0; returns the y where choices start. */
+#define PORTRAIT_W 42.0f
+#define PORTRAIT_H 50.0f
+
+/* Lays out the dialog from y0; returns the y where choices start. With a speaker's portrait, the
+ * text moves right of it and the choices start below it. */
 static float dialog_layout(App *app, const DialogView *v, bool draw, float y0)
 {
     Draw *d = &app->draw;
     float y = y0;
+    float x = DLG_X, w = DLG_W;
     if (v->title.key[0]) {
         if (draw) {
             draw_text(d, d->font, app_fmt(app, &v->title), DLG_X, y, COL_GOLD, TEXT_LEFT);
         }
         y += d->line_h + 4;
     }
+    float portrait_bottom = y;
+    if (portrait_exists("portrait_", v->portrait)) {
+        if (draw) {
+            portrait_draw(d->r, "portrait_", v->portrait, DLG_X, y + 2, 1, false);
+        }
+        portrait_bottom = y + 2 + PORTRAIT_H + 4;
+        x += PORTRAIT_W + 10;
+        w -= PORTRAIT_W + 10;
+    }
     if (v->speaker.key[0]) {
         if (draw) {
-            draw_text(d, d->font, app_fmt(app, &v->speaker), DLG_X, y, COL_DIM, TEXT_LEFT);
+            draw_text(d, d->font, app_fmt(app, &v->speaker), x, y, COL_DIM, TEXT_LEFT);
         }
         y += d->line_h;
     }
     for (int i = 0; i < v->body_count; i++) {
-        y += draw_wrapped(d, d->font, app_fmt(app, &v->body[i]), DLG_X, y, DLG_W, COL_TEXT, !draw) + 6;
+        y += draw_wrapped(d, d->font, app_fmt(app, &v->body[i]), x, y, (int)w, COL_TEXT, !draw) + 6;
     }
-    return y + 6;
+    return (y > portrait_bottom ? y : portrait_bottom) + 6;
 }
 
 static float choices_bottom(App *app, const DialogChoices *dc, float y)
@@ -708,6 +723,7 @@ static void grave_render(App *app)
     draw_frame(d, (SDL_FRect){cx - 110, 60, 220, 200}, stone_dark);
     draw_rect(d, (SDL_FRect){0, 260, TREK_LOGICAL_W, 80}, (SDL_Color){92, 84, 56, 255});
     const Member *m = &g->party[gr->member];
+    portrait_draw(d->r, "portrait_", m->portrait, cx - 180, 96, 1, true);
     draw_text(d, d->big, m->name, cx, 70, COL_BG, TEXT_CENTER);
     LocText t;
     loctext_set(&t, "grave.years");

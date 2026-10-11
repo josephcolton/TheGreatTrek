@@ -561,6 +561,8 @@ One file per region or theme. The format the plan referred to:
 
 Multi-node events add a `"nodes": { ... }` map and a `"start"` node; each outcome may have `"next": "node_id"`.
 
+Portraits: a party member who speaks shows their own portrait (the `portrait` id each member has in `families.json`). A node can name someone met on the road with `"portrait": "moroka"` (usually with a `speaker_key`); the sprite is `portrait_<id>` in `assets/sprites/portraits.txt`, and datacheck fails if it is missing.
+
 ### 8.2 Conditions and effects (a fixed vocabulary, not a scripting language)
 
 The table is the vocabulary as designed; `parse_cond` and `parse_effect` in `src/core/data.c` are the vocabulary as built, and `datacheck` rejects anything else. An event node may have up to six choices.
@@ -927,7 +929,17 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
     - **Colesberg:** a few houses under Coleskop, the flat-capped hill.
     - **Philippolis:** the mission church, Griqua clay houses, reed-mat houses and a stone cattle kraal.
     These are drawn to suggest the places, not to record what each building looked like in 1837 (that is unchecked).
-  - Not yet: portraits of named people.
+  - **Portraits** (`assets/sprites/portraits.txt`, made by a script from a short description of each person):
+    - Every family member has a 40×48 head-and-shoulders portrait, plus a 24×26 face cut from it.
+    - The clothes follow the side and role: kappies and broad-brimmed hats for the trekkers; top hats and poke bonnets for the settlers; headcloths and old hats for the Khoikhoi servants.
+    - The portraits appear:
+      - beside the speaker in event dialogs
+      - as faces in the party list (greyed for the dead and the gone)
+      - in a row under the family's story
+      - large on the names screen
+      - beside the grave
+    - People met on the road: Moroka at the gift (Thaba Nchu) and the old trekker at the Sand River laager.
+    - Moroka's portrait is an impression (a kaross and beads), not a likeness: no picture of him from 1837 was checked.
 - **Sound (WAV, SDL audio):** wagon creak and ox lowing on travel, whip crack at start of a day, river water, gunshot and misfire click, wind, a short concertina or hymn tune for Sundays and the epilogue (public-domain melodies only).
 
 ---

@@ -1,5 +1,6 @@
 /* Starting a new trip: side, family, the family's story, naming the party. */
 #include "screens.h"
+#include "sprites.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -161,6 +162,16 @@ void story_render(App *app)
         snprintf(key, sizeof key, "%s.%d", f->story_key, p);
         y += draw_wrapped(d, d->font, app_text(app, key), 24, y, 592, COL_TEXT, false) + 8;
     }
+    /* the family and their people side by side, if there is room under the story */
+    float gap = 6, pw = 42;
+    float row_w = f->member_count * (pw + gap) - gap;
+    float py = TREK_LOGICAL_H - 18 - 50 - 8;
+    if (y <= py) {
+        float x = (TREK_LOGICAL_W - row_w) / 2;
+        for (int i = 0; i < f->member_count; i++) {
+            portrait_draw(d->r, "portrait_", f->members[i].portrait, x + i * (pw + gap), py, 1, false);
+        }
+    }
     draw_footer(app, app_text(app, "story.footer"));
 }
 
@@ -282,7 +293,10 @@ void names_render(App *app)
     for (int i = 0; i <= f->member_count; i++) {
         bool hot = i == app->sel;
         if (hot) {
-            draw_rect(d, (SDL_FRect){NAMES_X - 4, y, 560, (float)d->line_h}, COL_HILITE_BG);
+            draw_rect(d, (SDL_FRect){NAMES_X - 4, y, 470, (float)d->line_h}, COL_HILITE_BG);
+            if (i < f->member_count) {
+                portrait_draw(d->r, "portrait_", f->members[i].portrait, 520, NAMES_Y, 2, false);
+            }
         }
         if (i == f->member_count) {
             draw_text(d, d->font, app_text(app, "names.begin"), NAMES_X, y, COL_GOLD, TEXT_LEFT);

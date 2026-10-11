@@ -2,6 +2,7 @@
 #include "calendar.h"
 #include "format.h"
 #include "screens.h"
+#include "sprites.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -219,11 +220,13 @@ static void party_render(App *app)
                 c = COL_RED;
             }
         }
+        float row_y = y;
+        portrait_draw(d->r, "face_", m->portrait, 36, y, 1, !m->alive || !m->with_party);
         snprintf(line, sizeof line, "%s", m->name);
-        draw_text(d, d->font, line, 36, y, c, TEXT_LEFT);
+        draw_text(d, d->font, line, 70, y, c, TEXT_LEFT);
         snprintf(line, sizeof line, "%s, %d", app_text(app, role_key), 1837 - m->birth_year);
-        draw_text(d, d->font, line, 140, y, COL_DIM, TEXT_LEFT);
-        draw_text(d, d->font, cond, 330, y, c, TEXT_LEFT);
+        draw_text(d, d->font, line, 170, y, COL_DIM, TEXT_LEFT);
+        draw_text(d, d->font, cond, 350, y, c, TEXT_LEFT);
         /* skills */
         char skills[160] = "";
         for (int s = 0; s < SKILL_COUNT; s++) {
@@ -236,10 +239,13 @@ static void party_render(App *app)
         }
         y += d->line_h;
         if (skills[0]) {
-            draw_text(d, d->font, skills, 140, y, COL_DIM, TEXT_LEFT);
+            draw_text(d, d->font, skills, 170, y, COL_DIM, TEXT_LEFT);
             y += d->line_h;
         }
         y += 2;
+        if (y < row_y + 30) {
+            y = row_y + 30; /* room for the face */
+        }
     }
     draw_text(d, d->font, app_text(app, "overlay.close"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
 }

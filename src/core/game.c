@@ -145,6 +145,7 @@ Game *game_new(const GameData *data, uint64_t seed, int family, Difficulty diff)
         m->pronoun = md->pronoun;
         m->birth_year = md->birth_year;
         memcpy(m->skills, md->skills, sizeof m->skills);
+        snprintf(m->portrait, sizeof m->portrait, "%s", md->portrait);
         m->health = 90;
         m->loyalty = 60;
         m->alive = true;

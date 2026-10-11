@@ -787,6 +787,7 @@ static void load_families(Loader *L, const char *dir)
             md->age = age < 0 ? AGE_ADULT : (AgeGroup)age;
             md->pronoun = pro < 0 ? PRONOUN_HE : (Pronoun)pro;
             md->birth_year = jint(m, "born", 1800);
+            copy_str(md->portrait, sizeof md->portrait, jstr(m, "portrait"));
             const cJSON *sk;
             cJSON_ArrayForEach(sk, jget(m, "skills"))
             {
@@ -1319,6 +1320,7 @@ static void parse_node(Loader *L, const cJSON *o, EventNode *n, const cJSON *nod
     copy_str(n->speaker_key, sizeof n->speaker_key, jstr(o, "speaker_key"));
     need_str(L, n->text_key, sizeof n->text_key, o, "text", ctx);
     copy_str(n->image, sizeof n->image, jstr(o, "image"));
+    copy_str(n->portrait, sizeof n->portrait, jstr(o, "portrait"));
     const cJSON *ch;
     cJSON_ArrayForEach(ch, jget(o, "choices"))
     {

@@ -100,6 +100,7 @@ char *game_save_json(const Game *g)
         cJSON_AddNumberToObject(mj, "age", m->age);
         cJSON_AddNumberToObject(mj, "pronoun", m->pronoun);
         cJSON_AddNumberToObject(mj, "born", m->birth_year);
+        cJSON_AddStringToObject(mj, "portrait", m->portrait);
         cJSON *sk = cJSON_AddObjectToObject(mj, "skills");
         for (int s = 0; s < SKILL_COUNT; s++) {
             if (m->skills[s]) {
@@ -438,6 +439,11 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         m->age = (AgeGroup)(int)nget(mj, "age", AGE_ADULT);
         m->pronoun = (Pronoun)(int)nget(mj, "pronoun", PRONOUN_HE);
         m->birth_year = (int)nget(mj, "born", 1800);
+        snprintf(m->portrait, sizeof m->portrait, "%s", sget(mj, "portrait"));
+        if (!m->portrait[0] && g->party_count <= data->families[family].member_count) {
+            /* saves from before portraits: the party is in the family's order */
+            snprintf(m->portrait, sizeof m->portrait, "%s", data->families[family].members[g->party_count - 1].portrait);
+        }
         const cJSON *sk;
         cJSON_ArrayForEach(sk, cJSON_GetObjectItemCaseSensitive(mj, "skills"))
         {

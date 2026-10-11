@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_SPRITES 256
+#define MAX_SPRITES 384
 #define MAX_ROWS 128
 #define MAX_COLS 160
 
@@ -173,7 +173,7 @@ const Sprite *sprite_find(const char *name)
             return &sprites[i];
         }
     }
-    static char missing[16][40];
+    static char missing[16][64];
     static int missing_n;
     for (int i = 0; i < missing_n; i++) {
         if (strcmp(missing[i], name) == 0) {
@@ -209,4 +209,38 @@ void sprite_stand(SDL_Renderer *r, const char *name, float x, float y, float sca
     if (s) {
         sprite_draw_tinted(r, s, x - s->w * scale / 2, y - s->h * scale, scale, flip, tint);
     }
+}
+
+static const Sprite *find_portrait(const char *prefix, const char *id)
+{
+    if (!id || !id[0]) {
+        return NULL;
+    }
+    char name[64];
+    snprintf(name, sizeof name, "%s%s", prefix, id);
+    return sprite_find(name);
+}
+
+bool portrait_exists(const char *prefix, const char *id)
+{
+    return find_portrait(prefix, id) != NULL;
+}
+
+SDL_FPoint portrait_draw(SDL_Renderer *r, const char *prefix, const char *id, float x, float y, float scale,
+                         bool faded)
+{
+    const Sprite *s = find_portrait(prefix, id);
+    if (!s) {
+        return (SDL_FPoint){0, 0};
+    }
+    float w = s->w * scale + 2, h = s->h * scale + 2;
+    /* a dark wooden frame around a warm ground, like a small painted likeness */
+    SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(r, 92, 66, 40, 255);
+    SDL_RenderFillRect(r, &(SDL_FRect){x, y, w, h});
+    SDL_SetRenderDrawColor(r, faded ? 150 : 196, faded ? 146 : 178, faded ? 136 : 140, 255);
+    SDL_RenderFillRect(r, &(SDL_FRect){x + 1, y + 1, w - 2, h - 2});
+    SDL_Color tint = faded ? (SDL_Color){150, 146, 140, 255} : (SDL_Color){255, 255, 255, 255};
+    sprite_draw_tinted(r, s, x + 1, y + 1, scale, false, tint);
+    return (SDL_FPoint){w, h};
 }
