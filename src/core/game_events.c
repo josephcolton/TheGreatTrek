@@ -204,7 +204,7 @@ static void speaker_text(const Game *g, LocText *t, const EventNode *node)
     if (g->dlg.speaker >= 0) {
         const Member *m = &g->party[g->dlg.speaker];
         char role_key[KEY_LEN];
-        snprintf(role_key, sizeof role_key, "role.%s", role_id(m->role));
+        member_role_key(m->role, m->pronoun, role_key, sizeof role_key);
         loctext_set(t, "speaker.member");
         loctext_arg_str(t, "name", m->name);
         loctext_arg_key(t, "role", role_key);
@@ -448,6 +448,31 @@ static void apply_effect(Game *g, const Effect *e)
     }
     default: break;
     }
+}
+
+/* ---------------------------------------------------------------- odds */
+
+int game_choice_odds(const Game *g, int choice, double *out, int max)
+{
+    if (g->phase != PHASE_DIALOG || g->dlg.kind != DLG_EVENT || g->dlg.showing_result) {
+        return 0;
+    }
+    const EventNode *node = &g->data->events[g->dlg.event].nodes[g->dlg.node];
+    if (choice < 0 || choice >= node->choice_count) {
+        return 0;
+    }
+    const Choice *ch = &node->choices[choice];
+    double total = 0;
+    int n = ch->outcome_count < max ? ch->outcome_count : max;
+    for (int i = 0; i < n; i++) {
+        const Outcome *o = &ch->outcomes[i];
+        out[i] = o->weight + (o->skill >= 0 ? o->per_point * g_best_skill(g, (Skill)o->skill, true) : 0);
+        total += out[i];
+    }
+    for (int i = 0; i < n; i++) {
+        out[i] = total > 0 ? out[i] / total : 0;
+    }
+    return n;
 }
 
 /* ---------------------------------------------------------------- choosing */

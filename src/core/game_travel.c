@@ -421,6 +421,14 @@ static void health_day(Game *g, bool travelling, bool had_water)
         if (m->health > 100) {
             m->health = 100;
         }
+        if (m->health <= 0 && g->difficulty == DIFF_EASY && !m->warned) {
+            /* Easy promises a warning before a death (04_game_design.md section 8.5). */
+            m->warned = true;
+            m->health = 10;
+            g_notice_member(g, "notice.near_death", i);
+        } else if (m->health >= 50) {
+            m->warned = false;
+        }
         if (m->health <= 0) {
             const char *cause = m->cond_count > 0 ? d->illnesses[m->conds[0].illness].name_key : "cause.hardship";
             g_kill(g, i, cause);
@@ -484,6 +492,9 @@ static void servants_day(Game *g)
 static void warnings(Game *g)
 {
     const Rules *r = &g->data->rules;
+    if (g->difficulty == DIFF_HARD) {
+        return; /* Hard gives no supply warnings (04_game_design.md section 8.5) */
+    }
     double days = game_food_days(g);
     if (days < r->warn_food_days && !g->warned_food) {
         g->warned_food = true;

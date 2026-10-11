@@ -118,6 +118,7 @@ char *game_save_json(const Game *g)
         cJSON_AddNumberToObject(mj, "loyalty", m->loyalty);
         cJSON_AddBoolToObject(mj, "alive", m->alive);
         cJSON_AddBoolToObject(mj, "with_party", m->with_party);
+        cJSON_AddBoolToObject(mj, "warned", m->warned);
         cJSON_AddItemToArray(party, mj);
     }
     cJSON *inv = cJSON_AddObjectToObject(o, "inventory");
@@ -408,6 +409,7 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         m->loyalty = (int)nget(mj, "loyalty", 50);
         m->alive = bget(mj, "alive");
         m->with_party = bget(mj, "with_party");
+        m->warned = bget(mj, "warned");
     }
     memset(g->inv, 0, sizeof g->inv);
     const cJSON *it;

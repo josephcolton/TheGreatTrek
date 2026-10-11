@@ -100,6 +100,7 @@ void fmt_template(const Locale *loc, const char *tmpl, const LocText *t, const c
                 break;
             }
             case ARG_MONEY: fmt_money(loc, s, a->i, buf, sizeof buf); break;
+            case ARG_DATE: fmt_date(loc, (int)a->i, buf, sizeof buf); break;
             }
             append(out, cap, &len, buf, strlen(buf));
         }

@@ -1,6 +1,7 @@
 /* trekbot: plays many headless games to check that runs finish and to tune balance.
  * Usage: trekbot [--runs N] [--seed S] [--family ID|all] [--policy random|cautious|reckless]
  *                [--difficulty easy|normal|hard] [--data DIR] [--verbose] [--savecheck]
+ *                [--dump FILE --stop-at grave|river|store|route|ending]  (save one game at that moment)
  * Prints arrival rate, days taken, deaths and causes, and events never seen. */
 #include "calendar.h"
 #include "data.h"
@@ -112,6 +113,35 @@ static int pick_choice(Game *g, const DialogView *v, Policy policy, TrekRng *bot
 }
 
 static bool visited_shop[MAX_NODES];
+static const char *dump_path, *stop_at;
+
+/* For testing the front end: write the save when the game reaches a chosen moment. */
+static bool maybe_dump(Game *g)
+{
+    if (!dump_path || !stop_at) {
+        return false;
+    }
+    bool hit = false;
+    DialogView v;
+    if (strcmp(stop_at, "grave") == 0) {
+        hit = game_phase(g) == PHASE_GRAVE;
+    } else if (strcmp(stop_at, "ending") == 0) {
+        hit = game_phase(g) == PHASE_ENDED;
+    } else if (strcmp(stop_at, "store") == 0) {
+        hit = game_phase(g) == PHASE_STORE;
+    } else if (strcmp(stop_at, "river") == 0) {
+        hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_RIVER;
+    } else if (strcmp(stop_at, "route") == 0) {
+        hit = game_phase(g) == PHASE_DIALOG && game_dialog_view(g, &v) && v.kind == DLG_ROUTE && g->day > g->start_day;
+    }
+    if (hit) {
+        char *json = game_save_json(g);
+        util_write_file(dump_path, json, strlen(json));
+        free(json);
+        dump_path = NULL;
+    }
+    return hit;
+}
 
 static int play(const GameData *d, const Locale *loc, uint64_t seed, int family, Policy policy, Difficulty diff,
                 bool verbose, bool savecheck, Stats *st)
@@ -131,6 +161,9 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
     int steps = 0;
     while (game_phase(g) != PHASE_ENDED && steps < 20000) {
         steps++;
+        if (maybe_dump(g)) {
+            break;
+        }
         if (savecheck && steps % 37 == 0) {
             /* Round-trip through a save: the game must carry on identically. */
             char *a = game_save_json(g);
@@ -204,6 +237,7 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
         default: break;
         }
     }
+    maybe_dump(g);
     int days = g->day - g->start_day;
     st->runs++;
     st->ended[g->ending]++;
@@ -275,6 +309,10 @@ int main(int argc, char **argv)
             verbose = true;
         } else if (strcmp(a, "--savecheck") == 0) {
             savecheck = true;
+        } else if (strcmp(a, "--dump") == 0 && next) {
+            dump_path = argv[++i];
+        } else if (strcmp(a, "--stop-at") == 0 && next) {
+            stop_at = argv[++i];
         } else {
             fprintf(stderr, "unknown option %s\n", a);
             return 2;

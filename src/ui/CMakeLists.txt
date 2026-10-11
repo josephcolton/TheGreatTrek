@@ -1,7 +1,12 @@
 add_executable(TheGreatTrek WIN32
     main.c
     app.c
-    text.c)
+    draw.c
+    trips.c
+    screen_menu.c
+    screen_new.c
+    screen_game.c
+    screen_overlay.c)
 target_link_libraries(TheGreatTrek PRIVATE trek_core SDL3::SDL3 SDL3_ttf::SDL3_ttf SDL3_image::SDL3_image)
 trek_warnings(TheGreatTrek)
 add_dependencies(TheGreatTrek trek_resources)

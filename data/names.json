@@ -1,0 +1,24 @@
+{
+  "_about": "Period first names for renaming party members (docs/planning/05_research_pass2.md section 9). Servant names follow period records of Khoikhoi and formerly enslaved people. isiXhosa names are left out until checked.",
+  "dutch": {
+    "men": ["Johannes", "Jacobus", "Petrus", "Hendrik", "Gerrit", "Andries", "Barend", "Stephanus", "Christiaan", "Daniël",
+            "Willem", "Cornelis", "Pieter", "Marthinus", "Abraham", "Izak", "Frederik", "Lodewyk", "Gideon", "Hermanus",
+            "Nicolaas", "Philippus", "Dirk", "Jan", "Lourens", "Paulus", "Adriaan", "Casper", "Tjaart", "Schalk"],
+    "women": ["Johanna", "Susanna", "Maria", "Anna", "Catharina", "Elizabeth", "Magdalena", "Hester", "Aletta", "Cornelia",
+              "Sara", "Martha", "Petronella", "Geertruida", "Margaretha", "Jacoba", "Hendrina", "Christina", "Alida", "Isabella",
+              "Debora", "Rachel", "Engela", "Helena", "Dina"]
+  },
+  "english": {
+    "men": ["John", "William", "Thomas", "James", "George", "Joseph", "Richard", "Henry", "Samuel", "Edward", "Charles",
+            "Robert", "Benjamin", "Daniel", "Josiah", "Jeremiah", "Nathaniel", "Isaac", "Frederick", "Matthew", "Walter",
+            "Edwin", "Alfred"],
+    "women": ["Mary", "Elizabeth", "Ann", "Sarah", "Jane", "Hannah", "Margaret", "Susannah", "Martha", "Charlotte",
+              "Harriet", "Eliza", "Catherine", "Emma", "Rebecca", "Lydia", "Esther", "Frances", "Ellen", "Grace"]
+  },
+  "servants": {
+    "men": ["Klaas", "Hendrik", "Jan", "Piet", "Booi", "Kiewiet", "Kobus", "Adam", "Jantjie", "Willem", "Cupido", "Ruiter",
+            "Dirk", "Januarie", "Februarie", "September", "Titus", "Scipio", "Adonis", "Fortuin", "Damon"],
+    "women": ["Saartjie", "Dina", "Lena", "Mietjie", "Leentjie", "Griet", "Hannie", "Sanna", "Rosina", "Katrina", "Rosetta",
+              "Clasina", "Philida", "Dorothea", "Flora", "Silvia", "Lea"]
+  }
+}

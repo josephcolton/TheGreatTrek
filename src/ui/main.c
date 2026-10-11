@@ -1,29 +1,152 @@
-/* The Great Trek: SDL init, main loop.
- * Options: --screenshot <file.png>  render one frame to a PNG and exit (for testing). */
+/* The Great Trek: SDL init, main loop, screen dispatch.
+ * Testing options:
+ *   --screenshot FILE   render a frame to a PNG after any --keys, then exit
+ *   --keys "a b c"      feed key presses first: 1-9, a-z, enter, esc, up, down, left, right,
+ *                       space, bksp, "text:Word", "wait:N" (N frames of 1/10 s)
+ *   --pref DIR          keep saves and settings in DIR instead of the user folder
+ *   --seed N            use seed N for new trips */
 #include "app.h"
-#include "text.h"
+#include "screens.h"
+#include "util.h"
 
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
+#include <stdlib.h>
 #include <string.h>
 
-static const SDL_Color COLOR_BG = {28, 22, 16, 255};
-static const SDL_Color COLOR_TEXT = {235, 222, 196, 255};
-static const SDL_Color COLOR_DIM = {170, 150, 120, 255};
-
-static void render_title(App *app)
+static void dispatch_event(App *app, SDL_Event *e)
 {
-    SDL_SetRenderDrawColor(app->renderer, COLOR_BG.r, COLOR_BG.g, COLOR_BG.b, 255);
+    if (e->type == SDL_EVENT_QUIT) {
+        if (app->game) {
+            app_commit(app);
+        }
+        app->running = false;
+        return;
+    }
+    if (e->type == SDL_EVENT_MOUSE_MOTION || e->type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
+        e->type == SDL_EVENT_MOUSE_BUTTON_UP || e->type == SDL_EVENT_MOUSE_WHEEL) {
+        SDL_ConvertEventToRenderCoordinates(app->renderer, e);
+        if (e->type == SDL_EVENT_MOUSE_MOTION) {
+            app->mx = e->motion.x;
+            app->my = e->motion.y;
+            return;
+        }
+        if (e->type != SDL_EVENT_MOUSE_WHEEL) {
+            app->mx = e->button.x;
+            app->my = e->button.y;
+        }
+    }
+    if (e->type == SDL_EVENT_KEY_DOWN && e->key.key == SDLK_F11) {
+        app->settings.fullscreen = !app->settings.fullscreen;
+        SDL_SetWindowFullscreen(app->window, app->settings.fullscreen);
+        app_save_settings(app);
+        return;
+    }
+    if (app->overlay != OV_NONE && app->screen == SCR_GAME) {
+        overlay_event(app, e);
+        return;
+    }
+    switch (app->screen) {
+    case SCR_TITLE: title_event(app, e); break;
+    case SCR_TRIPS: trips_event(app, e); break;
+    case SCR_SIDE: side_event(app, e); break;
+    case SCR_FAMILY: family_event(app, e); break;
+    case SCR_STORY: story_event(app, e); break;
+    case SCR_NAMES: names_event(app, e); break;
+    case SCR_SETTINGS: settings_event(app, e); break;
+    case SCR_CREDITS: credits_event(app, e); break;
+    case SCR_GAME: game_screen_event(app, e); break;
+    }
+}
+
+static void update(App *app, double dt)
+{
+    if (app->message_timer > 0) {
+        app->message_timer -= dt;
+    }
+    if (app->screen == SCR_GAME) {
+        game_screen_update(app, dt);
+    }
+}
+
+static void render(App *app)
+{
+    draw_update_scale(&app->draw);
+    SDL_SetRenderDrawColor(app->renderer, COL_BG.r, COL_BG.g, COL_BG.b, 255);
     SDL_RenderClear(app->renderer);
-    float cx = TREK_LOGICAL_W / 2.0f;
-    text_draw(app->renderer, app->font_title, app_text(app, "app.title"), cx, 120, 0, COLOR_TEXT, TEXT_CENTER);
-    text_draw(app->renderer, app->font_body, app_text(app, "app.subtitle"), cx, 160, 0, COLOR_DIM, TEXT_CENTER);
-    text_draw(app->renderer, app->font_body, app_text(app, "app.press_key"), cx, 300, 0, COLOR_DIM, TEXT_CENTER);
+    switch (app->screen) {
+    case SCR_TITLE: title_render(app); break;
+    case SCR_TRIPS: trips_render(app); break;
+    case SCR_SIDE: side_render(app); break;
+    case SCR_FAMILY: family_render(app); break;
+    case SCR_STORY: story_render(app); break;
+    case SCR_NAMES: names_render(app); break;
+    case SCR_SETTINGS: settings_render(app); break;
+    case SCR_CREDITS: credits_render(app); break;
+    case SCR_GAME:
+        game_screen_render(app);
+        if (app->overlay != OV_NONE) {
+            overlay_render(app);
+        }
+        break;
+    }
+}
+
+/* ---------------------------------------------------------------- scripted keys for testing */
+
+static SDL_Keycode key_from_name(const char *s)
+{
+    static const struct { const char *name; SDL_Keycode key; } KEYS[] = {
+        {"enter", SDLK_RETURN}, {"esc", SDLK_ESCAPE}, {"up", SDLK_UP}, {"down", SDLK_DOWN},
+        {"left", SDLK_LEFT}, {"right", SDLK_RIGHT}, {"space", SDLK_SPACE}, {"bksp", SDLK_BACKSPACE}};
+    for (size_t i = 0; i < sizeof KEYS / sizeof KEYS[0]; i++) {
+        if (strcmp(s, KEYS[i].name) == 0) {
+            return KEYS[i].key;
+        }
+    }
+    if (strlen(s) == 1) {
+        char c = s[0];
+        if (c >= '1' && c <= '9') {
+            return SDLK_1 + (SDL_Keycode)(c - '1');
+        }
+        if (c >= 'a' && c <= 'z') {
+            return SDLK_A + (SDL_Keycode)(c - 'a');
+        }
+    }
+    return SDLK_UNKNOWN;
+}
+
+static void run_keys(App *app, const char *keys)
+{
+    char *copy = util_strdup(keys);
+    for (char *tok = strtok(copy, " "); tok && app->running; tok = strtok(NULL, " ")) {
+        if (strncmp(tok, "wait:", 5) == 0) {
+            int frames = atoi(tok + 5);
+            for (int i = 0; i < frames; i++) {
+                update(app, 0.1);
+            }
+            continue;
+        }
+        SDL_Event e;
+        SDL_zero(e);
+        if (strncmp(tok, "text:", 5) == 0) {
+            e.type = SDL_EVENT_TEXT_INPUT;
+            e.text.text = tok + 5;
+            dispatch_event(app, &e);
+            continue;
+        }
+        e.type = SDL_EVENT_KEY_DOWN;
+        e.key.key = key_from_name(tok);
+        e.key.down = true;
+        dispatch_event(app, &e);
+        update(app, 0.016);
+    }
+    free(copy);
 }
 
 static bool save_screenshot(App *app, const char *path)
 {
-    render_title(app);
+    render(app);
     SDL_Surface *shot = SDL_RenderReadPixels(app->renderer, NULL);
     bool ok = shot && IMG_SavePNG(shot, path);
     if (!ok) {
@@ -35,17 +158,40 @@ static bool save_screenshot(App *app, const char *path)
 
 int main(int argc, char **argv)
 {
-    const char *screenshot = NULL;
+    const char *screenshot = NULL, *keys = NULL, *pref = NULL;
+    uint64_t seed = 0;
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--screenshot") == 0 && i + 1 < argc) {
             screenshot = argv[++i];
+        } else if (strcmp(argv[i], "--keys") == 0 && i + 1 < argc) {
+            keys = argv[++i];
+        } else if (strcmp(argv[i], "--pref") == 0 && i + 1 < argc) {
+            pref = argv[++i];
+        } else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
+            seed = strtoull(argv[++i], NULL, 10);
         }
     }
 
     App app;
-    if (!app_init(&app, NULL)) {
+    if (!app_init(&app)) {
         app_shutdown(&app);
         return 1;
+    }
+    if (pref) {
+        free(app.pref_path);
+        size_t n = strlen(pref);
+        app.pref_path = malloc(n + 2);
+        memcpy(app.pref_path, pref, n + 1);
+        if (n > 0 && pref[n - 1] != '/' && pref[n - 1] != '\\') {
+            app.pref_path[n] = '/';
+            app.pref_path[n + 1] = '\0';
+        }
+        SDL_CreateDirectory(app.pref_path);
+        trips_scan(app.pref_path, &app.trips);
+    }
+    app.test_seed = seed;
+    if (keys) {
+        run_keys(&app, keys);
     }
     if (screenshot) {
         bool ok = save_screenshot(&app, screenshot);
@@ -53,16 +199,17 @@ int main(int argc, char **argv)
         return ok ? 0 : 1;
     }
 
+    Uint64 last = SDL_GetTicksNS();
     while (app.running) {
         SDL_Event ev;
         while (SDL_PollEvent(&ev)) {
-            if (ev.type == SDL_EVENT_QUIT) {
-                app.running = false;
-            } else if (ev.type == SDL_EVENT_KEY_DOWN && ev.key.key == SDLK_ESCAPE) {
-                app.running = false;
-            }
+            dispatch_event(&app, &ev);
         }
-        render_title(&app);
+        Uint64 now = SDL_GetTicksNS();
+        double dt = (double)(now - last) / 1e9;
+        last = now;
+        update(&app, dt);
+        render(&app);
         SDL_RenderPresent(app.renderer);
     }
     app_shutdown(&app);

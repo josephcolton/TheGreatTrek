@@ -71,7 +71,7 @@ Conventions:
 
 ## Build
 
-Milestone 1 (build skeleton) is done. CMake ≥ 3.24 fetches SDL3 3.4.16, SDL3_ttf 3.2.2 (vendored FreeType) and SDL3_image 3.4.6 with `FetchContent`, all as static libraries, so the game is one exe that needs no extra DLLs. `-DTREK_USE_SYSTEM_SDL=ON` uses installed SDL3 packages instead; `-DTREK_BUILD_GAME=OFF` builds only the core, tools and tests (no SDL).
+Milestones 1 (build skeleton) and 3 (core loop) are done; the game is playable from title screen to ending. CMake ≥ 3.24 fetches SDL3 3.4.16, SDL3_ttf 3.2.2 (vendored FreeType) and SDL3_image 3.4.6 with `FetchContent`, all as static libraries, so the game is one exe that needs no extra DLLs. `-DTREK_USE_SYSTEM_SDL=ON` uses installed SDL3 packages instead; `-DTREK_BUILD_GAME=OFF` builds only the core, tools and tests (no SDL).
 
 Programs, `data/` and `assets/` all land in `<build>/bin/`.
 
@@ -81,8 +81,11 @@ cmake -S . -B "$B" -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build "$B"
 ctest --test-dir "$B" --output-on-failure
 "$B/bin/datacheck.exe" "$B/bin/data"
-"$B/bin/TheGreatTrek.exe" --screenshot shot.png  # renders one frame to a PNG and exits
+"$B/bin/trekbot.exe" --runs 200 --data data         # balance stats per family (also --policy, --difficulty)
+"$B/bin/TheGreatTrek.exe" --pref "$TEMP/p" --seed 7 --keys "2 1 1 enter up enter" --screenshot shot.png
 ```
+
+Testing the front end without a person: `--keys` replays key presses (1-9, a-z, enter, esc, arrows, `text:Word`, `wait:N`), `--seed` fixes the new trip's seed, `--pref` keeps saves out of the real user folder, and `--screenshot` saves a PNG you can look at. `trekbot --dump FILE --stop-at grave|river|store|route|ending` writes a save at that moment; copy it into `<pref>/trips/` to open it in the game.
 
 ### This machine (Windows 11), checked 2026-10-11
 - **Toolchain in use:** `gcc` 13.2 (MinGW-w64 UCRT), `cmake` 3.29 and `ninja` from **Strawberry Perl** (`C:/Strawberry/c/bin`), first on PATH. Chosen because it works with no setup; the CMake files are portable to MSVC and other platforms.

@@ -54,12 +54,30 @@ void loctext_arg_key(LocText *t, const char *name, const char *key)
     }
 }
 
+void loctext_arg_date(LocText *t, const char *name, int day)
+{
+    TextArg *a = new_arg(t, name);
+    if (a) {
+        a->kind = ARG_DATE;
+        a->i = day;
+    }
+}
+
 void loctext_arg_money(LocText *t, const char *name, long long v)
 {
     TextArg *a = new_arg(t, name);
     if (a) {
         a->kind = ARG_MONEY;
         a->i = v;
+    }
+}
+
+void member_role_key(Role role, Pronoun pronoun, char *out, size_t cap)
+{
+    if (role == ROLE_CHILD || role == ROLE_SPOUSE) {
+        snprintf(out, cap, "role.%s.%s", role_id(role), pronoun == PRONOUN_SHE ? "she" : "he");
+    } else {
+        snprintf(out, cap, "role.%s", role_id(role));
     }
 }
 
@@ -741,6 +759,63 @@ void game_grave_done(Game *g, const char *epitaph)
     memmove(&g->pending_graves[0], &g->pending_graves[1], sizeof g->pending_graves[0] * (size_t)(g->pending_grave_count - 1));
     g->pending_grave_count--;
     g_settle(g);
+}
+
+/* ---------------------------------------------------------------- epilogue */
+
+int game_epilogue(const Game *g, LocText *out, int max)
+{
+    const GameData *d = g->data;
+    int n = 0;
+#define ADD(key) (n < max ? (loctext_set(&out[n], key), &out[n++]) : NULL)
+    static const char *ENDING_KEYS[] = {"ending.none", "ending.arrived", "ending.settled", "ending.turned_back",
+                                        "ending.stranded", "ending.lost"};
+    LocText *t = ADD(ENDING_KEYS[g->ending]);
+    if (t) {
+        loctext_arg_str(t, "family", d->families[g->family].surname);
+        loctext_arg_date(t, "date", g->day);
+        loctext_arg_int(t, "days", g->day - g->start_day);
+        loctext_arg_int(t, "miles", g->miles_total);
+    }
+    int with = game_member_count_with_party(g);
+    if ((t = ADD("ending.survivors")) != NULL) {
+        loctext_arg_int(t, "n", with);
+        loctext_arg_int(t, "total", g->party_count);
+    }
+    for (int i = 0; i < g->grave_count; i++) {
+        const Grave *gr = &g->graves[i];
+        if ((t = ADD("ending.grave")) != NULL) {
+            loctext_arg_str(t, "who", g->party[gr->member].name);
+            loctext_arg_date(t, "date", gr->day);
+            loctext_arg_key(t, "place", d->nodes[gr->node].name_key);
+            loctext_arg_key(t, "cause", gr->cause_key);
+        }
+    }
+    for (int i = 0; i < g->party_count; i++) {
+        if (g->party[i].alive && !g->party[i].with_party && (t = ADD("ending.left")) != NULL) {
+            loctext_arg_str(t, "who", g->party[i].name);
+        }
+    }
+    for (int i = 0; i < d->group_count; i++) {
+        if (g->relation[i] >= 30 && (t = ADD("ending.relation.good")) != NULL) {
+            loctext_arg_key(t, "group", d->groups[i].name_key);
+        } else if (g->relation[i] <= -20 && (t = ADD("ending.relation.bad")) != NULL) {
+            loctext_arg_key(t, "group", d->groups[i].name_key);
+        }
+    }
+    static const char *FLAGS[] = {"joined_laager", "helped_trekkers", "met_moroka", "heard_mosega", "saw_bible_gift"};
+    for (size_t i = 0; i < sizeof FLAGS / sizeof FLAGS[0]; i++) {
+        if (game_has_flag(g, FLAGS[i])) {
+            char key[KEY_LEN];
+            snprintf(key, sizeof key, "ending.flag.%s", FLAGS[i]);
+            ADD(key);
+        }
+    }
+    if ((t = ADD("ending.score")) != NULL) {
+        loctext_arg_int(t, "n", game_score(g));
+    }
+#undef ADD
+    return n;
 }
 
 /* ---------------------------------------------------------------- score */

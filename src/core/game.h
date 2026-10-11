@@ -29,12 +29,12 @@ typedef enum {
     PHASE_ENDED
 } GamePhase;
 
-typedef enum { ARG_INT, ARG_STR, ARG_KEY, ARG_MONEY } ArgKind;
+typedef enum { ARG_INT, ARG_STR, ARG_KEY, ARG_MONEY, ARG_DATE } ArgKind;
 
 typedef struct {
     char name[12];
     ArgKind kind;
-    long long i;      /* ARG_INT, ARG_MONEY (in the side's unit) */
+    long long i;      /* ARG_INT, ARG_MONEY (in the side's unit), ARG_DATE (day number) */
     char s[40];       /* ARG_STR (literal), ARG_KEY (locale key) */
 } TextArg;
 
@@ -64,6 +64,7 @@ typedef struct {
     int loyalty;              /* servants: 0..100 */
     bool alive;
     bool with_party;
+    bool warned;              /* Easy: already warned that this member is close to death */
 } Member;
 
 typedef struct {
@@ -262,11 +263,21 @@ int  game_pence_to_unit(const Game *g, int pence);
 void game_journal(Game *g, const LocText *t);
 
 /* ---- text helpers ---- */
+/* Locale key for a member's role, e.g. "role.child.she" (daughter) or "role.servant". */
+void member_role_key(Role role, Pronoun pronoun, char *out, size_t cap);
 void loctext_set(LocText *t, const char *key);
 void loctext_arg_int(LocText *t, const char *name, long long v);
 void loctext_arg_str(LocText *t, const char *name, const char *s);
 void loctext_arg_key(LocText *t, const char *name, const char *key);
 void loctext_arg_money(LocText *t, const char *name, long long v);
+void loctext_arg_date(LocText *t, const char *name, int day);
+
+/* ---- ending ---- */
+/* Fills out[] with the epilogue lines; returns how many. */
+int game_epilogue(const Game *g, LocText *out, int max);
+/* Probability of each outcome of a choice in the current event (for the "show odds" setting).
+ * Returns the number of outcomes written, 0 if not an event choice. */
+int game_choice_odds(const Game *g, int choice, double *out, int max);
 
 /* ---- saves ---- */
 /* Returns a malloc'd JSON string. */
