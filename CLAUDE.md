@@ -29,6 +29,11 @@ Read these before designing or writing content:
 - **The interface is in English**, with period Dutch words (laager, smous, voorloper, kakebeenwa, drift, sanna).
 - All player-facing text lives in locale files, so a Dutch or Afrikaans translation can be added later.
 - **Family-friendly:** danger and death are present, but violence is told in text and kept non-graphic.
+- **Educational realism:** odds are not shown (a "Show odds" setting exists, off by default) but should match history where sources allow. Every rate and price carries a source or is marked invented.
+- **Money:** whole rixdollars (Dutch side) or pounds and shillings (English side), priced as close to 1837 as sources allow. Historical events move prices, and sellers cite them.
+- **Saves are permadeath:** one save per trip, written after every step, listed newest first; no going back to an earlier point. Difficulty (Easy/Normal/Hard) is chosen on the main menu before a trip.
+- **Graves:** only the current party's graves are shown, never graves from other trips.
+- **English side earns the group laager** through events; it is never offered at the start.
 
 ## Content rules
 

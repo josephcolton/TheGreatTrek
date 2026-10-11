@@ -46,7 +46,8 @@ Target length: **30–60 minutes** for a full run (plan §2). Rough budget on No
 
 | Screen | Purpose | Reached from |
 |---|---|---|
-| **Title** | New game, Continue, Load, Graves, Settings, Credits, Quit | start |
+| **Title (main menu)** | Continue, New trip, Difficulty, Settings, Credits, Quit (§13.1) | start |
+| **Your trips** | Saved trips, newest first; pick one to carry on (§13.2) | Title → Continue |
 | **Side select** | Dutch or English, with a short list of what changes | Title |
 | **Family select** | Backstory cards: portrait, story, perks/penalties, party list | Side |
 | **Name party** | Accept or edit names (default fictional names supplied) | Family |
@@ -62,9 +63,9 @@ Target length: **30–60 minutes** for a full run (plan §2). Rough budget on No
 | **Landmark** | Picture, description, actions | arrival |
 | **River crossing** | Read the river, choose a method, watch the result | landmark/edge |
 | **Hunt** | Turn-based flintlock hunt (§9) | Travel menu, event |
-| **Grave** | Name, dates, typed epitaph; saved to the graves file | a death |
+| **Grave** | Name, dates, typed epitaph; kept in this trip's save | a death |
 | **Ending / Epilogue** | Assembled epilogue (§12), score, "History behind the game" | end |
-| **Pause** (overlay) | Save, Settings, Glossary, Quit to title | `Esc` |
+| **Pause** (overlay) | Resume, Save and quit, Settings, Glossary | `Esc` |
 | **Glossary** (overlay) | Period words: laager, smous, voorloper, drift, sanna… | `G`, or clicking a highlighted word |
 | **History note** (overlay) | "The history behind this event" + sources | `H` on an event |
 
@@ -170,7 +171,8 @@ Outcome: weight (+ skill modifiers), text, effects[], next node (or end)
 ```
 
 - **Locked choices are shown, greyed out, with a reason** ("Needs an interpreter", "The council only hears its own members"). This is how the player *sees* that their side matters.
-- The game **never shows odds as numbers**. Choice text hints at risk in words ("risky", "slow but safe"). An optional Settings toggle "Show odds" is for curious players and testing.
+- **Odds are not shown.** Choice text hints at risk in words ("risky", "slow but safe"), the way a family on the road would have judged it. A Settings toggle "Show odds" exists for testing and curious players; it is **off by default**.
+- **The odds themselves should be realistic** (§8.5). This is meant to teach: an outcome should happen about as often as it did for real families, as far as sources allow.
 - The core exposes the current node as a plain struct; the UI draws it:
 
 ```c
@@ -337,10 +339,72 @@ Outcomes: safe crossing; goods lost (random items, weight-weighted); ox drowns; 
 
 ### 7.1 Currency
 
-- **One internal unit: the farthing** (¼ d), stored as a 64-bit integer.
-- **[sourced]** From 1825, 1 rixdollar = 1s 6d, so 1 Rd = 18 d = **72 farthings**, and £1 = 960 farthings ≈ 13⅓ Rds.
-- **Display by side:** English players see `£3 4s 6d`; Dutch players see `48 Rds 3 sk`. *(1 Rd = 8 skillings, so 1 sk = 9 farthings: **[recall, verify]**.)*
-- Prices in `data/` are written in farthings, or in pence with a helper, so the numbers are exact.
+**Keep money simple.** Each side sees prices only in its own currency, in whole units:
+
+| Side | Currency shown | Smallest unit | Example |
+|---|---|---|---|
+| Dutch | rixdollars | **1 Rd** | `Oxen: 30 Rds` |
+| English | pounds and shillings | **1 s** (no pence) | `Oxen: £2 5s` |
+
+- **[sourced]** From 1825, 1 Rd = 1s 6d, so £1 ≈ 13⅓ Rds. Harris (1836) gives the same rate in passing: "one hundred Rix dollars, equal to about seven pounds sterling".
+- **In code:** the player's purse is stored in their side's unit (whole Rds or whole shillings). Base prices in `data/` are written in **pence** so they can be exact to the source. The shop converts a final price to the side's unit and rounds to the nearest whole unit (never below 1). The two currencies never mix in one purse, so there are no fractions anywhere the player can see.
+
+#### Period prices
+
+Prices should reflect what things really cost in 1836–37, as far as we can tell. Anchors found so far:
+
+| Item or service | Price | Where / when | Status |
+|---|---|---|---|
+| Wether sheep, bought from a Boer commandant | **3 Rds a head** | north-east Cape frontier, 1836 | **[sourced: Harris]** |
+| Hire of a wagon and driver, Grahamstown → Somerset (about half way to Graaff-Reinet) | **100 Rds** (≈ £7) | 1836 | **[sourced: Harris]** |
+| A rider hired to chase a debt | **4 Rds** | Graaff-Reinet, 1836 | **[sourced: Harris]** |
+| Effect of the 1834–35 frontier war | "trebled the price of every thing, and of live stock in particular" | Algoa Bay / Grahamstown, 1836 | **[sourced: Harris]** |
+| Whole hunting expedition, with heavy ox losses | **£800** | 1836–37 | **[sourced: Harris]** |
+| A wagon and its ox team | **£70** | Overberg, undated | weak source; check |
+| Trek ox | ~30 Rds / £2 5s | Grahamstown, 1837 | **estimate**; to check |
+| Riding horse | ~100 Rds / £7 10s | Grahamstown, 1837 | **estimate**; to check |
+| New kakebeenwa | ~450 Rds / £34 | Grahamstown, 1837 | **estimate**; to check |
+
+Other prices (meal, coffee, sugar, gunpowder, lead, tobacco, beads, cloth, spare parts) are still to be found. Research pass 2 should look in:
+- the **Graham's Town Journal market column**: a market price list from 8 Feb 1838 is reproduced in a thesis on Eastern Cape trade, 1820–1860 (Huntley Street, Farmerfield and Fort Double Drift; Table 2.4);
+- the **Graaff-Reinet livestock price series** in Rds, from the Cape estate auction rolls (Cilliers 2023, *Economic History Review*);
+- Harris's *Narrative* / *Wild Sports* for more incidental prices.
+
+Every price in `data/prices.json` carries a `source` note, like events do (§8.5).
+
+#### Prices moved by history
+
+Real events changed prices along the road, so the game models them as **price shocks** in `data/price_shocks.json`. Each one has a date window, the places and goods it affects, a multiplier that fades over time, the line a seller uses to explain it, and sources:
+
+```json
+{
+  "id": "frontier_war_livestock",
+  "from": "1835-01-01", "to": "1837-12-31", "fade": "linear",
+  "nodes": ["grahamstown", "cradock"],
+  "categories": ["animals"],
+  "mul_start": 3.0, "mul_end": 1.3,
+  "excuse": "shop.excuse.frontier_war",
+  "history": "history.frontier_war_prices",
+  "sources": [ { "ref": "Harris, Wild Sports (1839), ch. II: the war 'trebled the price of every thing, and of live stock in particular'" },
+               { "kind": "invented", "note": "the fade to ×1.3 by 1837 is a guess" } ]
+}
+```
+
+The price formula (§7.2) gains a `× shock_modifier(node, item, date)` term.
+
+Shocks to research and include (dates and effects to verify in research pass 2):
+
+| Event | Date | Likely effect | Status |
+|---|---|---|---|
+| Sixth Frontier War and its aftermath | 1834–36 | livestock (and everything) dear around Grahamstown and Algoa Bay | **[sourced: Harris]**; how long it lasted is a guess |
+| The trek itself: hundreds of families selling farms and buying wagons, oxen, powder | 1836–37 | wagons, oxen and powder dear in the eastern districts; farms and furniture cheap | **[recall, verify]** |
+| Vegkop: Potgieter's trek lost most of its cattle | Oct 1836 | oxen scarce and dear at Thaba Nchu and the trekker laagers in early 1837 | Moroka's oxen **[sourced]**; size of the loss **[recall, verify]** |
+| Mosega: the commando drove off a large Ndebele herd | Jan 1837 | more cattle at trekker laagers; and the Ndebele side of the same story (§8) | **[recall, verify]** |
+| Gunpowder contraband beyond the frontier | 1830s | powder dear north of the Orange, and risky to sell | **[sourced: Harris]** |
+| The 1837 financial panic in Britain and America | 1837 | English merchants tighten credit; English side gets a smaller credit limit | **[recall, verify]**; check it reached the Cape |
+| Drought or good rains in a district | to find | grazing and food prices | to research |
+
+**Sellers use the news.** When a price is up because of a shock, the shopkeeper says why ("Since the war, sir, an ox costs what a horse did."). The History note (`H`) explains the real event. Some sellers, especially a sharp smous, **use the news as an excuse** to charge more than it justifies; a player who has heard the real news (a journal flag, or a good relation with someone who would know) can call it out and get a fairer price. That part is game design, and the History note says so.
 
 ### 7.2 Prices
 
@@ -361,15 +425,15 @@ price = base_price[item]
 ### 7.3 The store screen
 
 ```
-┌ HOLLAND & SONS, GRAHAMSTOWN (fictional) ──────────── You have £42 6s 0d ┐
+┌ HOLLAND & SONS, GRAHAMSTOWN (fictional) ─────────────── You have £96 6s ┐
 │  Item                     Price      Have   Buy                         │
-│  1 Oxen                   £3 0s       0     [ 14 ]                      │
-│  2 Meal / flour (100 lb)  12s 0d      0     [  6 ]                      │
-│  3 Gunpowder (lb)         2s 6d       0     [ 10 ]                      │
-│  …                                                                      │
+│  1 Oxen                   £2 5s       0     [ 14 ]                      │
+│  2 Meal / flour (100 lb)  £1 2s       0     [  6 ]                      │
+│  3 Gunpowder (lb)         3s          0     [ 10 ]                      │
+│  …                                    (prices here are placeholders)    │
 │  Spare parts: wheel, axle, disselboom                                   │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  Bill: £38 2s 0d     Load: 2,850 / 3,000 lb  (heavy)                    │
+│  Bill: £68 2s        Load: 2,850 / 3,000 lb  (heavy)                    │
 │  Mr Holland: "You'll want a spare axle before the Karoo, sir."          │
 │  ←/→ change amount   Enter buy   Esc leave                              │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -382,7 +446,15 @@ price = base_price[item]
 
 ### 7.4 Barter (north of the Orange)
 
-North of the Orange, coin is worth little. **Trade goods become money**: gunpowder, lead, tobacco, beads, iron, cloth, coffee, and livestock (`01_gemini_review.md` §2; confirm each good against a period source).
+North of the Orange, coin is worth little. **Trade goods become money**: gunpowder, lead, tobacco, beads, iron, cloth, coffee, and livestock (`01_gemini_review.md` §2).
+
+What Harris saw on the same road in 1836–37 **[sourced: Harris, *Wild Sports*, 1839]**:
+- Beyond the Colony "no circulating medium exists ... transactions are conducted exclusively by barter". He stocked up on beads, buttons, brass wire, trinkets, snuff and tobacco.
+- **Tobacco** was "the current coin of the realm", carried as long twisted ropes in rolls: a roll was a gift for a ruler, an inch a gift for a commoner. Among the Batswana, though, tobacco had lost value because people now grew it, and **beads** were the usual medium.
+- Three fat oxen were traded for a printed tablecloth and a pound of tea; a trader thought "a small canister of gunpowder" well repaid a sturdy ox.
+- **Gunpowder was contraband** beyond the frontier. Harris could not trade it for horses, though "a single pound would have given us the choice of the stud", because he risked **twelve months' imprisonment** back in the Colony.
+
+So in the game, **tobacco and beads are worth different amounts to different partners** (`barter.json` wants tables), and **gunpowder is the most valuable and most dangerous thing to trade**: a choice with a real legal and moral cost, and a good educational event.
 
 ```
 ┌ TRADING WITH THE BAROLONG AT THABA NCHU ─────────────────────────────────┐
@@ -495,7 +567,7 @@ Multi-node events add a `"nodes": { ... }` map and a `"start"` node; each outcom
 
 Each day (and again at night, with `"time": "night"` events):
 
-1. **Does anything happen?** `p = base_rate[region] × difficulty × pace_mod` (starting value: about 1 event every 3 days).
+1. **Does anything happen?** `p = base_rate[region] × pace_mod` (starting value: about 1 event every 3 days). Easy lowers the rate of harmful events only; Normal and Hard use it as it is (§8.5).
 2. **Which event?** Gather all events whose `sides`, `regions`, `months` and `requires` match and which aren't on cooldown or used up (`once`). Weight = `weight × weight_mods`. Pick by weight with the game RNG.
 3. **Scheduled events** (from `schedule` effects) fire on their day before any random pick.
 4. **Landmark set pieces** are not random: they belong to the landmark (§11.1).
@@ -515,6 +587,23 @@ Events can also **chain** through flags: helping a stranded Griqua wagon sets `h
 | Party | servant wants to leave or asks for wages; quarrel; a child wanders off; Sunday service |
 | History & news | Vegkop survivors' stories, Retief's manifesto read aloud, news of Mosega, council elections (Dutch) |
 | Side-only | Dutch: council vote, leader quarrel. English: debt collector, "Are you the Governor's man?", trekkers ask you to carry letters back |
+| Prices & news | a seller blames the war, Vegkop or the powder ban for his prices (§7.1); news that changes what things cost ahead |
+
+### 8.5 Realistic odds
+
+The game is meant to teach, so **chances should match history where history gives us a number**, and be honest guesses where it doesn't.
+
+- **Rates live in `data/rates.json`**, not scattered through events: illness per day by season and region, wagon breakage per mile by terrain, ox deaths, child and adult mortality, drowning risk by river depth. Events and systems look rates up by name, so one research fix updates everything that uses it.
+- **Converting a documented rate to a daily chance.** Sources usually give a rate over a period (e.g. "x of y died over the journey" or "per year"). Convert it with
+  `p_day = 1 − (1 − p_period)^(1 / days_in_period)`
+  so the run as a whole matches the documented figure.
+- **Every rate and outcome weight has a `basis`**: a source with the figure and how it was converted, or `"invented"` with a short reason. `datacheck` prints a report of how many chances are sourced versus invented, so we can see how much is still guesswork.
+- **Grounding numbers to look for** (research pass 2): ox losses on Harris's trip (he blamed the heavy losses partly on his fast pace); deaths and losses in the Tregardt diary (careful: his route had malaria, ours mostly doesn't); child and adult mortality in the 1830s Cape; drowning and wagon accidents at drifts; how often wagons broke down per hundred miles.
+- **Difficulty and realism:**
+  - **Normal** uses the history-based rates as they are.
+  - **Easy** softens the deadliest rates and always warns before a death. The game says on the difficulty screen that Easy is kinder than history was.
+  - **Hard** uses the same history-based rates as Normal, but with less starting money, no supply warnings and no hints in choice text.
+- The trekbot checks that whole runs come out believable: on Normal, the share of party members who die over a run should be close to what the sources suggest for a trek of this length, not far above or below it.
 
 ---
 
@@ -644,8 +733,9 @@ typedef struct {
 
 ### 11.4 Death and graves
 
-- Deaths happen through illness, accidents, crossings and (rarely) events. On **Easy** ("family mode") deaths are rarer and a warning always comes first.
-- **Grave screen:** name, birth year, date and place of death, a typed epitaph (optional). The game adds the grave to `graves.json` in the pref path. Later runs show **graves from earlier runs** along the trail (the Oregon Trail tombstone tradition), with the epitaph.
+- Deaths happen through illness, accidents, crossings and (rarely) events, at the rates in §8.5. On **Easy** deaths are rarer and a warning always comes first.
+- **Grave screen:** name, birth year, date and place of death, a typed epitaph (optional). The grave is stored **in this trip's save only**.
+- **Only your own party's graves are shown**: as crosses on the map, and as a grave by the trail if the route passes the spot again. Graves from other trips never appear.
 - Violence is never shown; deaths are told in calm text.
 
 ---
@@ -659,6 +749,8 @@ Values from −100 to +100, shown only in words on the Standing screen:
 `trekker_council · british_colonial · missionaries · barolong · griqua · basotho · ndebele · smouse`, plus each servant's loyalty.
 
 They change prices (§7.2), event weights and locked choices, who will help at a drift, and the epilogue. Starting values differ by side (plan §4).
+
+**The English side must earn a place in a group laager.** It is never offered at the start. A story chain unlocks it, for example: help a trekker family at a drift, carry their letters, share powder or oxen after a loss, and stand guard on their herd. Each step raises `trekker_council` standing and sets a flag; the invitation comes as an event once the flags and standing are there. Some choices (siding with a British official, selling powder across the frontier) can close the door again.
 
 ### 12.2 Endings
 
@@ -678,12 +770,46 @@ A **family score** (people × health + livestock + goods + relations bonus, mult
 
 ---
 
-## 13. Saves, settings and determinism
+## 13. Main menu, saves and permadeath
 
-- **Saves:** JSON in `SDL_GetPrefPath("TheGreatTrek", "TheGreatTrek")`. 3 slots + an autosave each morning and on arriving at a landmark. Each save holds `version`, `seed`, the **RNG state**, the phase, and the full game state. Old save versions are rejected with a clear message until there is a reason to migrate them.
+### 13.1 Main menu
+
+```
+THE GREAT TREK
+
+  1 Continue               (only if there are saved trips)
+  2 New trip
+  3 Difficulty: Normal     (Easy / Normal / Hard)
+  4 Settings
+  5 Credits
+  6 Quit
+```
+
+- **Difficulty is set here, before a trip starts**, and is named plainly: **Easy, Normal, Hard**, with a one-line description of each (§8.5). The new trip takes the menu's current difficulty and keeps it for the whole trip; it can't be changed mid-trip. The menu remembers the last choice (`settings.json`).
+- **Continue** goes straight into the trip if there is only one; otherwise it opens **Your trips**.
+
+### 13.2 One save per trip, newest first
+
+- Each trip has **exactly one save file**: `trips/<trip_id>.json` in `SDL_GetPrefPath("TheGreatTrek", "TheGreatTrek")`. There are no save slots, no "save as", and no loading of an earlier point.
+- **Your trips** lists saved trips **newest first** (by last played). Each row shows: family name and side, difficulty, the date in the trip, where they are, how many are still with the party, and when it was last played.
+- **Save and quit** (pause menu) writes the save and returns to the main menu. Picking the trip later carries on exactly where it stopped, even in the middle of a store visit or a conversation.
+- Several trips can exist at once (e.g. one per family member playing), each with its own single save.
+- **Finished trips** (arrived, settled, turned back, or lost) can't be continued. They stay in a separate "Finished" list where the journal, graves and epilogue can be read, and can be deleted.
+
+### 13.3 Permadeath: the save always moves forward
+
+- **The game saves itself after every step that changes the trip**: each day, each choice, each crossing, each hunt action, each purchase. The single file always holds *now*; there is never an older copy to go back to.
+- **The outcome is saved before it is shown.** When the player picks a choice, the core rolls the result, the save is written, and only then does the result appear. Quitting from the menu at that point doesn't undo it.
+- **Rerolls don't help anyway:** the RNG state is part of the save, so carrying on from the same point and making the same choice gives the same result.
+- **Crash safety:** write to `<trip_id>.json.tmp`, flush, then rename it over the real file (`SDL_RenamePath`; check it replaces the old file on Windows). A crash during a write leaves the previous step's save intact, so a crash costs at most one step.
+- **Accepted loophole:** killing the process between a choice and the save write could let a player try a *different* choice. That's fine; we don't fight it.
+- Old save versions are rejected with a clear message until there is a reason to migrate them.
+
+### 13.4 Determinism and settings
+
 - **Determinism:** one PCG32 stream in the `Game` struct, passed to every system. Hunts and events use the same stream. Given seed + the list of player commands, a run replays exactly; `trekbot` and bug reports both rely on this. (A bug report can include "seed + command log".)
-- **Settings** (separate `settings.json`): text speed, font size, fullscreen, volume, difficulty (Easy/Normal/Hard, chosen at new game), show odds (off by default), history notes on/off.
-- **Difficulty** scales event rate, illness, breakage and starting supplies. It does not change the history text.
+- **Settings** (`settings.json`, separate from trips): text speed, font size, fullscreen, volume, show odds (**off by default**), history notes on/off, last chosen difficulty.
+- The core stays SDL-free: it turns a `Game` into a JSON string and back; the UI does the file writing.
 
 ---
 
@@ -729,11 +855,11 @@ Game *game_load_json(const char *json, const GameData *data);
 
 ### trekbot
 
-Links the core only. Plays N runs per side and family with simple policies (`random`, `cautious`, `greedy`, `no_hunting`) and prints: arrival rate, days taken, deaths by cause, events seen (and never seen), money left, and relations. Balance targets are **game design goals, not history** (e.g. a cautious Normal run should usually arrive; a reckless one should often not).
+Links the core only. Plays N runs per side and family with simple policies (`random`, `cautious`, `greedy`, `no_hunting`) and prints: arrival rate, days taken, deaths by cause, events seen (and never seen), money left, and relations. It also checks realism (§8.5): on Normal, deaths and losses over a run should sit near the documented rates, and a careful party should usually arrive while a reckless one often should not.
 
 ### datacheck
 
-Validates JSON schemas, every locale key (in code-referenced lists and data), event graph links, `sources` on every event, item ids in shops and effects, and that `map_xy` and `lat/lon` exist for every node.
+Validates JSON schemas, every locale key (in code-referenced lists and data), event graph links, `sources` on every event, a `basis` on every rate and a `source` on every price (with a sourced-vs-invented report), item ids in shops and effects, and that `map_xy` and `lat/lon` exist for every node.
 
 ---
 
@@ -747,7 +873,9 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
 | `data/items.json` | items: weight, base price, sides, category, barter value |
 | `data/wagons.json` | wagon types: capacity, min oxen, speed, sides, price |
 | `data/families.json` | backstories, members (fictional), skills, perks, starting goods |
-| `data/prices.json` | side × seller-group modifiers, distance modifiers, sell spreads |
+| `data/prices.json` | base prices in pence (each with a source), side × seller-group modifiers, distance modifiers, sell spreads |
+| `data/price_shocks.json` | history-driven price changes by date, place and goods, with sellers' excuses (§7.1) |
+| `data/rates.json` | illness, accident, breakage, mortality and drowning rates, each with a basis (§8.5) |
 | `data/shops.json` | each shop: seller group, keeper (fictional name key), stock |
 | `data/barter.json` | partners: group, wants tables, fairness thresholds |
 | `data/animals.json` | animals: tier, meat, speed, spook chance, danger, regions |
@@ -767,11 +895,16 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
 
 ---
 
-## 17. Open questions for you
+## 17. Decisions made (2026-10-11)
+
+- **Odds:** not shown. A "Show odds" toggle exists in Settings, off by default. The odds themselves are based on history where possible (§8.5).
+- **Graves:** shown, but only for your own party on this trip (§11.4).
+- **Money:** whole units only: rixdollars for the Dutch side, pounds and shillings for the English side, with prices as close to 1837 as sources allow (§7.1). History-driven price changes, and sellers who blame them (§7.1).
+- **English group laager:** must be earned through events (§12.1).
+- **Difficulty:** Easy / Normal / Hard, set from the main menu before a trip (§13.1).
+- **Saves:** one save per trip, newest first, always moving forward; permadeath (§13).
+
+## 18. Open questions
 
 1. **Distance:** my rough leg estimate (≈575 mi) is longer than the plan's 450–500. Settle in research pass 2.
-2. **Group laager for the English side:** should joining be possible from the start with good standing, or only after a story event earns it?
-3. **Show odds** toggle: keep it (off by default), or leave numbers out entirely?
-4. **Graves from earlier runs:** fun for families sharing one computer; keep it?
-5. **Difficulty names:** "Easy / Normal / Hard", or something in period voice?
-6. **Money display:** should the Dutch side see rixdollars and skillings, or just whole rixdollars to keep it simple for children?
+2. **Finished trips:** keep them in a read-only "Finished" list (journal, graves, epilogue), or delete them when the trip ends?

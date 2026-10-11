@@ -126,6 +126,22 @@ You need these to write the people the trekkers met as full participants rather 
 - **English speakers on the Trek** were rare. I found no good source listing them, which is a research gap. Andrew Smith (English) scouted Natal in 1832. Port Natal traders took part in the 1838 events.
   - https://en.wikipedia.org/wiki/Great_Trek
 
+## 6c. Prices and barter, 1836–37 (added 2026-10-11)
+
+- **Harris, *The Wild Sports of Southern Africa* (London, 1839)**, public-domain scan with full text: https://archive.org/details/wildsportsofsout00harr. Facts used in `04_game_design.md` §7: **[sourced]**
+  - The 1834–35 frontier war "trebled the price of every thing, and of live stock in particular" around Algoa Bay and Graham's Town (ch. II).
+  - Hiring a wagon and driver from Graham's Town to Somerset: 100 Rds, "equal to about seven pounds sterling" (ch. III).
+  - Wether sheep bought from a Boer commandant at 3 Rds a head; a rider hired to chase a debt for 4 Rds.
+  - Beyond the Colony "no circulating medium exists"; trade is by barter. Tobacco, in twisted ropes, is "the current coin of the realm", but among the Batswana beads were the usual medium because tobacco was now grown locally.
+  - Three fat oxen for a printed tablecloth and a pound of tea; a sturdy ox for "a small canister of gunpowder".
+  - Carrying gunpowder into the territories of African rulers was contraband; trading it risked twelve months' imprisonment.
+  - The whole expedition cost £800, swelled by heavy ox losses.
+- **To find (research pass 2):**
+  - Graham's Town Journal market column. A market price list from 8 Feb 1838 is reproduced in the thesis *The economics of trade on the Eastern Cape Frontier, 1820–1860* (Table 2.4): https://www.academia.edu/67036112/
+  - Graaff-Reinet livestock prices in Rds from estate auction rolls: Cilliers, "Did it pay to be a pioneer?", *Economic History Review* (2023): https://onlinelibrary.wiley.com/doi/10.1111/ehr.13188
+  - "A wagon and team of oxen cost £70" (Overberg farm history, undated; weak): https://www.rivertonstud.co.za/heritage/
+  - 1 Rd = 8 schellingen, 1 schelling = 6 stuivers (no longer needed in the game, which uses whole Rds): https://link.springer.com/article/10.1007/s11698-026-00339-9
+
 ## 7. Museums and archives (for images, artefacts, permissions)
 
 - **Msunduzi Museum** (formerly the Voortrekker Museum), Pietermaritzburg. Holds the Church of the Vow, an 1824 ox-wagon and Retief's prayer book, and now presents multiple cultural perspectives.
