@@ -10,6 +10,7 @@ Read these before designing or writing content:
 - `docs/planning/03_development_plan.md`: decisions, the two sides, route, systems, architecture, milestones. **This is the source of truth.**
 - `docs/planning/02_research_resources.md`: sourced historical facts with links.
 - `docs/planning/01_gemini_review.md`: early Gemini design ideas worth keeping, and the factual errors in them.
+- `docs/planning/04_game_design.md`: how the game works: screens, dialog, map, timing, stores and barter, events format, hunting, saves, core API.
 
 ## Settled decisions (don't re-open without the user)
 

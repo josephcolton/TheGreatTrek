@@ -156,7 +156,7 @@ Keeping SDL out of the core means the balance bot and the tests run without a wi
 - Names are typed in with SDL text input.
 
 ### Data and text
-- `data/events/*.json`. Each event has `id`, `sides`, `regions`, `months`, `weight`, `requires`, `sources`, and choices with weighted outcomes and effects. (The format is drafted in §4 of this file, written as YAML there for readability; the real files are JSON.)
+- `data/events/*.json`. Each event has `id`, `sides`, `regions`, `months`, `weight`, `requires`, `sources`, and choices with weighted outcomes and effects. (The format is drafted in `04_game_design.md` §8.)
 - Other data files: `data/items.json`, `data/wagons.json`, `data/route.json`, `data/families.json`, `data/prices.json` (side × seller-group modifiers).
 - **All player-facing text lives in `data/locale/en.json`** and is looked up by key. A Dutch or Afrikaans file can be added later without changing code.
 
