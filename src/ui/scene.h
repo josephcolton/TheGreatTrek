@@ -18,6 +18,8 @@ typedef enum {
 
 /* Draws a scene into rect. region < 0 uses the game's current region. */
 void scene_draw(App *app, SDL_FRect rect, SceneKind kind, int region, bool moving);
+/* The colour of the ground in a region. */
+SDL_Color scene_ground(const App *app, int region);
 /* The scene that fits the game's current dialog or place. */
 SceneKind scene_for_game(const App *app);
 

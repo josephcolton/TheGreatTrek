@@ -40,6 +40,11 @@ static SDL_Color ground_color(const App *app, int region)
     return (SDL_Color){150, 140, 88, 255};
 }
 
+SDL_Color scene_ground(const App *app, int region)
+{
+    return ground_color(app, region);
+}
+
 typedef enum { WAGON_TREK, WAGON_TRANSPORT, WAGON_CART } WagonShape;
 
 static WagonShape wagon_shape(const App *app)
@@ -54,21 +59,25 @@ static WagonShape wagon_shape(const App *app)
     return WAGON_TREK;
 }
 
-/* The family's wagon and span; x is the back of the span, y the axle line. */
+/* The family's wagon and span, travelling to the right: x is the back of the wagon, y the axle line.
+ * The oxen walk in front, with the voorloper leading the front pair. */
 static void wagon(Draw *d, WagonShape shape, float x, float y, int pairs, bool moving, double t)
 {
     SDL_Color canvas = {226, 216, 190, 255}, hoop = {196, 184, 156, 255}, wood = {98, 70, 44, 255}, ox = {74, 52, 36, 255};
+    SDL_Color horn = {214, 204, 180, 255}, coat = {90, 70, 50, 255};
     float bob = moving ? (float)((int)(t * 4) % 2) : 0;
+    float front;
     if (shape == WAGON_CART) {
         /* two-wheeled Scotch cart: a short box on one big pair of wheels */
         if (pairs > 2) {
             pairs = 2;
         }
-        draw_rect(d, (SDL_FRect){x + 6, y - 10 + bob, 30, 10}, (SDL_Color){132, 100, 66, 255});
-        draw_rect(d, (SDL_FRect){x + 6, y - 12 + bob, 30, 2}, wood);
-        draw_rect(d, (SDL_FRect){x - 4, y + bob, 44, 3}, wood);
-        draw_rect(d, (SDL_FRect){x + 15, y + 1, 14, 14}, wood);
-        draw_rect(d, (SDL_FRect){x + 20, y + 6, 4, 4}, canvas);
+        draw_rect(d, (SDL_FRect){x, y - 10 + bob, 30, 10}, (SDL_Color){132, 100, 66, 255});
+        draw_rect(d, (SDL_FRect){x, y - 12 + bob, 30, 2}, wood);
+        draw_rect(d, (SDL_FRect){x - 2, y + bob, 50, 3}, wood); /* floor and shafts */
+        draw_rect(d, (SDL_FRect){x + 8, y + 1, 14, 14}, wood);
+        draw_rect(d, (SDL_FRect){x + 13, y + 6, 4, 4}, canvas);
+        front = x + 48;
     } else {
         bool big = shape == WAGON_TRANSPORT;
         float len = big ? 74 : 56, high = big ? 20 : 16;
@@ -78,22 +87,37 @@ static void wagon(Draw *d, WagonShape shape, float x, float y, int pairs, bool m
             draw_rect(d, (SDL_FRect){hx, y - high + bob, 1, high}, hoop);
         }
         draw_rect(d, (SDL_FRect){x - 2, y - 2 + bob, len + 4, 6}, wood);
-        draw_rect(d, (SDL_FRect){x + 2, y + 4, 10, 10}, wood);
-        draw_rect(d, (SDL_FRect){x + len - 12, y + 4, 12, 12}, wood);
+        draw_rect(d, (SDL_FRect){x + 1, y + 4, 12, 12}, wood);           /* big back wheel */
+        draw_rect(d, (SDL_FRect){x + len - 12, y + 6, 10, 10}, wood);    /* smaller front wheel */
         if (big) {
             draw_rect(d, (SDL_FRect){x + len / 2 - 6, y + 4, 10, 10}, wood); /* heavy load: a middle pair seen behind */
         }
+        draw_rect(d, (SDL_FRect){x + len + 2, y + 4, 8, 2}, wood);       /* the dissel boom */
+        front = x + len + 8;
     }
+    if (pairs <= 0) {
+        return;
+    }
+    /* the trek chain runs from the dissel boom past every pair */
+    draw_rect(d, (SDL_FRect){front, y + 5, pairs * 16.0f, 1}, wood);
     for (int p = 0; p < pairs; p++) {
-        float ox_x = x - 18 - p * 16.0f;
+        float ox_x = front + 2 + p * 16.0f;
         float leg = moving ? (float)((int)(t * 6 + p) % 2) : 0;
-        draw_rect(d, (SDL_FRect){ox_x, y + 2, 13, 7}, ox);
+        draw_rect(d, (SDL_FRect){ox_x, y + 2, 12, 7}, ox);
+        draw_rect(d, (SDL_FRect){ox_x + 11, y + 1, 4, 5}, ox);           /* head, facing forward */
+        draw_rect(d, (SDL_FRect){ox_x + 10, y, 4, 1}, horn);
+        draw_rect(d, (SDL_FRect){ox_x + 9, y + 1, 1, 2}, wood);          /* the yoke */
         draw_rect(d, (SDL_FRect){ox_x + 1, y + 9, 2, 4 + leg}, ox);
-        draw_rect(d, (SDL_FRect){ox_x + 10, y + 9, 2, 5 - leg}, ox);
+        draw_rect(d, (SDL_FRect){ox_x + 9, y + 9, 2, 5 - leg}, ox);
     }
-    if (pairs > 0) {
-        draw_rect(d, (SDL_FRect){x - 18 - (pairs - 1) * 16.0f - 2, y + 5, (pairs - 1) * 16.0f + 20, 1}, wood);
-    }
+    /* the voorloper walks ahead of the front pair with a leading thong */
+    float vx = front + pairs * 16.0f + 6;
+    float step = moving ? (float)((int)(t * 6) % 2) : 0;
+    draw_rect(d, (SDL_FRect){vx - 6, y + 3, 6, 1}, wood);
+    draw_rect(d, (SDL_FRect){vx, y - 4, 4, 9}, coat);
+    draw_rect(d, (SDL_FRect){vx, y - 8, 4, 4}, (SDL_Color){120, 84, 60, 255});
+    draw_rect(d, (SDL_FRect){vx, y + 5, 1, 7 + step}, coat);
+    draw_rect(d, (SDL_FRect){vx + 3, y + 5, 1, 8 - step}, coat);
 }
 
 static void house(Draw *d, float x, float base, float w, float h, SDL_Color wall, SDL_Color roof)
@@ -187,7 +211,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
         /* church tower */
         draw_rect(d, (SDL_FRect){r.x + 540, base - 34, 14, 34}, wall);
         draw_rect(d, (SDL_FRect){r.x + 536, base - 38, 22, 4}, roof);
-        wagon(d, ws, r.x + 330, base, pairs > 4 ? 4 : pairs, false, 0);
+        wagon(d, ws, r.x + 280, base, pairs > 4 ? 4 : pairs, false, 0);
         break;
     case SCENE_MISSION:
         for (int i = 0; i < 9; i++) {
@@ -197,7 +221,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
         draw_rect(d, (SDL_FRect){r.x + 260, base - 26, 30, 26}, wall);
         draw_rect(d, (SDL_FRect){r.x + 271, base - 36, 8, 10}, wall);
         draw_rect(d, (SDL_FRect){r.x + 274, base - 42, 2, 6}, roof);
-        wagon(d, ws, r.x + 380, base + 6, pairs > 3 ? 3 : pairs, false, 0);
+        wagon(d, ws, r.x + 340, base + 6, pairs > 3 ? 3 : pairs, false, 0);
         break;
     case SCENE_RIVER:
     case SCENE_END: {
@@ -215,7 +239,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
                 draw_rect(d, (SDL_FRect){tx - 10, wy - 34, 24, 16}, (SDL_Color){100, 140, 70, 255});
             }
         }
-        wagon(d, ws, r.x + 420, wy - 6, pairs > 5 ? 5 : pairs, false, 0);
+        wagon(d, ws, r.x + 360, wy - 6, pairs > 5 ? 5 : pairs, false, 0);
         break;
     }
     case SCENE_LAAGER:
@@ -239,7 +263,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
     case SCENE_MOUNTAIN:
     case SCENE_ROAD:
     default:
-        wagon(d, ws, r.x + r.w * 0.55f, base, pairs, moving, t);
+        wagon(d, ws, r.x + r.w * 0.3f, base, pairs, moving, t);
         break;
     }
 }
