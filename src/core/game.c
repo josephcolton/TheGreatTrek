@@ -123,6 +123,10 @@ Game *game_new(const GameData *data, uint64_t seed, int family, Difficulty diff)
         g->wagon_parts[p] = 100;
     }
     g->ox_stamina = 90;
+    for (int i = 0; i < MAX_REGIONS; i++) {
+        g->region_game[i] = 1.0;
+    }
+    g->last_hunt_day = -1;
     g->morale = 70 + f->morale_bonus;
     g->money = (int)lround(f->money * r->start_money_mul[diff]);
     for (int i = 0; i < f->start_item_count; i++) {
@@ -642,6 +646,10 @@ void g_settle(Game *g)
     }
     if (g->dlg.kind != DLG_NONE) {
         g->phase = PHASE_DIALOG;
+        return;
+    }
+    if (g->hunt.active) {
+        g->phase = PHASE_HUNT;
         return;
     }
     if (g->pending_grave_count > 0) {

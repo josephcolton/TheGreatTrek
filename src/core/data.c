@@ -731,6 +731,61 @@ static void load_shocks(Loader *L, const char *dir)
     cJSON_Delete(root);
 }
 
+/* ---------------------------------------------------------------- animals */
+
+static void load_animals(Loader *L, const char *dir)
+{
+    cJSON *root = load_json(L, dir, "animals.json");
+    if (!root) {
+        return;
+    }
+    GameData *d = L->d;
+    HuntRules *h = &d->hunt;
+    const cJSON *mis = jget(root, "misfire");
+    for (int w = 0; w < WEATHER_COUNT; w++) {
+        h->misfire[w] = jnum(mis, WEATHER_IDS[w], 0.05);
+    }
+    const cJSON *hits = jget(root, "hit_by_range");
+    for (int i = 0; i < 4; i++) {
+        const cJSON *v = cJSON_GetArrayItem(hits, i);
+        h->hit_by_range[i] = cJSON_IsNumber(v) ? v->valuedouble : 0.3;
+    }
+    h->reload_turns = jint(root, "reload_turns", 3);
+    h->max_turns = jint(root, "max_turns", 10);
+    h->carry_on_foot = jint(root, "carry_on_foot", 120);
+    h->carry_per_horse = jint(root, "carry_per_horse", 150);
+    h->shots_per_lb = jint(root, "shots_per_lb", 12);
+    h->biltong_yield = jnum(root, "biltong_yield", 0.45);
+    static const char *TIERS[] = {"passive", "big", "predator"};
+    const cJSON *o;
+    cJSON_ArrayForEach(o, jget(root, "animals"))
+    {
+        if (d->animal_count >= MAX_ANIMALS) {
+            fail(L, "too many animals");
+            break;
+        }
+        AnimalDef *a = &d->animals[d->animal_count++];
+        need_str(L, a->id, sizeof a->id, o, "id", "animal");
+        make_key(a->name_key, sizeof a->name_key, "animal.", a->id, "");
+        int tier = find_name(TIERS, 3, jstr(o, "tier"));
+        a->tier = tier < 0 ? TIER_PASSIVE : (AnimalTier)tier;
+        a->meat = jint(o, "meat", 50);
+        a->spook = jnum(o, "spook", 0.3);
+        a->size = jnum(o, "size", 1.0);
+        a->flee_wounded = jnum(o, "flee_wounded", 0.5);
+        a->charge = jnum(o, "charge", 0.0);
+        const cJSON *r;
+        cJSON_ArrayForEach(r, jget(o, "regions"))
+        {
+            int ri = need_index(L, data_find_region(d, r->string), "region", r->string, a->id);
+            if (ri >= 0 && cJSON_IsNumber(r)) {
+                a->region_weight[ri] = r->valuedouble;
+            }
+        }
+    }
+    cJSON_Delete(root);
+}
+
 /* ---------------------------------------------------------------- events */
 
 static bool parse_cond(Loader *L, const cJSON *o, Cond *c, const char *ctx);
@@ -1261,6 +1316,9 @@ static void resolve_known(Loader *L)
     d->item_iron = need_index(L, data_find_item(d, "iron"), "item", "iron", "required items");
     d->item_cows = need_index(L, data_find_item(d, "cows"), "item", "cows", "required items");
     d->item_biltong = need_index(L, data_find_item(d, "biltong"), "item", "biltong", "required items");
+    d->item_gunpowder = need_index(L, data_find_item(d, "gunpowder"), "item", "gunpowder", "required items");
+    d->item_lead = need_index(L, data_find_item(d, "lead"), "item", "lead", "required items");
+    d->item_horses = need_index(L, data_find_item(d, "horses"), "item", "horses", "required items");
     static const char *SPARES[WAGON_PART_COUNT] = {"spare_wheel", "spare_axle", "spare_dissel", "canvas"};
     for (int p = 0; p < WAGON_PART_COUNT; p++) {
         d->item_spare[p] = need_index(L, data_find_item(d, SPARES[p]), "item", SPARES[p], "required items");
@@ -1290,6 +1348,7 @@ GameData *data_load(const char *data_dir, char *err, size_t err_len, int *warnin
     if (!L.failed) load_families(&L, data_dir);
     if (!L.failed) load_rules(&L, data_dir);
     if (!L.failed) load_shocks(&L, data_dir);
+    if (!L.failed) load_animals(&L, data_dir);
     if (!L.failed) load_events(&L, data_dir);
     if (!L.failed) resolve_setpieces(&L, data_dir);
     if (!L.failed) resolve_known(&L);
@@ -1383,6 +1442,9 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
             snprintf(buf, sizeof buf, "%s.%d", f->story_key, p);
             fn(buf, f->id, ctx);
         }
+    }
+    for (int i = 0; i < d->animal_count; i++) {
+        fn(d->animals[i].name_key, d->animals[i].id, ctx);
     }
     for (int i = 0; i < d->shock_count; i++) {
         if (d->shocks[i].excuse_key[0]) {

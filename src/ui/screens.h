@@ -45,6 +45,10 @@ void game_screen_render(App *app);
 /* Opens a saved trip and goes to the game screen. */
 bool open_trip(App *app, const char *trip_id);
 
+/* hunting (screen_hunt.c) */
+void hunt_screen_event(App *app, const SDL_Event *e);
+void hunt_screen_render(App *app);
+
 /* overlays (screen_overlay.c) */
 void overlay_event(App *app, const SDL_Event *e);
 void overlay_render(App *app);

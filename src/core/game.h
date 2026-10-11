@@ -26,7 +26,8 @@ typedef enum {
     PHASE_STORE,
     PHASE_TRAVEL,
     PHASE_GRAVE,
-    PHASE_ENDED
+    PHASE_ENDED,
+    PHASE_HUNT
 } GamePhase;
 
 typedef enum { ARG_INT, ARG_STR, ARG_KEY, ARG_MONEY, ARG_DATE } ArgKind;
@@ -100,6 +101,27 @@ typedef struct {
     int part;                 /* DLG_BREAKDOWN */
 } DialogState;
 
+typedef enum { HUNT_STALK, HUNT_WAIT, HUNT_FIRE, HUNT_RELOAD, HUNT_FOLLOW, HUNT_LEAVE, HUNT_ACTION_COUNT } HuntAction;
+
+#define HUNT_LOG 4
+typedef struct {
+    bool active;
+    int hunter;               /* member doing the shooting */
+    int animal;               /* -1 = nothing in sight */
+    int range;                /* 0 far .. 3 close */
+    bool loaded;
+    int reload_left;
+    bool wounded;
+    int turn;
+    int meat;                 /* lb taken this hunt */
+    int carry;                /* lb that can be carried back */
+    int shots;
+    int kills;
+    bool over;                /* the hunt is finished; showing the summary */
+    LocText log[HUNT_LOG];
+    int log_count;
+} HuntState;
+
 typedef enum {
     ENDING_NONE, ENDING_ARRIVED, ENDING_SETTLED, ENDING_TURNED_BACK, ENDING_STRANDED, ENDING_LOST
 } EndingKind;
@@ -172,6 +194,11 @@ typedef struct Game {
     int journal_count;
     EndingKind ending;
     int deaths;
+
+    /* hunting */
+    HuntState hunt;
+    double region_game[MAX_REGIONS]; /* 1.0 = plenty of game; falls as the party hunts */
+    int last_hunt_day;               /* one hunt a day */
 } Game;
 
 /* ---- views for the front end ---- */
@@ -237,6 +264,32 @@ bool game_store_view(const Game *g, StoreView *out);
 bool game_store_buy(Game *g, int item, int packs);
 bool game_store_sell(Game *g, int item, int packs);
 void game_store_leave(Game *g);
+
+/* ---- hunting ---- */
+typedef struct {
+    LocText hunter;
+    LocText animal;           /* empty key = nothing in sight */
+    char animal_id[ID_LEN];
+    AnimalTier tier;
+    int range;
+    bool loaded;
+    int reload_left;
+    bool wounded;
+    int turns_left;
+    int meat, carry;
+    int powder, lead;
+    bool over;
+    LocText log[HUNT_LOG];
+    int log_count;
+    bool can[HUNT_ACTION_COUNT];
+} HuntView;
+
+/* Whether a hunt can start now (powder, lead, a shooter, and not already hunted out). */
+bool game_can_hunt(const Game *g);
+/* Starts a hunt from the travel screen; costs half a day. */
+void game_hunt_start(Game *g);
+bool game_hunt_view(const Game *g, HuntView *out);
+void game_hunt_act(Game *g, HuntAction a);
 
 /* ---- graves ---- */
 const Grave *game_pending_grave(const Game *g);

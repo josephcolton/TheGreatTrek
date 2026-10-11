@@ -1,0 +1,33 @@
+{
+  "_about": "Game for the hunting screen (04_game_design.md section 9). Meat weights and behaviour numbers are estimates for play. Which animals lived where follows Harris (1839) and Backhouse (1844) in general terms [recall, verify per animal]. Misfire chances by weather are the early design values (01_gemini_review.md section 2), invented.",
+  "misfire": { "clear": 0.02, "hot": 0.02, "windy": 0.04, "cold": 0.04, "frost": 0.05, "rain": 0.6, "storm": 0.6 },
+  "hit_by_range": [0.12, 0.3, 0.55, 0.8],
+  "reload_turns": 3,
+  "max_turns": 10,
+  "carry_on_foot": 120,
+  "carry_per_horse": 150,
+  "shots_per_lb": 12,
+  "biltong_yield": 0.45,
+  "animals": [
+    { "id": "springbok", "tier": "passive", "meat": 40, "spook": 0.35, "size": 0.8, "flee_wounded": 0.6,
+      "regions": { "karoo": 10, "transorangia": 8, "highveld": 6 } },
+    { "id": "blesbok", "tier": "passive", "meat": 50, "spook": 0.3, "size": 0.85, "flee_wounded": 0.6,
+      "regions": { "transorangia": 6, "highveld": 8 } },
+    { "id": "gnu", "tier": "passive", "meat": 120, "spook": 0.3, "size": 1.0, "flee_wounded": 0.5,
+      "regions": { "karoo": 3, "transorangia": 6, "highveld": 7 } },
+    { "id": "hartebeest", "tier": "passive", "meat": 100, "spook": 0.3, "size": 1.0, "flee_wounded": 0.5,
+      "regions": { "transorangia": 4, "highveld": 4 } },
+    { "id": "quagga", "tier": "passive", "meat": 150, "spook": 0.25, "size": 1.1, "flee_wounded": 0.5,
+      "regions": { "karoo": 3, "transorangia": 4, "highveld": 2 } },
+    { "id": "ostrich", "tier": "passive", "meat": 60, "spook": 0.5, "size": 0.9, "flee_wounded": 0.7,
+      "regions": { "karoo": 3, "transorangia": 3, "highveld": 2 } },
+    { "id": "kudu", "tier": "passive", "meat": 150, "spook": 0.35, "size": 1.0, "flee_wounded": 0.5,
+      "regions": { "eastern_frontier": 6, "stormberg": 3 } },
+    { "id": "eland", "tier": "big", "meat": 400, "spook": 0.2, "size": 1.3, "flee_wounded": 0.4,
+      "regions": { "transorangia": 2, "highveld": 2, "stormberg": 2 } },
+    { "id": "buffalo", "tier": "big", "meat": 400, "spook": 0.2, "size": 1.3, "flee_wounded": 0.3, "charge": 0.45,
+      "regions": { "eastern_frontier": 2 } },
+    { "id": "lion", "tier": "predator", "meat": 0, "spook": 0.1, "size": 1.1, "flee_wounded": 0.3, "charge": 0.6,
+      "regions": { "transorangia": 1, "highveld": 1 } }
+  ]
+}

@@ -87,18 +87,21 @@ static void commit(App *app)
 
 /* ---------------------------------------------------------------- travel screen */
 
-typedef enum { TR_GO, TR_REST, TR_ORDERS, TR_SUPPLIES, TR_PARTY, TR_MAP, TR_JOURNAL, TR_COUNT } TravelItem;
+typedef enum { TR_GO, TR_REST, TR_HUNT, TR_ORDERS, TR_SUPPLIES, TR_PARTY, TR_MAP, TR_JOURNAL, TR_COUNT } TravelItem;
 
 #define MENU_X 330.0f
-#define MENU_Y 192.0f
+#define MENU_Y 186.0f
 #define MENU_W 300
 
 static void travel_items(App *app, ChoiceItem *items)
 {
-    static const char *KEYS[TR_COUNT] = {"travel.go", "travel.rest", "travel.orders", "travel.supplies",
-                                         "travel.party", "travel.map", "travel.journal"};
+    static const char *KEYS[TR_COUNT] = {"travel.go", "travel.rest", "travel.hunt", "travel.orders",
+                                         "travel.supplies", "travel.party", "travel.map", "travel.journal"};
     for (int i = 0; i < TR_COUNT; i++) {
         items[i] = (ChoiceItem){app_text(app, KEYS[i]), NULL};
+    }
+    if (!game_can_hunt(app->game)) {
+        items[TR_HUNT].locked = "";
     }
 }
 
@@ -114,6 +117,14 @@ static void travel_activate(App *app, int item)
         app->travelling = false;
         game_rest_day(g);
         commit(app);
+        break;
+    case TR_HUNT:
+        if (game_can_hunt(g)) {
+            app->travelling = false;
+            game_hunt_start(g);
+            app->sel = 0;
+            commit(app);
+        }
         break;
     case TR_ORDERS: app->overlay = OV_ORDERS; app->sel = 0; break;
     case TR_SUPPLIES: app->overlay = OV_SUPPLIES; break;
@@ -751,6 +762,7 @@ void game_screen_event(App *app, const SDL_Event *e)
     case PHASE_STORE: store_event(app, e); break;
     case PHASE_GRAVE: grave_event(app, e); break;
     case PHASE_ENDED: ending_event(app, e); break;
+    case PHASE_HUNT: hunt_screen_event(app, e); break;
     }
 }
 
@@ -789,5 +801,6 @@ void game_screen_render(App *app)
     case PHASE_STORE: store_render(app); break;
     case PHASE_GRAVE: grave_render(app); break;
     case PHASE_ENDED: ending_render(app); break;
+    case PHASE_HUNT: hunt_screen_render(app); break;
     }
 }

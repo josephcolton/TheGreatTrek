@@ -235,8 +235,8 @@ static int choice_height(Draw *d, const ChoiceItem *it, int w, bool numbered)
 {
     int indent = numbered ? 22 : 8;
     int h = draw_wrapped(d, d->font, it->text, 0, 0, w - indent - 6, COL_TEXT, true);
-    if (it->locked) {
-        h += d->line_h;
+    if (it->locked && it->locked[0]) {
+        h += d->line_h; /* room for the reason it is locked */
     }
     return h + 4;
 }
@@ -274,7 +274,7 @@ int draw_choices(Draw *d, const ChoiceItem *items, int n, float x, float y, int 
             draw_text(d, d->font, num, x + 6, cy + 1, it->locked ? COL_LOCKED : COL_GOLD, TEXT_LEFT);
         }
         int th = draw_wrapped(d, d->font, it->text, x + indent, cy + 1, w - indent - 6, c, false);
-        if (it->locked) {
+        if (it->locked && it->locked[0]) {
             draw_text(d, d->font, it->locked, x + indent + 10, cy + 1 + th, COL_LOCKED, TEXT_LEFT);
         }
         cy += h;

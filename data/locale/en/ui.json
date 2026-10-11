@@ -71,7 +71,7 @@
   "travel.next": "Next: {place}, {miles} miles",
   "travel.at": "At {place}",
   "travel.done": "{miles} miles in {days} days",
-  "travel.footer": "Choose with 1-7, arrows or the mouse.  M: map  J: journal  Esc: menu",
+  "travel.footer": "Choose with 1-8, arrows or the mouse.  M: map  J: journal  Esc: menu",
   "travel.footer_moving": "On the road... press any key to stop.",
 
   "status.food": "Food: {days} days ({lb} lb, {sheep} sheep)",

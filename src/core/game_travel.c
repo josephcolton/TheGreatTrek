@@ -533,6 +533,12 @@ void g_pass_day(Game *g, bool travelling, bool allow_events)
 {
     const Rules *r = &g->data->rules;
     roll_weather(g);
+    /* Game slowly comes back to country the party has hunted. */
+    for (int r = 0; r < g->data->region_count; r++) {
+        if (g->region_game[r] < 1.0) {
+            g->region_game[r] += 0.01;
+        }
+    }
     bool sabbath = g->sabbath && cal_weekday(g->day) == 0;
     if (sabbath && travelling) {
         travelling = false;

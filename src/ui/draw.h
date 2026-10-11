@@ -41,7 +41,7 @@ int  draw_wrapped(Draw *d, TTF_Font *f, const char *s, float x, float y, int w, 
 /* A vertical list of numbered choices. Returns the index under the mouse, or -1. */
 typedef struct {
     const char *text;
-    const char *locked;   /* NULL if enabled */
+    const char *locked;   /* NULL if enabled; "" for greyed out with no reason shown */
 } ChoiceItem;
 
 int  draw_choices(Draw *d, const ChoiceItem *items, int n, float x, float y, int w, float mouse_x, float mouse_y,

@@ -53,6 +53,11 @@ static const char *CODE_KEYS[] = {
     "month.1", "month.2", "month.3", "month.4", "month.5", "month.6",
     "month.7", "month.8", "month.9", "month.10", "month.11", "month.12",
     "history.river.orange", "history.river.caledon", "history.river.vet", "history.river.vaal",
+    "hunt.hunter", "hunt.start", "hunt.start_empty", "hunt.spooked", "hunt.closer", "hunt.appears", "hunt.nothing",
+    "hunt.drifts_closer", "hunt.drifts_away", "hunt.waits", "hunt.misfire", "hunt.miss", "hunt.ran", "hunt.kill",
+    "hunt.kill_too_much", "hunt.kill_predator", "hunt.wounded", "hunt.wounded_ran", "hunt.charged",
+    "hunt.hunter_died", "hunt.loaded", "hunt.reloading", "hunt.followed", "hunt.lost_spoor", "hunt.full",
+    "hunt.give_up", "hunt.sundown", "journal.hunt", "journal.hunt_empty", "cause.hunting",
     NULL
 };
 

@@ -218,6 +218,32 @@ char *game_save_json(const Game *g)
     cJSON_AddNumberToObject(o, "ending", g->ending);
     cJSON_AddNumberToObject(o, "deaths", g->deaths);
 
+    cJSON_AddNumberToObject(o, "last_hunt_day", g->last_hunt_day);
+    cJSON *game_level = cJSON_AddObjectToObject(o, "region_game");
+    for (int i = 0; i < d->region_count; i++) {
+        cJSON_AddNumberToObject(game_level, d->regions[i].id, g->region_game[i]);
+    }
+    const HuntState *h = &g->hunt;
+    if (h->active) {
+        cJSON *hj = cJSON_AddObjectToObject(o, "hunt");
+        cJSON_AddNumberToObject(hj, "hunter", h->hunter);
+        cJSON_AddStringToObject(hj, "animal", h->animal >= 0 ? d->animals[h->animal].id : "");
+        cJSON_AddNumberToObject(hj, "range", h->range);
+        cJSON_AddBoolToObject(hj, "loaded", h->loaded);
+        cJSON_AddNumberToObject(hj, "reload_left", h->reload_left);
+        cJSON_AddBoolToObject(hj, "wounded", h->wounded);
+        cJSON_AddNumberToObject(hj, "turn", h->turn);
+        cJSON_AddNumberToObject(hj, "meat", h->meat);
+        cJSON_AddNumberToObject(hj, "carry", h->carry);
+        cJSON_AddNumberToObject(hj, "shots", h->shots);
+        cJSON_AddNumberToObject(hj, "kills", h->kills);
+        cJSON_AddBoolToObject(hj, "over", h->over);
+        cJSON *log = cJSON_AddArrayToObject(hj, "log");
+        for (int i = 0; i < h->log_count; i++) {
+            cJSON_AddItemToArray(log, loctext_json(&h->log[i]));
+        }
+    }
+
     char *text = cJSON_PrintUnformatted(o);
     cJSON_Delete(o);
     return text;
@@ -554,6 +580,45 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
     }
     g->ending = (EndingKind)(int)nget(o, "ending", ENDING_NONE);
     g->deaths = (int)nget(o, "deaths", 0);
+    cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(o, "region_game"))
+    {
+        int ri = data_find_region(data, f->string);
+        if (ri >= 0 && cJSON_IsNumber(f)) {
+            g->region_game[ri] = f->valuedouble;
+        }
+    }
+    g->last_hunt_day = (int)nget(o, "last_hunt_day", -1);
+    memset(&g->hunt, 0, sizeof g->hunt);
+    g->hunt.animal = -1;
+    const cJSON *hj = cJSON_GetObjectItemCaseSensitive(o, "hunt");
+    if (hj) {
+        HuntState *h = &g->hunt;
+        h->active = true;
+        h->hunter = (int)nget(hj, "hunter", 0);
+        const char *aid = sget(hj, "animal");
+        h->animal = -1;
+        for (int i = 0; i < data->animal_count; i++) {
+            if (strcmp(data->animals[i].id, aid) == 0) {
+                h->animal = i;
+            }
+        }
+        h->range = (int)nget(hj, "range", 0);
+        h->loaded = bget(hj, "loaded");
+        h->reload_left = (int)nget(hj, "reload_left", 0);
+        h->wounded = bget(hj, "wounded");
+        h->turn = (int)nget(hj, "turn", 0);
+        h->meat = (int)nget(hj, "meat", 0);
+        h->carry = (int)nget(hj, "carry", 0);
+        h->shots = (int)nget(hj, "shots", 0);
+        h->kills = (int)nget(hj, "kills", 0);
+        h->over = bget(hj, "over");
+        cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(hj, "log"))
+        {
+            if (h->log_count < HUNT_LOG) {
+                read_loctext(f, &h->log[h->log_count++]);
+            }
+        }
+    }
     cJSON_Delete(o);
     if (R.failed) {
         game_free(g);

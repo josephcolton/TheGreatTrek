@@ -21,9 +21,21 @@ static Game *play(const GameData *d, uint64_t seed, int family, int stop_after_s
             break;
         }
         switch (game_phase(g)) {
-        case PHASE_TRAVEL: game_travel(g, 30); break;
+        case PHASE_TRAVEL:
+            if (steps % 9 == 4 && game_can_hunt(g)) {
+                game_hunt_start(g);
+            } else {
+                game_travel(g, 30);
+            }
+            break;
         case PHASE_STORE: game_store_leave(g); break;
         case PHASE_GRAVE: game_grave_done(g, "Rest in peace"); break;
+        case PHASE_HUNT: {
+            HuntView hv;
+            CHECK(game_hunt_view(g, &hv));
+            game_hunt_act(g, hv.can[HUNT_FIRE] ? HUNT_FIRE : (hv.can[HUNT_RELOAD] ? HUNT_RELOAD : HUNT_LEAVE));
+            break;
+        }
         case PHASE_DIALOG: {
             DialogView v;
             CHECK(game_dialog_view(g, &v));

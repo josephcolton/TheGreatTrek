@@ -23,6 +23,7 @@
 #define MAX_SHOCKS 16
 #define MAX_WAGONS 6
 #define MAX_START_ITEMS 24
+#define MAX_ANIMALS 16
 
 typedef enum { SIDE_DUTCH, SIDE_ENGLISH, SIDE_COUNT } Side;
 
@@ -222,6 +223,32 @@ typedef struct {
     char history_key[KEY_LEN];
 } PriceShock;
 
+/* ---- hunting ---- */
+typedef enum { TIER_PASSIVE, TIER_BIG, TIER_PREDATOR } AnimalTier;
+
+typedef struct {
+    char id[ID_LEN];
+    char name_key[KEY_LEN];
+    AnimalTier tier;
+    int meat;                       /* lb of meat from one animal */
+    double spook;                   /* chance it runs when you move closer */
+    double size;                    /* bigger is easier to hit */
+    double flee_wounded;            /* chance a wounded animal runs off */
+    double charge;                  /* chance a wounded or close animal turns on the hunter */
+    double region_weight[MAX_REGIONS];
+} AnimalDef;
+
+typedef struct {
+    double misfire[WEATHER_COUNT];
+    double hit_by_range[4];         /* far, long, medium, close */
+    int reload_turns;
+    int max_turns;
+    int carry_on_foot;
+    int carry_per_horse;
+    int shots_per_lb;
+    double biltong_yield;           /* lb of biltong from a lb of meat */
+} HuntRules;
+
 /* ---- rules (tunables) ---- */
 typedef struct {
     double miles[PACE_COUNT];
@@ -363,8 +390,11 @@ typedef struct GameData {
     IllnessDef illnesses[MAX_ILLNESSES]; int illness_count;
     PriceShock shocks[MAX_SHOCKS];      int shock_count;
     EventDef *events;                   int event_count;
+    AnimalDef animals[MAX_ANIMALS];     int animal_count;
+    HuntRules hunt;
     /* well-known item indices, resolved at load */
     int item_oxen, item_water, item_vat, item_meat, item_medicine, item_sheep, item_tallow, item_iron, item_cows, item_biltong;
+    int item_gunpowder, item_lead, item_horses;
     int item_spare[WAGON_PART_COUNT];
     int group_trekkers;
 } GameData;

@@ -194,8 +194,34 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
             if (game_food_days(g) < 3 && g->rations == RATIONS_FULL) {
                 game_set_orders(g, g->pace, RATIONS_MEAGRE, g->stance, g->sabbath);
             }
-            game_travel(g, 30);
+            /* Hunt when food runs short, and hunting families hunt every week or so. */
+            if (game_can_hunt(g) && (game_food_days(g) < 30 ||
+                                     (d->families[family].hunt_mul > 1.0 && (g->day - g->start_day) % 7 == 3))) {
+                game_hunt_start(g);
+                break;
+            }
+            game_travel(g, policy == POLICY_RECKLESS ? 30 : 7);
             break;
+        case PHASE_HUNT: {
+            HuntView hv;
+            game_hunt_view(g, &hv);
+            HuntAction act = HUNT_LEAVE;
+            if (hv.over) {
+                act = HUNT_LEAVE;
+            } else if (hv.can[HUNT_FOLLOW]) {
+                act = HUNT_FOLLOW;
+            } else if (hv.can[HUNT_FIRE] && hv.range >= 2) {
+                act = HUNT_FIRE;
+            } else if (hv.can[HUNT_RELOAD]) {
+                act = HUNT_RELOAD;
+            } else if (hv.can[HUNT_STALK] && hv.tier != TIER_PREDATOR) {
+                act = HUNT_STALK;
+            } else if (!hv.animal.key[0]) {
+                act = HUNT_WAIT;
+            }
+            game_hunt_act(g, act);
+            break;
+        }
         case PHASE_STORE:
             outfit(g, policy);
             game_store_leave(g);
