@@ -638,35 +638,35 @@ The game is meant to teach, so **chances should match history where history give
 - Needs a gun, powder and lead. Choose the **hunter** (any member who can shoot; skill matters) and optionally a **horse** (faster approach, carries more meat back) and **dogs**.
 - The animals present come from `data/animals.json` for the current region and month.
 
-### 9.2 The hunt screen (turn-based)
+### 9.2 The hunt screen (real time, aim with the mouse)
+
+Hunting plays like the Oregon Trail hunt: wait, watch game come into sight, aim and click to fire. (It was turn-based at first; changed on the user's request after the first playtest.)
 
 ```
-┌ HUNT · Highveld, open grass · Clear, wind from the east ───────────────┐
-│                                                                        │
-│     (side view: grass layers, an anthill, a herd of blesbok;           │
-│      distance shown as a range marker under the target)                │
-│                                                                        │
+┌ Hunting · Barend goes out with the gun ─────────────────────────────────┐
+│  sky, far hills                                                        │
+│  ──────────────────────────────────────── horizon (small, far game)    │
+│        a herd of springbok walks, grazes, runs                         │
+│                  thorn tree          + ← gun sight (mouse)             │
+│     a kudu, nearer and bigger                                          │
+│                              ╱ gun barrel                              │
 ├────────────────────────────────────────────────────────────────────────┤
-│ Target: blesbok (grazing)   Range: long   Your gun: loaded             │
-│ Powder 6 lb  Lead 4 lb   Meat taken: 0 lb / can carry 200 lb           │
-│ 1 Stalk closer   2 Wait   3 Aim and fire   4 Leave the hunt            │
+│ Gun loaded  [=====]            Daylight [=======   ]                   │
+│ Meat shot: 120 lb (you can carry 270 lb)   Powder and lead for 290 shots│
+│ Bang! The black wildebeest (gnu) falls. That is 120 lb of meat.        │
+│ Click on an animal to shoot.  Enter: back to the wagons.  Esc: pause.  │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-Each turn the player picks one action; then animals act.
-
-| Action | Effect |
-|---|---|
-| **Stalk closer** | range shrinks one step; chance to spook the target (wind direction, cover, tracking skill) |
-| **Wait** | animals move; a better target may come close |
-| **Aim and fire** | check misfire, then hit chance |
-| **Reload** | flintlock takes **3 turns** (better guns fewer); can't fire meanwhile |
-| **Follow the spoor** | after a wounded animal runs; tracking skill check |
-| **Leave** | ends the hunt |
-
-- **Misfire** by weather: ~2% clear, ~15% humid, ~60% rain (Gemini values, **invented**). Flint wear raises it slowly; a spare flint resets it.
-- **Hit chance** = gun accuracy × range factor × hunter skill × horse/standing modifier. Each shot uses powder and lead.
-- The hunt ends when the player leaves, runs out of shot, hits the carry limit, or after ~10 turns (sundown).
+- **The field** is a side view; game near the horizon is small and far, near game is big. Animals come in from either side, singly or in small herds (`herd` in `animals.json`), walk, stop to graze, or run straight across.
+- **Fire** with a left click (or Space at the sight; the arrow keys move the sight for anyone without a mouse). The ball lands near the sight, not exactly on it: the scatter shrinks with the hunter's shooting skill and the family's hunting perk. The nearest animal under the ball is hit.
+- **Loading** a muzzle-loader takes a few seconds (far less than the real 20 seconds or more, shortened for play); the gun can't fire until it is loaded. A misfire needs only the pan primed again.
+- **Misfire** by weather: ~2% clear, ~60% rain (Gemini values, **invented**); a percussion gun with caps cuts it to 15% of that.
+- **The bang** sends nearby game running (`spook`).
+- **Big game** takes more than one hit (`hp`): eland 2, buffalo 3. A wounded buffalo may turn and come straight at the hunter; a lion may stalk closer and charge. Shoot it before it arrives, or the hunter is hurt (or killed; told in text).
+- **Daylight** runs out after `seconds` (45); the player can also go back at any time with Enter.
+- **Meat:** everything shot counts toward "meat shot", but only the carry limit comes back (more with a horse); the summary says how much was left behind. Each shot uses powder and lead (`shots_per_lb`).
+- **Determinism:** the hunt runs in fixed ticks (30 a second) in the core with the game's RNG, so the same seed and the same shots give the same hunt. The animals in the field are not saved: if the game is closed mid-hunt it resumes with the veld empty and the same daylight left.
 
 ### 9.3 Animal tiers (from the Gemini idea)
 
@@ -680,7 +680,7 @@ Each turn the player picks one action; then animals act.
 - **Meat and carry limit:** you can bring back only what you can carry (more with a horse or if the wagon is near). Extra meat is wasted, and the game says so. Overhunting a region lowers that region's game for the rest of the run (`region_game_level`).
 - **Family-friendly presentation:** the animal falls or runs off; no blood or gore. A lion "springs at the hunter" and the outcome is told in text.
 - Art: W. Cornwallis Harris's 1840 animal plates (public domain) as the basis for pixel animals.
-- Because the hunt is pure core logic, the trekbot can hunt with a simple policy.
+- Because the hunt is pure core logic, the trekbot can hunt with a simple policy: it waits half a second after taking aim, aims at the body with some error, shoots anything charging first, and goes home when it has all it can carry.
 
 ---
 

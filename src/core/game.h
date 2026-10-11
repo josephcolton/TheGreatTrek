@@ -103,23 +103,41 @@ typedef struct {
     int part;                 /* DLG_BREAKDOWN */
 } DialogState;
 
-typedef enum { HUNT_STALK, HUNT_WAIT, HUNT_FIRE, HUNT_RELOAD, HUNT_FOLLOW, HUNT_LEAVE, HUNT_ACTION_COUNT } HuntAction;
-
+/* Hunting is a real-time shooting scene (04_game_design.md section 9), stepped in fixed ticks so a
+ * hunt still replays exactly from the seed and the shots. The field is a side view of the veld:
+ * x runs 0..HUNT_FIELD_W, y from 0 at the horizon to HUNT_FIELD_H at the hunter's feet. */
 #define HUNT_LOG 4
+#define HUNT_MAX_ANIMALS 10
+#define HUNT_FIELD_W 640
+#define HUNT_FIELD_H 210
+#define HUNT_TICKS_PER_SEC 30
+
+typedef enum { HUNT_A_NONE, HUNT_A_WALK, HUNT_A_GRAZE, HUNT_A_RUN, HUNT_A_CHARGE, HUNT_A_DOWN } HuntAnimalState;
+
+typedef struct {
+    int kind;                 /* animal index */
+    HuntAnimalState state;    /* HUNT_A_NONE = empty slot */
+    float x, y;               /* the animal's feet, in field units */
+    float dir;                /* +1 facing right, -1 facing left */
+    int timer;                /* ticks left in this state */
+    int hp;
+} HuntAnimal;
+
 typedef struct {
     bool active;
     int hunter;               /* member doing the shooting */
-    int animal;               /* -1 = nothing in sight */
-    int range;                /* 0 far .. 3 close */
-    bool loaded;
-    int reload_left;
-    bool wounded;
-    int turn;
-    int meat;                 /* lb taken this hunt */
-    int carry;                /* lb that can be carried back */
-    int shots;
+    int ticks_left;           /* daylight left */
+    int reload_ticks;         /* 0 = loaded */
+    int spawn_ticks;          /* until more game may come into sight */
+    int shots, shots_max;     /* shots fired; shots the powder and lead allow */
     int kills;
+    int meat;                 /* lb shot this hunt; only `carry` comes back */
+    int carry;                /* lb that can be carried back */
     bool over;                /* the hunt is finished; showing the summary */
+    HuntAnimal animals[HUNT_MAX_ANIMALS];
+    float shot_x, shot_y;     /* the last shot, for the smoke */
+    int shot_age;             /* ticks since the last shot */
+    bool shot_misfire;
     LocText log[HUNT_LOG];
     int log_count;
 } HuntState;
@@ -283,20 +301,19 @@ void game_store_leave(Game *g);
 /* ---- hunting ---- */
 typedef struct {
     LocText hunter;
-    LocText animal;           /* empty key = nothing in sight */
-    char animal_id[ID_LEN];
-    AnimalTier tier;
-    int range;
-    bool loaded;
-    int reload_left;
-    bool wounded;
-    int turns_left;
-    int meat, carry;
-    int powder, lead;
     bool over;
+    bool loaded;
+    double reload;            /* 0..1 of the reload done */
+    double daylight;          /* 1 at the start, 0 at sundown */
+    int meat, carry;
+    int shots_left;
+    HuntAnimal animals[HUNT_MAX_ANIMALS];
+    float shot_x, shot_y;
+    int shot_age;
+    bool shot_misfire;
     LocText log[HUNT_LOG];
     int log_count;
-    bool can[HUNT_ACTION_COUNT];
+    LocText summary[2];       /* when over: what was shot and what comes back */
 } HuntView;
 
 /* Whether a hunt can start now (powder, lead, a shooter, and not already hunted out). */
@@ -304,7 +321,18 @@ bool game_can_hunt(const Game *g);
 /* Starts a hunt from the travel screen; costs half a day. */
 void game_hunt_start(Game *g);
 bool game_hunt_view(const Game *g, HuntView *out);
-void game_hunt_act(Game *g, HuntAction a);
+/* Moves the hunt on by one tick (1/HUNT_TICKS_PER_SEC s). */
+void game_hunt_tick(Game *g);
+/* Fires at a point in the field. Returns false if the gun was not ready. */
+bool game_hunt_shoot(Game *g, double x, double y);
+/* Stops hunting and shows the summary. */
+void game_hunt_quit(Game *g);
+/* After the summary: carries the meat back and returns to the road. */
+void game_hunt_finish(Game *g);
+/* Size of things at a depth y in the field (far is small). */
+double game_hunt_scale(double y);
+/* An animal's body (for drawing) and its hit box, in field units: x, y (top left), w, h. */
+void game_hunt_body(const Game *g, const HuntAnimal *a, float out[4]);
 
 /* ---- barter ---- */
 typedef struct {

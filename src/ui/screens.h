@@ -48,6 +48,9 @@ bool open_trip(App *app, const char *trip_id);
 /* hunting (screen_hunt.c) */
 void hunt_screen_event(App *app, const SDL_Event *e);
 void hunt_screen_render(App *app);
+void hunt_screen_update(App *app, double dt);
+/* Whether the mouse is over the hunting field, where a gun sight replaces the pointer. */
+bool hunt_sight_active(const App *app);
 
 /* barter (screen_barter.c) */
 void barter_screen_event(App *app, const SDL_Event *e);

@@ -765,9 +765,8 @@ static void sound_watch(App *app)
     if (app->travelling && !last_travelling) {
         sound_play(SFX_WHIP);
     }
-    if (g->hunt.shots > last_shots && g->hunt.log_count > 0) {
-        bool misfire = strcmp(g->hunt.log[g->hunt.log_count - 1].key, "hunt.misfire") == 0;
-        sound_play(misfire ? SFX_MISFIRE : SFX_GUNSHOT);
+    if (g->hunt.shots > last_shots) {
+        sound_play(g->hunt.shot_misfire ? SFX_MISFIRE : SFX_GUNSHOT);
     }
     if (g->dlg.kind == DLG_RIVER && last_dlg != DLG_RIVER) {
         sound_play(SFX_WATER);
@@ -789,6 +788,10 @@ void game_screen_update(App *app, double dt)
 {
     sound_watch(app);
     Game *g = app->game;
+    if (g && app->overlay == OV_NONE && game_phase(g) == PHASE_HUNT) {
+        hunt_screen_update(app, dt);
+        return;
+    }
     if (!g || !app->travelling || app->overlay != OV_NONE) {
         return;
     }

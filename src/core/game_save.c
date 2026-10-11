@@ -254,16 +254,14 @@ char *game_save_json(const Game *g)
     const HuntState *h = &g->hunt;
     if (h->active) {
         cJSON *hj = cJSON_AddObjectToObject(o, "hunt");
+        /* The animals in the field are not saved: a hunt picks up again with the veld empty. */
         cJSON_AddNumberToObject(hj, "hunter", h->hunter);
-        cJSON_AddStringToObject(hj, "animal", h->animal >= 0 ? d->animals[h->animal].id : "");
-        cJSON_AddNumberToObject(hj, "range", h->range);
-        cJSON_AddBoolToObject(hj, "loaded", h->loaded);
-        cJSON_AddNumberToObject(hj, "reload_left", h->reload_left);
-        cJSON_AddBoolToObject(hj, "wounded", h->wounded);
-        cJSON_AddNumberToObject(hj, "turn", h->turn);
+        cJSON_AddNumberToObject(hj, "ticks_left", h->ticks_left);
+        cJSON_AddNumberToObject(hj, "reload_ticks", h->reload_ticks);
         cJSON_AddNumberToObject(hj, "meat", h->meat);
         cJSON_AddNumberToObject(hj, "carry", h->carry);
         cJSON_AddNumberToObject(hj, "shots", h->shots);
+        cJSON_AddNumberToObject(hj, "shots_max", h->shots_max);
         cJSON_AddNumberToObject(hj, "kills", h->kills);
         cJSON_AddBoolToObject(hj, "over", h->over);
         cJSON *log = cJSON_AddArrayToObject(hj, "log");
@@ -666,29 +664,21 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         }
     }
     memset(&g->hunt, 0, sizeof g->hunt);
-    g->hunt.animal = -1;
     const cJSON *hj = cJSON_GetObjectItemCaseSensitive(o, "hunt");
     if (hj) {
         HuntState *h = &g->hunt;
         h->active = true;
         h->hunter = (int)nget(hj, "hunter", 0);
-        const char *aid = sget(hj, "animal");
-        h->animal = -1;
-        for (int i = 0; i < data->animal_count; i++) {
-            if (strcmp(data->animals[i].id, aid) == 0) {
-                h->animal = i;
-            }
-        }
-        h->range = (int)nget(hj, "range", 0);
-        h->loaded = bget(hj, "loaded");
-        h->reload_left = (int)nget(hj, "reload_left", 0);
-        h->wounded = bget(hj, "wounded");
-        h->turn = (int)nget(hj, "turn", 0);
+        h->ticks_left = (int)nget(hj, "ticks_left", 0);
+        h->reload_ticks = (int)nget(hj, "reload_ticks", 0);
         h->meat = (int)nget(hj, "meat", 0);
         h->carry = (int)nget(hj, "carry", 0);
         h->shots = (int)nget(hj, "shots", 0);
+        h->shots_max = (int)nget(hj, "shots_max", 0);
         h->kills = (int)nget(hj, "kills", 0);
-        h->over = bget(hj, "over");
+        h->over = bget(hj, "over") || h->ticks_left <= 0;
+        h->spawn_ticks = HUNT_TICKS_PER_SEC;
+        h->shot_age = 1000;
         cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(hj, "log"))
         {
             if (h->log_count < HUNT_LOG) {

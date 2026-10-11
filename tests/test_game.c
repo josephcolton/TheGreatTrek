@@ -35,7 +35,23 @@ static Game *play(const GameData *d, uint64_t seed, int family, int stop_after_s
         case PHASE_HUNT: {
             HuntView hv;
             CHECK(game_hunt_view(g, &hv));
-            game_hunt_act(g, hv.can[HUNT_FIRE] ? HUNT_FIRE : (hv.can[HUNT_RELOAD] ? HUNT_RELOAD : HUNT_LEAVE));
+            /* a whole hunt: fire at the first animal in sight whenever the gun is loaded */
+            for (int t = 0; t < 10000 && !hv.over; t++) {
+                for (int i = 0; i < HUNT_MAX_ANIMALS; i++) {
+                    const HuntAnimal *a = &hv.animals[i];
+                    if (hv.loaded && a->state != HUNT_A_NONE && a->state != HUNT_A_DOWN) {
+                        float b[4];
+                        game_hunt_body(g, a, b);
+                        game_hunt_shoot(g, b[0] + b[2] / 2, b[1] + b[3] / 2);
+                        break;
+                    }
+                }
+                game_hunt_tick(g);
+                CHECK(game_hunt_view(g, &hv));
+            }
+            CHECK(hv.over);
+            game_hunt_finish(g);
+            CHECK(game_phase(g) != PHASE_HUNT);
             break;
         }
         case PHASE_DIALOG: {
@@ -92,6 +108,73 @@ static void test_wagon_trade(const GameData *d)
     game_free(g);
 }
 
+/* Hunts a whole afternoon, firing at the nearest animal whenever the gun is loaded. */
+static int hunt_once(Game *g, int *kills)
+{
+    game_hunt_start(g);
+    CHECK(game_phase(g) == PHASE_HUNT);
+    HuntView v;
+    bool tried_unloaded = false;
+    for (int t = 0; t < 10000 && game_hunt_view(g, &v) && !v.over; t++) {
+        const HuntAnimal *near = NULL;
+        for (int i = 0; i < HUNT_MAX_ANIMALS; i++) {
+            const HuntAnimal *a = &v.animals[i];
+            if (a->state != HUNT_A_NONE && a->state != HUNT_A_DOWN && a->x > 0 && a->x < HUNT_FIELD_W && (!near || a->y > near->y)) {
+                near = a;
+            }
+        }
+        if (near) {
+            float b[4];
+            game_hunt_body(g, near, b);
+            if (v.loaded) {
+                CHECK(game_hunt_shoot(g, b[0] + b[2] / 2, b[1] + b[3] / 2));
+            } else if (!tried_unloaded) {
+                CHECK(!game_hunt_shoot(g, b[0] + b[2] / 2, b[1] + b[3] / 2)); /* still loading */
+                tried_unloaded = true;
+            }
+        }
+        game_hunt_tick(g);
+    }
+    CHECK(v.over);
+    *kills += g->hunt.kills;
+    int meat = g->hunt.meat;
+    game_hunt_finish(g);
+    CHECK(game_phase(g) != PHASE_HUNT);
+    return meat;
+}
+
+static void test_hunt(const GameData *d)
+{
+    int meat = 0, kills = 0, hunts = 0;
+    for (uint64_t seed = 1; seed <= 6; seed++) {
+        for (int steps = 20; steps < 400; steps += 7) {
+            Game *g = play(d, seed, data_find_family(d, "jagter"), steps);
+            if (game_phase(g) == PHASE_TRAVEL && g->edge >= 0) {
+                g->last_hunt_day = -1;
+                if (game_can_hunt(g)) {
+                    /* the same hunt with the same shots comes out the same */
+                    Game *twin = play(d, seed, data_find_family(d, "jagter"), steps);
+                    twin->last_hunt_day = -1;
+                    int k2 = 0, k1 = 0;
+                    int m1 = hunt_once(g, &k1);
+                    CHECK(hunt_once(twin, &k2) == m1);
+                    CHECK(k1 == k2);
+                    game_free(twin);
+                    meat += m1;
+                    kills += k1;
+                    hunts++;
+                    game_free(g);
+                    break;
+                }
+            }
+            game_free(g);
+        }
+    }
+    CHECK(hunts >= 3);
+    CHECK(kills > 0);
+    CHECK(meat > 0);
+}
+
 int main(void)
 {
     test_calendar();
@@ -103,6 +186,7 @@ int main(void)
         return TEST_REPORT();
     }
     test_wagon_trade(d);
+    test_hunt(d);
     for (int f = 0; f < d->family_count; f++) {
         for (uint64_t seed = 1; seed <= 3; seed++) {
             Game *a = play(d, seed, f, -1);

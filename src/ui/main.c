@@ -2,7 +2,8 @@
  * Testing options:
  *   --screenshot FILE   render a frame to a PNG after any --keys, then exit
  *   --keys "a b c"      feed key presses first: 1-9, a-z, enter, esc, up, down, left, right,
- *                       space, bksp, "text:Word", "wait:N" (N frames of 1/10 s)
+ *                       space, bksp, "text:Word", "wait:N" (N frames of 1/10 s),
+ *                       "move:X,Y" and "click:X,Y" (mouse, in logical 640x360 pixels)
  *   --pref DIR          keep saves and settings in DIR instead of the user folder
  *   --seed N            use seed N for new trips */
 #include "app.h"
@@ -67,6 +68,17 @@ static void update(App *app, double dt)
     if (app->screen == SCR_GAME) {
         game_screen_update(app, dt);
     }
+    /* Over the hunting field the gun sight stands in for the mouse pointer. */
+    static bool sight;
+    bool want = app->screen == SCR_GAME && app->overlay == OV_NONE && hunt_sight_active(app);
+    if (want != sight) {
+        sight = want;
+        if (want) {
+            SDL_HideCursor();
+        } else {
+            SDL_ShowCursor();
+        }
+    }
 }
 
 static void render(App *app)
@@ -129,6 +141,32 @@ static void run_keys(App *app, const char *keys)
         }
         SDL_Event e;
         SDL_zero(e);
+        if (strncmp(tok, "move:", 5) == 0 || strncmp(tok, "click:", 6) == 0) {
+            bool click = tok[0] == 'c';
+            float lx = 0, ly = 0, wx, wy;
+            const char *xy = tok + (click ? 6 : 5);
+            lx = (float)atof(xy);
+            const char *comma = strchr(xy, ',');
+            ly = comma ? (float)atof(comma + 1) : 0;
+            SDL_RenderCoordinatesToWindow(app->renderer, lx, ly, &wx, &wy);
+            e.type = SDL_EVENT_MOUSE_MOTION;
+            e.motion.windowID = SDL_GetWindowID(app->window);
+            e.motion.x = wx;
+            e.motion.y = wy;
+            dispatch_event(app, &e);
+            if (click) {
+                SDL_zero(e);
+                e.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+                e.button.windowID = SDL_GetWindowID(app->window);
+                e.button.button = SDL_BUTTON_LEFT;
+                e.button.down = true;
+                e.button.x = wx;
+                e.button.y = wy;
+                dispatch_event(app, &e);
+            }
+            update(app, 0.016);
+            continue;
+        }
         if (strncmp(tok, "text:", 5) == 0) {
             e.type = SDL_EVENT_TEXT_INPUT;
             e.text.text = tok + 5;

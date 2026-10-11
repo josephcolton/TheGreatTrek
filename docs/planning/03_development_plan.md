@@ -120,7 +120,7 @@ SIDE ACTIONS: hunt · trade · repair · tend sick · scout (voorloper)
 END: arrival → epilogue (survival + relations + choices) | death → tombstone
 ```
 
-Systems: time and season, travel, oxen, wagon condition, party and health, economy (coin → barter), hunting (turn-based flintlock), relations (per group, plus the trekker council and the British), events, endings. (Details are in `01_gemini_review.md` §2.)
+Systems: time and season, travel, oxen, wagon condition, party and health, economy (coin → barter), hunting (real-time, aim with the mouse, Oregon Trail style; slow-loading flintlock), relations (per group, plus the trekker council and the British), events, endings. (Details are in `01_gemini_review.md` §2.)
 
 ---
 

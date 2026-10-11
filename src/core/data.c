@@ -758,13 +758,19 @@ static void load_animals(Loader *L, const char *dir)
     for (int w = 0; w < WEATHER_COUNT; w++) {
         h->misfire[w] = jnum(mis, WEATHER_IDS[w], 0.05);
     }
-    const cJSON *hits = jget(root, "hit_by_range");
-    for (int i = 0; i < 4; i++) {
-        const cJSON *v = cJSON_GetArrayItem(hits, i);
-        h->hit_by_range[i] = cJSON_IsNumber(v) ? v->valuedouble : 0.3;
+    h->seconds = jnum(root, "seconds", 45);
+    h->reload_seconds = jnum(root, "reload_seconds", 3.5);
+    h->prime_seconds = jnum(root, "prime_seconds", 1.0);
+    h->spread = jnum(root, "spread", 9);
+    const cJSON *spawn = jget(root, "spawn_seconds");
+    const cJSON *s0 = cJSON_GetArrayItem(spawn, 0), *s1 = cJSON_GetArrayItem(spawn, 1);
+    h->spawn_min = cJSON_IsNumber(s0) ? s0->valuedouble : 2;
+    h->spawn_max = cJSON_IsNumber(s1) ? s1->valuedouble : 6;
+    h->max_animals = jint(root, "max_animals", 8);
+    if (h->max_animals > 10) {
+        h->max_animals = 10; /* HUNT_MAX_ANIMALS */
     }
-    h->reload_turns = jint(root, "reload_turns", 3);
-    h->max_turns = jint(root, "max_turns", 10);
+    h->game_per_kill = jnum(root, "game_per_kill", 0.04);
     h->carry_on_foot = jint(root, "carry_on_foot", 120);
     h->carry_per_horse = jint(root, "carry_per_horse", 150);
     h->shots_per_lb = jint(root, "shots_per_lb", 12);
@@ -785,9 +791,15 @@ static void load_animals(Loader *L, const char *dir)
         a->tier = tier < 0 ? TIER_PASSIVE : (AnimalTier)tier;
         a->meat = jint(o, "meat", 50);
         a->spook = jnum(o, "spook", 0.3);
-        a->size = jnum(o, "size", 1.0);
-        a->flee_wounded = jnum(o, "flee_wounded", 0.5);
         a->charge = jnum(o, "charge", 0.0);
+        a->speed = jnum(o, "speed", 100);
+        a->hp = jint(o, "hp", 1);
+        a->herd = jint(o, "herd", 1);
+        const cJSON *body = jget(o, "body");
+        const cJSON *b0 = cJSON_GetArrayItem(body, 0), *b1 = cJSON_GetArrayItem(body, 1), *b2 = cJSON_GetArrayItem(body, 2);
+        a->body_w = cJSON_IsNumber(b0) ? b0->valuedouble : 18;
+        a->body_h = cJSON_IsNumber(b1) ? b1->valuedouble : 9;
+        a->legs = cJSON_IsNumber(b2) ? b2->valuedouble : 8;
         const cJSON *r;
         cJSON_ArrayForEach(r, jget(o, "regions"))
         {

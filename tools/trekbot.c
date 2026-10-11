@@ -1,7 +1,7 @@
 /* trekbot: plays many headless games to check that runs finish and to tune balance.
  * Usage: trekbot [--runs N] [--seed S] [--family ID|all] [--policy random|cautious|reckless]
  *                [--difficulty easy|normal|hard] [--data DIR] [--verbose] [--savecheck]
- *                [--dump FILE --stop-at grave|river|store|route|ending]  (save one game at that moment)
+ *                [--dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark]  (save one game at that moment)
  * Prints arrival rate, days taken, deaths and causes, and events never seen. */
 #include "calendar.h"
 #include "data.h"
@@ -153,6 +153,49 @@ static bool maybe_dump(Game *g)
     return hit;
 }
 
+/* Plays a whole hunt like a fair human shot: waits a moment after taking aim, aims at the body
+ * with some error, shoots anything coming at it first, and goes home once there is enough meat. */
+static void bot_hunt(Game *g, TrekRng *bot_rng)
+{
+    int aim = 0;
+    for (int t = 0; t < 100000 && game_phase(g) == PHASE_HUNT && !g->hunt.over; t++) {
+        game_hunt_tick(g);
+        HuntView hv;
+        if (!game_hunt_view(g, &hv) || hv.over) {
+            break;
+        }
+        if (hv.meat >= hv.carry) {
+            game_hunt_quit(g);
+            break;
+        }
+        const HuntAnimal *target = NULL;
+        for (int i = 0; i < HUNT_MAX_ANIMALS; i++) {
+            const HuntAnimal *a = &hv.animals[i];
+            if (a->state == HUNT_A_NONE || a->state == HUNT_A_DOWN || a->x < 10 || a->x > HUNT_FIELD_W - 10) {
+                continue;
+            }
+            if (!target || (a->state == HUNT_A_CHARGE) > (target->state == HUNT_A_CHARGE) ||
+                ((a->state == HUNT_A_CHARGE) == (target->state == HUNT_A_CHARGE) && a->y > target->y)) {
+                target = a;
+            }
+        }
+        if (!hv.loaded || !target) {
+            aim = 0;
+            continue;
+        }
+        if (++aim < 15) {
+            continue;
+        }
+        aim = 0;
+        float box[4];
+        game_hunt_body(g, target, box);
+        double x = box[0] + box[2] / 2 + rng_range(bot_rng, -6, 6);
+        double y = box[1] + box[3] * 0.55 + rng_range(bot_rng, -4, 4);
+        game_hunt_shoot(g, x, y);
+    }
+    game_hunt_finish(g);
+}
+
 static int play(const GameData *d, const Locale *loc, uint64_t seed, int family, Policy policy, Difficulty diff,
                 bool verbose, bool savecheck, Stats *st)
 {
@@ -237,26 +280,7 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
             game_barter_leave(g);
             break;
         }
-        case PHASE_HUNT: {
-            HuntView hv;
-            game_hunt_view(g, &hv);
-            HuntAction act = HUNT_LEAVE;
-            if (hv.over) {
-                act = HUNT_LEAVE;
-            } else if (hv.can[HUNT_FOLLOW]) {
-                act = HUNT_FOLLOW;
-            } else if (hv.can[HUNT_FIRE] && hv.range >= 2) {
-                act = HUNT_FIRE;
-            } else if (hv.can[HUNT_RELOAD]) {
-                act = HUNT_RELOAD;
-            } else if (hv.can[HUNT_STALK] && hv.tier != TIER_PREDATOR) {
-                act = HUNT_STALK;
-            } else if (!hv.animal.key[0]) {
-                act = HUNT_WAIT;
-            }
-            game_hunt_act(g, act);
-            break;
-        }
+        case PHASE_HUNT: bot_hunt(g, &bot_rng); break;
         case PHASE_STORE:
             outfit(g, policy);
             game_store_leave(g);

@@ -237,18 +237,24 @@ typedef struct {
     char name_key[KEY_LEN];
     AnimalTier tier;
     int meat;                       /* lb of meat from one animal */
-    double spook;                   /* chance it runs when you move closer */
-    double size;                    /* bigger is easier to hit */
-    double flee_wounded;            /* chance a wounded animal runs off */
+    double spook;                   /* chance it bolts when a shot is fired */
     double charge;                  /* chance a wounded or close animal turns on the hunter */
+    double speed;                   /* running speed, field units a second at scale 1 */
+    int hp;                         /* hits to bring it down */
+    int herd;                       /* most that come into sight together */
+    double body_w, body_h, legs;    /* figure size at scale 1 */
     double region_weight[MAX_REGIONS];
 } AnimalDef;
 
 typedef struct {
     double misfire[WEATHER_COUNT];
-    double hit_by_range[4];         /* far, long, medium, close */
-    int reload_turns;
-    int max_turns;
+    double seconds;                 /* daylight for one hunt */
+    double reload_seconds;          /* loading a muzzle-loader, shortened for play */
+    double prime_seconds;           /* priming the pan again after a misfire */
+    double spread;                  /* aim scatter in field units for an unskilled shot */
+    double spawn_min, spawn_max;    /* seconds between game coming into sight */
+    int max_animals;
+    double game_per_kill;           /* fall in the region's game per animal shot */
     int carry_on_foot;
     int carry_per_horse;
     int shots_per_lb;
