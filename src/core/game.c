@@ -388,6 +388,23 @@ int g_head(const Game *g)
     return -1;
 }
 
+void g_move_along(Game *g, double miles)
+{
+    if (g->edge < 0) {
+        return;
+    }
+    double before = g->miles_along;
+    g->miles_along += miles;
+    if (g->miles_along < 0) {
+        g->miles_along = 0;
+    }
+    /* the total counts road covered, so time lost on the road comes off it too */
+    g->miles_total += (int)lround(g->miles_along) - (int)lround(before);
+    if (g->miles_total < 0) {
+        g->miles_total = 0;
+    }
+}
+
 int g_current_region(const Game *g)
 {
     if (g->edge >= 0) {
@@ -450,6 +467,14 @@ void g_kill(Game *g, int member, const char *cause_key)
         return;
     }
     Member *m = &g->party[member];
+    /* the illness that killed them, if it was one, and how long they had it */
+    int illness = -1, ill_days = 0;
+    for (int c = 0; c < m->cond_count && cause_key; c++) {
+        if (strcmp(g->data->illnesses[m->conds[c].illness].cause_key, cause_key) == 0) {
+            illness = m->conds[c].illness;
+            ill_days = m->conds[c].days;
+        }
+    }
     m->alive = false;
     m->health = 0;
     m->cond_count = 0;
@@ -463,6 +488,8 @@ void g_kill(Game *g, int member, const char *cause_key)
         gr->edge = g->edge;
         gr->miles_along = (int)g->miles_along;
         snprintf(gr->cause_key, sizeof gr->cause_key, "%s", cause_key ? cause_key : "cause.unknown");
+        gr->illness = illness;
+        gr->ill_days = ill_days;
         if (g->pending_grave_count < MAX_GRAVES) {
             g->pending_graves[g->pending_grave_count++] = g->grave_count;
         }
@@ -578,6 +605,10 @@ int game_miles_to_next(const Game *g)
 
 void g_arrive(Game *g, int node)
 {
+    if (g->edge >= 0) {
+        /* the last day's miles may run past the place; the road is only so long */
+        g->miles_total += g->data->edges[g->edge].miles - (int)lround(g->miles_along);
+    }
     g->node = node;
     g->edge = -1;
     g->miles_along = 0;
@@ -858,6 +889,46 @@ int game_epilogue(const Game *g, LocText *out, int max)
         loctext_arg_int(t, "n", game_score(g));
     }
 #undef ADD
+    return n;
+}
+
+int game_grave_story(const Game *g, const Grave *gr, LocText *out, int max)
+{
+    const GameData *d = g->data;
+    const Member *m = &g->party[gr->member];
+    int n = 0;
+    int y, mo, md;
+    cal_date(gr->day, &y, &mo, &md);
+    if (n < max) {
+        char role[32];
+        member_role_key(m->role, m->pronoun, role, sizeof role);
+        loctext_set(&out[n], m->role == ROLE_SERVANT ? "grave.who.servant" : "grave.who");
+        loctext_arg_person(&out[n], "who", m);
+        loctext_arg_key(&out[n], "role", role);
+        loctext_arg_str(&out[n], "family", d->families[g->family].surname);
+        loctext_arg_int(&out[n], "age", y - m->birth_year);
+        n++;
+    }
+    if (n < max) {
+        char cause[40]; /* a TextArg holds 40 characters; cause keys are short */
+        snprintf(cause, sizeof cause, "%.39s", gr->cause_key);
+        loctext_set(&out[n], "grave.cause");
+        loctext_arg_person(&out[n], "who", m);
+        loctext_arg_key(&out[n], "cause", cause);
+        n++;
+    }
+    if (n < max) {
+        /* grave.why.<the cause without "cause.">: how it came about */
+        const char *id = strncmp(gr->cause_key, "cause.", 6) == 0 ? gr->cause_key + 6 : "unknown";
+        char key[KEY_LEN];
+        snprintf(key, sizeof key, "grave.why.%s", id);
+        loctext_set(&out[n], key);
+        loctext_arg_person(&out[n], "who", m);
+        loctext_arg_date(&out[n], "date", gr->day - (gr->illness >= 0 ? gr->ill_days : 0));
+        loctext_arg_int(&out[n], "days", gr->ill_days);
+        loctext_arg_key(&out[n], "place", d->nodes[gr->node].name_key);
+        n++;
+    }
     return n;
 }
 

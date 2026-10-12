@@ -31,11 +31,8 @@ static void spend_time(Game *g, double days)
         g_pass_day(g, false, false);
     }
     double frac = days - whole;
-    if (frac > 0 && g->edge >= 0) {
-        g->miles_along -= frac * g->data->rules.miles[g->pace];
-        if (g->miles_along < 0) {
-            g->miles_along = 0;
-        }
+    if (frac > 0) {
+        g_move_along(g, -frac * g->data->rules.miles[g->pace]);
     }
 }
 

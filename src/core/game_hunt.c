@@ -603,10 +603,7 @@ void game_hunt_start(Game *g)
     h->shot_age = 1000;
     h->spawn_ticks = seconds_to_ticks(1.0);
     /* A hunt takes half a day off the road. */
-    g->miles_along -= 0.5 * d->rules.miles[g->pace];
-    if (g->miles_along < 0) {
-        g->miles_along = 0;
-    }
+    g_move_along(g, -0.5 * d->rules.miles[g->pace]);
     hunt_log(g, "hunt.start", NULL, 0);
     g_settle(g);
 }

@@ -34,6 +34,9 @@ int g_smith_cost(const Game *g); /* pence for a town smith to put the whole wago
 
 /* game_travel.c */
 void g_pass_day(Game *g, bool travelling, bool allow_events);
+/* Moves the wagon along its road by `miles` (negative: time lost), never behind the road's start,
+ * and keeps the trip's total in step. */
+void g_move_along(Game *g, double miles);
 void g_open_breakdown(Game *g, int part);
 void g_check_stranded(Game *g);
 int  g_oxen(const Game *g);

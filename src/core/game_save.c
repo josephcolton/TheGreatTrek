@@ -208,6 +208,8 @@ char *game_save_json(const Game *g)
         cJSON_AddNumberToObject(gj, "miles_along", gr->miles_along);
         cJSON_AddStringToObject(gj, "cause", gr->cause_key);
         cJSON_AddStringToObject(gj, "epitaph", gr->epitaph);
+        cJSON_AddNumberToObject(gj, "illness", gr->illness);
+        cJSON_AddNumberToObject(gj, "ill_days", gr->ill_days);
         cJSON_AddItemToArray(graves, gj);
     }
     cJSON *journal = cJSON_AddArrayToObject(o, "journal");
@@ -609,6 +611,11 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         gr->miles_along = (int)nget(f, "miles_along", 0);
         snprintf(gr->cause_key, sizeof gr->cause_key, "%s", sget(f, "cause"));
         snprintf(gr->epitaph, sizeof gr->epitaph, "%s", sget(f, "epitaph"));
+        gr->illness = (int)nget(f, "illness", -1); /* older saves: not known */
+        gr->ill_days = (int)nget(f, "ill_days", 0);
+        if (gr->illness >= data->illness_count) {
+            gr->illness = -1;
+        }
     }
     g->journal_count = 0;
     cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(o, "journal"))

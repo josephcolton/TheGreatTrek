@@ -736,6 +736,13 @@ static void grave_render(App *app)
     loctext_arg_date(&t, "date", gr->day);
     loctext_arg_key(&t, "place", app->data->nodes[gr->node].name_key);
     draw_wrapped(d, d->font, app_fmt(app, &t), cx - 96, 132, 192, COL_BG, false);
+    /* beside the stone: who this was, and why they died */
+    LocText story[3];
+    int ns = game_grave_story(g, gr, story, 3);
+    float sy = 64;
+    for (int i = 0; i < ns; i++) {
+        sy += draw_wrapped(d, d->font, app_fmt(app, &story[i]), cx + 122, sy, 192, i == 1 ? COL_GOLD : COL_TEXT, false) + 6;
+    }
     char shown[120];
     snprintf(shown, sizeof shown, "%s%s", app->epitaph, (SDL_GetTicks() / 400) % 2 ? "_" : " ");
     draw_wrapped(d, d->font, shown, cx - 96, 190, 192, (SDL_Color){40, 34, 28, 255}, false);

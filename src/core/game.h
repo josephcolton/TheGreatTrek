@@ -80,6 +80,8 @@ typedef struct {
     int miles_along;
     char cause_key[KEY_LEN];
     char epitaph[EPITAPH_LEN];
+    int illness;              /* the illness they died of, -1 if not an illness */
+    int ill_days;             /* how long they had been ill */
 } Grave;
 
 typedef struct {
@@ -431,6 +433,9 @@ void loctext_arg_date(LocText *t, const char *name, int day);
 /* ---- ending ---- */
 /* Fills out[] with the epilogue lines; returns how many. */
 int game_epilogue(const Game *g, LocText *out, int max);
+/* Who lies in a grave and why, for the grave screen: who they were, what they died of, and how
+ * it came about. Returns the number of lines (at most 3). */
+int game_grave_story(const Game *g, const Grave *gr, LocText *out, int max);
 /* What happened at the place the trip ended, after the family arrived (route.json epilogue): the
  * history page after the ending. 0 lines if the trip did not end at a place with one. */
 int game_history_epilogue(const Game *g, LocText *out, int max);

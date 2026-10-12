@@ -426,22 +426,12 @@ static void apply_effect(Game *g, const Effect *e)
             g_pass_day(g, false, false);
         }
         double frac = e->famount - whole;
-        if (frac > 0 && g->edge >= 0) {
-            g->miles_along -= frac * d->rules.miles[g->pace];
-            if (g->miles_along < 0) {
-                g->miles_along = 0;
-            }
+        if (frac > 0) {
+            g_move_along(g, -frac * d->rules.miles[g->pace]);
         }
         break;
     }
-    case EFF_DISTANCE:
-        if (g->edge >= 0) {
-            g->miles_along += e->amount;
-            if (g->miles_along < 0) {
-                g->miles_along = 0;
-            }
-        }
-        break;
+    case EFF_DISTANCE: g_move_along(g, e->amount); break;
     case EFF_SCHEDULE:
         if (g->scheduled_count < MAX_SCHEDULED && e->a >= 0) {
             g->scheduled[g->scheduled_count].event = e->a;

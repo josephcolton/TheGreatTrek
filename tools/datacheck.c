@@ -63,6 +63,8 @@ static const char *CODE_KEYS[] = {
     "landmark.barter", "barter.reply.empty", "barter.reply.insult", "barter.reply.short", "barter.reply.generous",
     "barter.reply.done", "barter.reply.powder", "journal.barter", "journal.barter_powder",
     "river.trouble.person_alone",
+    "grave.who", "grave.who.servant", "grave.cause", "grave.why.drowned", "grave.why.accident", "grave.why.hunting",
+    "grave.why.hardship", "grave.why.unknown",
     "notice.fever", "notice.fly", "journal.fly", "ending.history.title", "ending.footer.more",
     "defend.title", "defend.status.lost", "defend.status.night", "defend.footer", "defend.start", "defend.appears",
     "defend.appears_pack", "defend.took", "defend.dropped", "defend.killed", "defend.wounded", "defend.scared",
@@ -152,6 +154,11 @@ int main(int argc, char **argv)
         }
         for (int i = 0; i < d->node_count; i++) {
             check_key(d->nodes[i].history_key, d->nodes[i].id, &kc);
+        }
+        for (int i = 0; i < d->illness_count; i++) {
+            char key[KEY_LEN];
+            snprintf(key, sizeof key, "grave.why.%s", d->illnesses[i].id); /* game_grave_story */
+            check_key(key, d->illnesses[i].id, &kc);
         }
         errors += kc.missing;
         /* {who.form}: the form must be one the formatter knows (format.c, pronoun.* keys) */

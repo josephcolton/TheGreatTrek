@@ -604,8 +604,7 @@ void g_pass_day(Game *g, bool travelling, bool allow_events)
             travelling = false;
         } else {
             miles = day_miles(g);
-            g->miles_along += miles;
-            g->miles_total += (int)lround(miles);
+            g_move_along(g, miles);
             wear_wagon(g, miles);
         }
     }
