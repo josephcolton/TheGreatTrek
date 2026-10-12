@@ -47,15 +47,22 @@ bool nav_updown(App *app, const SDL_Event *e, int n)
     if (n <= 0) {
         return false;
     }
-    if (key_is(e, SDLK_UP)) {
-        app->sel = (app->sel + n - 1) % n;
-        return true;
+    int step = key_is(e, SDLK_UP) ? n - 1 : key_is(e, SDLK_DOWN) ? 1 : 0;
+    if (step == 0) {
+        return false;
     }
-    if (key_is(e, SDLK_DOWN)) {
-        app->sel = (app->sel + 1) % n;
-        return true;
+    /* skip greyed-out items, as the list was last drawn (draw_choices) */
+    const Draw *d = &app->draw;
+    bool known = d->list_n == n && n <= 32;
+    int sel = app->sel;
+    for (int k = 0; k < n; k++) {
+        sel = (sel + step) % n;
+        if (!known || !(d->list_locked & (1u << sel))) {
+            app->sel = sel;
+            break;
+        }
     }
-    return false;
+    return true;
 }
 
 /* ---------------------------------------------------------------- shared drawing */

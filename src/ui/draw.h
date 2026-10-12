@@ -27,6 +27,8 @@ typedef struct {
     bool follow;         /* a key just moved the selection: bring the mouse to it if it is over the list */
     bool warped;         /* the mouse was moved there by us: its motion event is not the player's */
     float warp_x, warp_y;
+    unsigned list_locked; /* bit i: item i of the last list the keys move is greyed out */
+    int list_n;          /* how many items that list has */
 } Draw;
 
 void draw_init(Draw *d, SDL_Renderer *r, TTF_Font *font, TTF_Font *big, TTF_Font *small, float font_pt, float big_pt,

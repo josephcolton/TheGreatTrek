@@ -106,6 +106,7 @@ static void update(App *app, double dt)
 static void render(App *app)
 {
     draw_update_scale(&app->draw);
+    app->draw.list_n = 0; /* set again by whichever list the keys move this frame */
     SDL_SetRenderDrawColor(app->renderer, COL_BG.r, COL_BG.g, COL_BG.b, 255);
     SDL_RenderClear(app->renderer);
     switch (app->screen) {

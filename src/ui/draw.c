@@ -288,6 +288,22 @@ int draw_choices(Draw *d, const ChoiceItem *items, int n, float x, float y, int 
     /* the list the keys move shows one highlight: the selection, which follows the mouse */
     bool keyed = d->sel && selected == *d->sel && selected >= 0 && selected < n;
     if (keyed) {
+        /* greyed-out items can't be chosen, so the keys skip them (nav_updown) and the
+         * selection starts on the first one that can */
+        d->list_n = n;
+        d->list_locked = 0;
+        for (int i = 0; i < n && i < 32; i++) {
+            d->list_locked |= items[i].locked ? 1u << i : 0u;
+        }
+        for (int k = 0; k < n && items[selected].locked; k++) {
+            selected = (selected + 1) % n;
+        }
+        if (!items[selected].locked) {
+            *d->sel = selected;
+        }
+        if (hover >= 0 && items[hover].locked && !d->follow) {
+            hover = -1; /* resting the mouse on a greyed-out item doesn't select it */
+        }
         float ty = y;
         for (int i = 0; i < selected; i++) {
             ty += choice_height(d, &items[i], w, numbered);
