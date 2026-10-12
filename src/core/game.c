@@ -577,6 +577,11 @@ static double daily_food_need(const Game *g)
     return need;
 }
 
+double game_food_need(const Game *g)
+{
+    return daily_food_need(g);
+}
+
 double game_food_days(const Game *g)
 {
     double need = daily_food_need(g);
@@ -676,6 +681,11 @@ void game_set_orders(Game *g, Pace pace, Rations rations, NightStance stance, bo
     g->rations = rations;
     g->stance = stance;
     g->sabbath = sabbath;
+}
+
+void game_set_keep_flock(Game *g, bool keep)
+{
+    g->keep_flock = keep;
 }
 
 /* ---------------------------------------------------------------- settle: what to show next */

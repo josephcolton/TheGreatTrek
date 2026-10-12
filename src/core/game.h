@@ -199,6 +199,7 @@ typedef struct Game {
     Rations rations;
     NightStance stance;
     bool sabbath;
+    bool keep_flock;          /* slaughter sheep only when the stores run low, not every few days */
 
     /* party, animals and goods */
     Member party[MAX_PARTY];
@@ -300,6 +301,11 @@ GamePhase game_phase(const Game *g);
 
 /* ---- orders and travel ---- */
 void game_set_orders(Game *g, Pace pace, Rations rations, NightStance stance, bool sabbath);
+/* Eat the flock (a sheep whenever the fresh meat runs out, as the trekkers did) or keep it and eat
+ * the wagon's stores, slaughtering only when they run low. */
+void game_set_keep_flock(Game *g, bool keep);
+/* Pounds of food the party eats a day at the present rations. */
+double game_food_need(const Game *g);
 /* Plays one day on the road. Returns true if the party stopped (event, arrival, warning...). */
 bool game_travel_day(Game *g);
 /* Plays days until something needs the player, at most max_days. */

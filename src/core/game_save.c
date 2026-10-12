@@ -90,6 +90,7 @@ char *game_save_json(const Game *g)
     cJSON_AddStringToObject(o, "rations", rations_id(g->rations));
     cJSON_AddStringToObject(o, "stance", stance_id(g->stance));
     cJSON_AddBoolToObject(o, "sabbath", g->sabbath);
+    cJSON_AddBoolToObject(o, "keep_flock", g->keep_flock);
 
     cJSON *party = cJSON_AddArrayToObject(o, "party");
     for (int i = 0; i < g->party_count; i++) {
@@ -434,6 +435,7 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
     g->rations = r < 0 ? RATIONS_FULL : (Rations)r;
     g->stance = s < 0 ? NIGHT_LAAGER : (NightStance)s;
     g->sabbath = bget(o, "sabbath");
+    g->keep_flock = bget(o, "keep_flock"); /* older saves: eat the flock, as before */
 
     g->party_count = 0;
     const cJSON *mj;

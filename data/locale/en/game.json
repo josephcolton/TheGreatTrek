@@ -10,6 +10,8 @@
   "journal.crossed": "Crossed the {river}.",
   "journal.traded": "Traded at {place}.",
   "journal.paid_in_sheep": "{who} was paid this month's wage in sheep ({n}).",
+  "journal.sheep_eaten": "This week the party ate {n} sheep from the flock.",
+  "journal.sheep_eaten.one": "This week the party ate a sheep from the flock.",
   "journal.slaughtered_cow": "With the sheep gone, a cow was slaughtered. Some of the meat was eaten fresh and the rest cut into strips and dried as biltong.",
   "journal.gave_up": "With no oxen left to pull the wagon, the family gave up the trek.",
 

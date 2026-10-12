@@ -146,10 +146,13 @@ static void eat(Game *g)
             need += r->food_lb[g->rations] * (g->party[i].age == AGE_CHILD ? r->child_food : 1.0);
         }
     }
-    /* Trekkers lived largely off their flocks: slaughter a sheep when the meat runs out. */
-    if (g->inv[d->item_meat] < need && g->inv[d->item_sheep] > 0) {
+    /* Trekkers lived largely off their flocks: slaughter a sheep when the meat runs out, or, if
+     * the order is to keep the flock, only when the wagon's stores are running low too. */
+    bool stores_low = game_food_lb(g) - g->inv[d->item_meat] < need * 3;
+    if (g->inv[d->item_meat] < need && g->inv[d->item_sheep] > 0 && (!g->keep_flock || stores_low)) {
         g->inv[d->item_sheep]--;
         g->inv[d->item_meat] += SHEEP_MEAT_LB;
+        g_add_counter(g, "sheep_eaten", 1);
     } else if (g->inv[d->item_meat] < need && game_food_lb(g) < need * 3 && g->inv[d->item_cows] > 0) {
         /* No sheep left and little food: slaughter a cow, eat some fresh and dry the rest as biltong. */
         g->inv[d->item_cows]--;
@@ -196,6 +199,15 @@ static void eat(Game *g)
         }
     }
     g_add_morale(g, morale);
+    /* once a week, the journal says how many sheep went to the pot */
+    int eaten = game_counter(g, "sheep_eaten");
+    if (cal_weekday(g->day) == 6 && eaten > 0) {
+        LocText t;
+        loctext_set(&t, eaten == 1 ? "journal.sheep_eaten.one" : "journal.sheep_eaten");
+        loctext_arg_int(&t, "n", eaten);
+        game_journal(g, &t);
+        g_add_counter(g, "sheep_eaten", -eaten);
+    }
 }
 
 /* Returns true if people and oxen had water today. */

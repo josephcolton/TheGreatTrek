@@ -89,7 +89,7 @@ static void glossary_render(App *app)
 
 /* ---------------------------------------------------------------- orders */
 
-typedef enum { OR_PACE, OR_RATIONS, OR_NIGHT, OR_SABBATH, OR_COUNT } OrderItem;
+typedef enum { OR_PACE, OR_RATIONS, OR_NIGHT, OR_SABBATH, OR_FLOCK, OR_COUNT } OrderItem;
 
 static void orders_change(App *app, int item, int delta)
 {
@@ -103,6 +103,7 @@ static void orders_change(App *app, int item, int delta)
     case OR_RATIONS: r = (Rations)((r + RATIONS_COUNT + delta) % RATIONS_COUNT); break;
     case OR_NIGHT: s = (NightStance)((s + NIGHT_COUNT + delta) % NIGHT_COUNT); break;
     case OR_SABBATH: sab = !sab; break;
+    case OR_FLOCK: game_set_keep_flock(g, !g->keep_flock); break;
     default: break;
     }
     game_set_orders(g, p, r, s, sab);
@@ -119,7 +120,8 @@ static void orders_render(App *app)
     snprintf(keys[OR_RATIONS], 48, "rations.%s", rations_id(g->rations));
     snprintf(keys[OR_NIGHT], 48, "stance.%s", stance_id(g->stance));
     snprintf(keys[OR_SABBATH], 48, "settings.%s", g->sabbath ? "on" : "off");
-    static const char *LABELS[OR_COUNT] = {"orders.pace", "orders.rations", "orders.night", "orders.sabbath"};
+    snprintf(keys[OR_FLOCK], 48, "orders.flock.%s", g->keep_flock ? "keep" : "eat");
+    static const char *LABELS[OR_COUNT] = {"orders.pace", "orders.rations", "orders.night", "orders.sabbath", "orders.flock"};
     float y = 48;
     for (int i = 0; i < OR_COUNT; i++) {
         bool hot = i == app->sel;
@@ -133,7 +135,8 @@ static void orders_render(App *app)
         y += d->line_h;
     }
     char about[80];
-    static const char *ABOUT[OR_COUNT] = {"orders.pace.about", "orders.rations.about", "orders.night.about", "orders.sabbath.about"};
+    static const char *ABOUT[OR_COUNT] = {"orders.pace.about", "orders.rations.about", "orders.night.about", "orders.sabbath.about",
+                                          "orders.flock.about"};
     snprintf(about, sizeof about, "%s", ABOUT[app->sel < OR_COUNT ? app->sel : 0]);
     draw_wrapped(d, d->font, app_text(app, about), 36, y + 12, 568, COL_DIM, false);
     draw_text(d, d->font, app_text(app, "orders.footer"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
@@ -161,13 +164,23 @@ static void supplies_render(App *app)
         snprintf(line, sizeof line, "%d", g->inv[i]);
         draw_text(d, d->font, line, x + 260, y, COL_GOLD, TEXT_RIGHT);
         y += d->line_h;
-        if (y > 250 && col == 0) {
+        if (y > 220 && col == 0) {
             col = 1;
             x = 330;
             y = 44;
         }
     }
     LocText t;
+    /* how the party eats: so sheep vanishing from the list is no mystery */
+    double need = game_food_need(g);
+    if (g->keep_flock || g->inv[data->item_sheep] == 0) {
+        loctext_set(&t, g->inv[data->item_sheep] > 0 ? "supplies.eating.keep" : "supplies.eating.stores");
+    } else {
+        loctext_set(&t, "supplies.eating.flock");
+    }
+    loctext_arg_int(&t, "lb", (int)lround(need));
+    loctext_arg_int(&t, "days", need > 0 ? (int)lround(35.0 / need) : 0);
+    draw_wrapped(d, d->font, app_fmt(app, &t), 36, 236, 568, COL_TEXT, false);
     loctext_set(&t, "supplies.wagon");
     char wkey[KEY_LEN];
     snprintf(wkey, sizeof wkey, "%s", data->wagons[g->wagon].name_key);

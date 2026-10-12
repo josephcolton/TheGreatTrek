@@ -334,6 +334,34 @@ static void test_far_north(const GameData *d)
     }
 }
 
+/* Eating the flock takes a sheep every few days; keeping it eats the stores and spares the sheep
+ * while there is food in the wagon. The journal says once a week how many went to the pot. */
+static void test_flock(const GameData *d)
+{
+    int left[2];
+    for (int keep = 0; keep < 2; keep++) {
+        Game *g = play(d, 4, data_find_family(d, "grensboer"), 30);
+        g->inv[d->item_sheep] = 50;
+        g->inv[data_find_item(d, "meal")] = 2000;
+        game_set_keep_flock(g, keep);
+        int journal0 = g->journal_count;
+        for (int day = 0; day < 21; day++) {
+            g_pass_day(g, false, false);
+        }
+        left[keep] = g->inv[d->item_sheep];
+        if (!keep) {
+            bool noted = false;
+            for (int j = journal0; j < g->journal_count; j++) {
+                noted = noted || strncmp(g->journal[j].text.key, "journal.sheep_eaten", 19) == 0;
+            }
+            CHECK(noted);
+        }
+        game_free(g);
+    }
+    CHECK(left[0] < 45);       /* eating the flock: several sheep in three weeks */
+    CHECK(left[1] == 50);      /* keeping it, with plenty of meal: none */
+}
+
 static void test_mend(const GameData *d)
 {
     Game *g = NULL;
@@ -425,6 +453,7 @@ int main(void)
     test_hunt(d);
     test_defend(d);
     test_far_north(d);
+    test_flock(d);
     test_mend(d);
     test_portraits(d);
     for (int f = 0; f < d->family_count; f++) {
