@@ -100,7 +100,7 @@ Testing the front end without a person: `--keys` replays key presses (1-9, a-z, 
 - **Build outside Google Drive**, in `%LOCALAPPDATA%\TheGreatTrek-build\`, so sync doesn't slow the build.
 - Shells: both Git Bash and PowerShell are available. Paths contain spaces, so quote them.
 - Backslash escapes written through Bash heredocs or Python strings can get collapsed (`'\\'` became `'\'`); prefer the Write/Edit tools for source files.
-- `gh` (GitHub CLI) is not installed.
+- `gh` (GitHub CLI) is installed at `C:\Program Files\GitHub CLI\gh.exe` (not on PATH in Git Bash; call it by full path).
 
 ## Git
 

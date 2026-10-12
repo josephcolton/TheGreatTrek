@@ -268,7 +268,7 @@ These are **fictional families** written over the real history above. Names in *
 
 **English 4: The Mission Family. Main character *Josiah Whitlock*.** A Methodist settler turned Wesleyan lay missionary, sent to the Thaba Nchu mission (the Wesleyans moved there with Moroka's Barolong in 1833, section 7), with his wife Hannah, a Barolong interpreter, Jacob, and Piet the driver. Good nurses and much medicine; little money and few guns.
 
-**English 5: The Discharged Soldier. Main character *Duncan Rennie*.** A private of a Highland regiment who fought in the 1834-35 war and took his discharge at Graham's Town **[recall, verify: Highland regiments on the frontier in 1835, and discharge at the Cape]**. Well armed and steady on guard; no land, little money, and the trekkers are wary of a former soldier of the Crown.
+**English 5: The Discharged Soldier. Main character *Duncan Rennie*.** A private of a Highland regiment who fought in the 1834-35 war and took his discharge at Graham's Town **[sourced: the 72nd Highlanders served in the 1834-35 war, building Forts Beresford, Murray and Coke and garrisoning Fort Wellington, then went back to Cape Town late in 1835 (Spink medal lot description; Fort Peddie was named after their Lt-Col John Peddie). Duncan's discharge at Graham's Town is invented for the family.]**. Well armed and steady on guard; no land, little money, and the trekkers are wary of a former soldier of the Crown.
 
 ### 8.4 Servants and companions
 
@@ -464,3 +464,13 @@ Sources added in this pass:
 - Doucakis on Maritz's laager and the Marico campaign: https://upjournals.up.ac.za/index.php/historia/article/view/1796
 - Britannica (Marico, Nov 1837): https://www.britannica.com/print/article/472707
 - Coffee trade article: https://www.tandfonline.com/doi/full/10.1080/02582473.2020.1714706
+
+**Checked 2026-10-12** (churches, the Highland regiment, the Cashan name):
+- St Michael and St George Cathedral, Makhanda (St George's opened 1830, consecrated 1850): https://en.wikipedia.org/wiki/St_Michael_and_St_George_Cathedral,_Makhanda
+- SAHRIS, Graham's Town Methodist chapel (dedicated 10 Nov 1822; Wesley Chapel 1832): https://sahris.org.za/node/248050
+- Dutch Reformed Church, Cradock (congregation 1818): https://en.wikipedia.org/wiki/Dutch_Reformed_Church,_Cradock ; first church built 1821-24 on the present site: https://sahris.org.za/node/38550
+- Dutch Reformed Church, Colesberg (congregation 1826): https://en.wikipedia.org/wiki/Dutch_Reformed_Church,_Colesberg ; foundation stone 29 Nov 1830: https://en.wikipedia.org/wiki/List_of_heritage_sites_in_Colesberg . When the building was finished was not found.
+- Thaba Nchu: church and mission house re-erected after the 1833 move (SAHRIS https://sahris.org.za/node/41376); Backhouse saw a T-shaped brick chapel in July 1839.
+- 72nd Highlanders in the 1834-35 war (Spink medal lot): https://spink.com/lot/18002000225
+- Magaliesberg, formerly the Cashan Mountains: https://en.wikipedia.org/wiki/Magaliesberg
+- Result: every place where the game offers church had a church or chapel by 1837, except the trekker laager, where services were held in the open or under an awning, as the game already shows. Quinine: still no source that the trekkers had it (`06` section 9).

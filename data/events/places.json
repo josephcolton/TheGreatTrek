@@ -113,7 +113,7 @@
     {
       "id": "church_town", "setpiece": true, "once": false,
       "history": "history.church_town",
-      "sources": ["By 1837 Graham's Town had an Anglican church (St George's) and a Wesleyan chapel; Cradock (1818) and Colesberg (1826) were Dutch Reformed congregations, the towns having grown round their churches [recall, verify the dates]. Sunday rest was kept as a matter of conscience (Tregardt's diary, 05_research_pass2.md section 7). The day at church and its effects are invented."],
+      "sources": ["Graham's Town: the Wesleyan chapel of 1822 and Wesley Chapel of 1832 (SAHRIS); St George's (Anglican) opened for worship in 1830, consecrated 1850 (Wikipedia, St Michael and St George Cathedral). Cradock: Dutch Reformed congregation 1818, first church built 1821-24 (Wikipedia, Dutch Reformed Church, Cradock; SAHRIS). Colesberg: congregation 1826, church foundation stone laid 29 Nov 1830 (Wikipedia, Dutch Reformed Church, Colesberg; List of heritage sites in Colesberg); the date it was finished was not found [conflict: a tourism site says 1860, which may be a rebuilding]. Sunday rest was kept as a matter of conscience (Tregardt's diary, 05_research_pass2.md section 7). The day at church and its effects are invented."],
       "text": "event.church_town.body",
       "choices": [
         { "text": "event.church.attend",

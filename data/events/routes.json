@@ -56,7 +56,7 @@
     {
       "id": "magaliesberg_ndebele", "setpiece": true,
       "history": "history.place.magaliesberg",
-      "sources": ["Mzilikazi's Ndebele held the country north of the Vaal in 1837; after Mosega (17 Jan 1837) they were in the Marico until the trekker commando of Nov 1837 drove them north (05_research_pass2.md section 3; Britannica, Marico). Harris (1839) visited Mzilikazi in 1836 and hunted in the 'Cashan Mountains', the Magaliesberg [recall, verify]. The meeting is invented."],
+      "sources": ["Mzilikazi's Ndebele held the country north of the Vaal in 1837; after Mosega (17 Jan 1837) they were in the Marico until the trekker commando of Nov 1837 drove them north (05_research_pass2.md section 3; Britannica, Marico). Harris (1839) visited Mzilikazi in 1836 and hunted in the Cashan Mountains, an old name for the Magaliesberg (Wikipedia, Magaliesberg; Wikipedia, William Cornwallis Harris: his first sable antelope was shot there). The meeting is invented."],
       "text": "event.magaliesberg_ndebele.body",
       "choices": [
         { "text": "event.magaliesberg_ndebele.gift", "requires": [ { "item_gte": ["beads", 4] } ], "locked": "lock.need_beads",
