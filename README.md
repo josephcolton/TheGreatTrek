@@ -21,7 +21,7 @@ Written in C with SDL3. Licensed under the GNU GPL v3 (see `LICENSE`).
 
 ## Playing
 
-Pick a side and one of seven fictional families, read how they came to be in Grahamstown, name your party, and set out in April 1837. On the road you choose the pace, the rations and how to keep watch at night; you buy supplies in the colonial towns, barter beyond the Orange River, hunt, cross rivers, and decide what to do when things go wrong. The trip saves itself after every step, and there is one save per trip, so what happens on the road stays happened.
+Pick a side and one of ten fictional families, read how they came to be in Grahamstown, name your party, and set out in April 1837. On the road you choose the pace, the rations and how to keep watch at night; you buy supplies in the colonial towns, barter beyond the Orange River, hunt, cross rivers, and decide what to do when things go wrong. The trip saves itself after every step, and there is one save per trip, so what happens on the road stays happened.
 
 | Key | What it does |
 |---|---|
