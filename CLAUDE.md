@@ -100,6 +100,7 @@ Testing the front end without a person: `--keys` replays key presses (1-9, a-z, 
 - **Build outside Google Drive**, in `%LOCALAPPDATA%\TheGreatTrek-build\`, so sync doesn't slow the build.
 - Shells: both Git Bash and PowerShell are available. Paths contain spaces, so quote them.
 - Backslash escapes written through Bash heredocs or Python strings can get collapsed (`'\\'` became `'\'`); prefer the Write/Edit tools for source files.
+- **Inno Setup 6** is installed for the user (`%LOCALAPPDATA%\Programs\Inno Setup 6\ISCC.exe`); `tools/package.sh` uses it to build `dist/TheGreatTrek-<ver>-windows-setup.exe` next to the zip.
 - `gh` (GitHub CLI) is installed at `C:\Program Files\GitHub CLI\gh.exe` (not on PATH in Git Bash; call it by full path).
 
 ## Git

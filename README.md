@@ -22,11 +22,14 @@ Pick a side and one of seven fictional families, read how they came to be in Gra
 
 ### Trying the beta (Windows)
 
-1. Download `TheGreatTrek-<version>-windows.zip` from the [Releases](https://github.com/josephcolton/TheGreatTrek/releases) page.
-2. Unzip it anywhere, keep the folder together, and run `TheGreatTrek.exe`. Nothing needs installing.
-3. The program isn't signed, so Windows may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
+**Installer (recommended):**
+1. Download `TheGreatTrek-<version>-windows-setup.exe` from the [Releases](https://github.com/josephcolton/TheGreatTrek/releases) page and run it.
+2. The installer isn't signed, so Windows may say "Windows protected your PC". Choose **More info**, then **Run anyway**. Windows then asks whether to let an app from an unknown publisher make changes; choose **Yes**.
+3. It installs into Program Files and adds the game to the Start menu (and the desktop, if you tick the box). Choose "Install for me only" if you don't have admin rights. Installing a newer version over the old one upgrades it. Uninstall from Windows Settings, Apps.
 
-Saves are kept in `%APPDATA%\TheGreatTrek\TheGreatTrek\trips`. Deleting the game folder does not delete them.
+**Or the zip:** download `TheGreatTrek-<version>-windows.zip`, unzip it anywhere, keep the folder together, and run `TheGreatTrek.exe`. Nothing needs installing; Windows may show the same "protected your PC" warning.
+
+Saves are kept in `%APPDATA%\TheGreatTrek\TheGreatTrek\trips`. Uninstalling the game or deleting its folder does not delete them.
 
 If something goes wrong or reads oddly, please open an [issue](https://github.com/josephcolton/TheGreatTrek/issues) or tell the person who sent you the game. Say:
 - what you were doing
@@ -50,7 +53,7 @@ ctest --test-dir build
 
 Options: `-DTREK_USE_SYSTEM_SDL=ON` to use SDL3 packages already installed on your system; `-DTREK_BUILD_GAME=OFF` to build only the simulation core, tools and tests.
 
-`tools/package.sh` builds a Release and packs a zip with the game, its data, the licence and the credits into `dist/`.
+`tools/package.sh` builds a Release and packs a zip with the game, its data, the licence and the credits into `dist/`. On Windows, if [Inno Setup](https://jrsoftware.org/isinfo.php) 6 is installed (`winget install JRSoftware.InnoSetup`), it also builds the installer from `packaging/windows/TheGreatTrek.iss`.
 
 The icon (an ox wagon on Karoo brown) is drawn by `tools/make_icon.py` into `assets/icon/`: `icon.ico` is built into the Windows exe and can be used by an installer, and `icon.png` is the window icon. On Linux, `packaging/linux/thegreattrek.desktop` is a desktop launcher: set `Exec=` to the full path of `TheGreatTrek`, copy it to `~/.local/share/applications/`, and copy `assets/icon/icon.png` to `~/.local/share/icons/hicolor/256x256/apps/thegreattrek.png`.
 

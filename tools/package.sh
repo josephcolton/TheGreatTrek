@@ -26,3 +26,19 @@ if [ "$OS" = linux ]; then
 fi
 (cd dist && cmake -E tar cf "$NAME.zip" --format=zip "$NAME")
 echo "dist/$NAME.zip"
+
+# Windows: also the installer, if Inno Setup is installed (winget install JRSoftware.InnoSetup).
+if [ "$OS" = windows ]; then
+    ISCC="${ISCC:-}"
+    for c in "$LOCALAPPDATA/Programs/Inno Setup 6/ISCC.exe" "/c/Program Files (x86)/Inno Setup 6/ISCC.exe" \
+             "/c/Program Files/Inno Setup 6/ISCC.exe"; do
+        if [ -z "$ISCC" ] && [ -f "$c" ]; then ISCC="$c"; fi
+    done
+    if [ -n "$ISCC" ]; then
+        "$ISCC" -Q "-DAppVersion=$VERSION" "-DSourceDir=$(cygpath -w "$PWD/$STAGE")" "-DOutputDir=$(cygpath -w "$PWD/dist")" \
+            "$(cygpath -w "$PWD/packaging/windows/TheGreatTrek.iss")"
+        echo "dist/$NAME-setup.exe"
+    else
+        echo "Inno Setup not found; no installer made (set ISCC=path/to/ISCC.exe)"
+    fi
+fi
