@@ -12,6 +12,7 @@ static void close_overlay(App *app)
 {
     app->overlay = OV_NONE;
     app->sel = 0;
+    app->map_sheet = 0;
 }
 
 static void overlay_panel(App *app, const char *title)
@@ -367,37 +368,99 @@ static bool map_known(const Game *g, int n)
     return false;
 }
 
+/* The wagon's place in lon/lat: at its node, or the right share of the way along its road. */
+static void wagon_lonlat(const Game *g, double *lon, double *lat)
+{
+    const GameData *data = g->data;
+    const NodeDef *cur = &data->nodes[g->node];
+    *lon = cur->lon;
+    *lat = cur->lat;
+    if (g->edge >= 0) {
+        const NodeDef *to = &data->nodes[data->edges[g->edge].to];
+        double f = g->miles_along / data->edges[g->edge].miles;
+        *lon += (to->lon - cur->lon) * f;
+        *lat += (to->lat - cur->lat) * f;
+    }
+}
+
+/* The sheet to show: the one chosen with Tab, or else the first one the wagon is on. */
+static int map_sheet(const App *app)
+{
+    const GameData *data = app->data;
+    if (app->map_sheet > 0 && app->map_sheet <= data->map_count) {
+        return app->map_sheet - 1;
+    }
+    double lon, lat;
+    wagon_lonlat(app->game, &lon, &lat);
+    for (int s = 0; s < data->map_count; s++) {
+        const MapData *m = &data->maps[s];
+        if (lon >= m->lon0 && lon <= m->lon1 && lat <= m->lat0 && lat >= m->lat1) {
+            return s;
+        }
+    }
+    return 0;
+}
+
+/* The sea: the coast closed by the sheet's sea corners, filled a row at a time. */
+static void map_sea(Draw *d, const MapData *m, float ox, float oy, SDL_Color c)
+{
+    const MapLine *poly = &m->coast;
+    if (poly->n < 3) {
+        return;
+    }
+    for (int row = 0; row < (int)m->h; row++) {
+        float y = row + 0.5f;
+        float xs[MAP_MAX_POINTS];
+        int n = 0;
+        for (int i = 0; i < poly->n; i++) {
+            int j = (i + 1) % poly->n;
+            float y0 = poly->y[i], y1 = poly->y[j];
+            if ((y0 <= y && y1 > y) || (y1 <= y && y0 > y)) {
+                xs[n++] = poly->x[i] + (y - y0) / (y1 - y0) * (poly->x[j] - poly->x[i]);
+            }
+        }
+        for (int a = 1; a < n; a++) {
+            for (int b = a; b > 0 && xs[b - 1] > xs[b]; b--) {
+                float t = xs[b];
+                xs[b] = xs[b - 1];
+                xs[b - 1] = t;
+            }
+        }
+        for (int k = 0; k + 1 < n; k += 2) {
+            float x0 = SDL_clamp(xs[k], 0.0f, m->w), x1 = SDL_clamp(xs[k + 1], 0.0f, m->w);
+            if (x1 > x0) {
+                draw_rect(d, (SDL_FRect){ox + x0, oy + row, x1 - x0, 1}, c);
+            }
+        }
+    }
+}
+
 static void map_render(App *app)
 {
     Draw *d = &app->draw;
     Game *g = app->game;
     const GameData *data = app->data;
-    const MapData *m = &data->map;
-    overlay_panel(app, app_text(app, "map.title"));
+    int sheet = map_sheet(app);
+    const MapData *m = &data->maps[sheet];
+    char title[160];
+    snprintf(title, sizeof title, "%s  ·  %s", app_text(app, "map.title"), app_text(app, m->title_key));
+    overlay_panel(app, title);
 #define MX(x) (MAP_X + (x))
 #define MY(y) (MAP_Y + (y))
-    SDL_FRect sheet = {MAP_X, MAP_Y, m->w, m->h};
-    draw_rect(d, (SDL_FRect){sheet.x - 2, sheet.y - 2, sheet.w + 4, sheet.h + 4}, MAP_EDGE);
-    draw_rect(d, sheet, MAP_PAPER);
-    SDL_Rect clip = {(int)sheet.x, (int)sheet.y, (int)sheet.w, (int)sheet.h};
+    SDL_FRect paper = {MAP_X, MAP_Y, m->w, m->h};
+    draw_rect(d, (SDL_FRect){paper.x - 2, paper.y - 2, paper.w + 4, paper.h + 4}, MAP_EDGE);
+    draw_rect(d, paper, MAP_PAPER);
+    SDL_Rect clip = {(int)paper.x, (int)paper.y, (int)paper.w, (int)paper.h};
     SDL_SetRenderClipRect(app->renderer, &clip);
 
-    /* the sea, below the coast */
+    /* the sea, and the coast line (the polygon's last points are the sheet's sea corners) */
     const MapLine *coast = &m->coast;
-    if (coast->n >= 2) {
-        for (float x = coast->x[0]; x < m->w; x += 1) {
-            float y = coast->y[coast->n - 1];
-            for (int i = 0; i + 1 < coast->n; i++) {
-                if (x >= coast->x[i] && x <= coast->x[i + 1] && coast->x[i + 1] > coast->x[i]) {
-                    float f = (x - coast->x[i]) / (coast->x[i + 1] - coast->x[i]);
-                    y = coast->y[i] + (coast->y[i + 1] - coast->y[i]) * f;
-                }
-            }
-            draw_rect(d, (SDL_FRect){MX(x), MY(y), 1, m->h - y}, MAP_SEA);
+    map_sea(d, m, MAP_X, MAP_Y, MAP_SEA);
+    for (int i = 0; i + 1 < coast->n; i++) {
+        if (coast->x[i + 1] > m->w * 2 || coast->y[i + 1] > m->h * 2) {
+            break; /* the sea corners lie far off the sheet */
         }
-        for (int i = 0; i + 1 < coast->n; i++) {
-            map_line(app, MX(coast->x[i]), MY(coast->y[i]), MX(coast->x[i + 1]), MY(coast->y[i + 1]), MAP_WATER);
-        }
+        map_line(app, MX(coast->x[i]), MY(coast->y[i]), MX(coast->x[i + 1]), MY(coast->y[i + 1]), MAP_WATER);
     }
     /* mountains, rivers */
     for (int i = 0; i < m->peak_count; i++) {
@@ -427,7 +490,7 @@ static void map_render(App *app)
     for (int e = 0; e < data->edge_count; e++) {
         const EdgeDef *ed = &data->edges[e];
         const NodeDef *a = &data->nodes[ed->from], *b = &data->nodes[ed->to];
-        float x0 = MX(a->map_x), y0 = MY(a->map_y), x1 = MX(b->map_x), y1 = MY(b->map_y);
+        float x0 = MX(a->map_x[sheet]), y0 = MY(a->map_y[sheet]), x1 = MX(b->map_x[sheet]), y1 = MY(b->map_y[sheet]);
         if (g->visited[ed->from] && g->visited[ed->to]) {
             map_thick(app, x0, y0, x1, y1, MAP_ROUTE);
         } else if (g->visited[ed->from]) {
@@ -442,24 +505,24 @@ static void map_render(App *app)
     if (g->edge >= 0) {
         const NodeDef *to = &data->nodes[data->edges[g->edge].to];
         float f = (float)(g->miles_along / data->edges[g->edge].miles);
-        wx = cur->map_x + (to->map_x - cur->map_x) * f;
-        wy = cur->map_y + (to->map_y - cur->map_y) * f;
-        map_thick(app, MX(cur->map_x), MY(cur->map_y), MX(wx), MY(wy), MAP_ROUTE);
+        wx = cur->map_x[sheet] + (to->map_x[sheet] - cur->map_x[sheet]) * f;
+        wy = cur->map_y[sheet] + (to->map_y[sheet] - cur->map_y[sheet]) * f;
+        map_thick(app, MX(cur->map_x[sheet]), MY(cur->map_y[sheet]), MX(wx), MY(wy), MAP_ROUTE);
     } else {
-        wx = cur->map_x;
-        wy = cur->map_y;
+        wx = cur->map_x[sheet];
+        wy = cur->map_y[sheet];
     }
     /* places: names only for places the party knows of */
     for (int n = 0; n < data->node_count; n++) {
         const NodeDef *nd = &data->nodes[n];
         bool known = map_known(g, n);
-        float x = MX(nd->map_x), y = MY(nd->map_y);
+        float x = MX(nd->map_x[sheet]), y = MY(nd->map_y[sheet]);
         map_mark(d, nd->kind, x, y, known ? MAP_INK : MAP_FADED);
         if (!known) {
             continue;
         }
         const char *name = app_text(app, nd->name_key);
-        switch (nd->map_label) {
+        switch (nd->map_label[sheet]) {
         case MAP_LABEL_LEFT: map_label(app, d->font, name, x - 7, y - 8, MAP_INK, TEXT_RIGHT); break;
         case MAP_LABEL_ABOVE: map_label(app, d->font, name, x, y - 21, MAP_INK, TEXT_CENTER); break;
         case MAP_LABEL_BELOW: map_label(app, d->font, name, x, y + 5, MAP_INK, TEXT_CENTER); break;
@@ -468,7 +531,7 @@ static void map_render(App *app)
     }
     for (int i = 0; i < g->grave_count; i++) {
         const NodeDef *nd = &data->nodes[g->graves[i].node];
-        map_grave(d, MX(nd->map_x) - 9, MY(nd->map_y) + 2);
+        map_grave(d, MX(nd->map_x[sheet]) - 9, MY(nd->map_y[sheet]) + 2);
     }
     map_wagon(d, MX(wx), MY(wy));
     /* a north arrow */
@@ -528,7 +591,10 @@ static void map_render(App *app)
     loctext_arg_int(&t, "miles", g->miles_total);
     loctext_arg_int(&t, "days", g->day - g->start_day);
     ly += draw_wrapped(d, d->font, app_fmt(app, &t), lx, ly, 180, COL_DIM, false);
-    draw_wrapped(d, d->small, app_text(app, "map.note"), lx, ly + 4, 180, COL_DIM, false);
+    ly += 4 + draw_wrapped(d, d->small, app_text(app, "map.note"), lx, ly + 4, 180, COL_DIM, false);
+    if (data->map_count > 1) {
+        draw_wrapped(d, d->small, app_text(app, "map.other_sheet"), lx, ly + 4, 180, COL_GOLD, false);
+    }
     draw_text(d, d->font, app_text(app, "overlay.close"), lx + 90, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
 }
 
@@ -642,6 +708,13 @@ void overlay_event(App *app, const SDL_Event *e)
             if (app->scroll > app->game->journal_count - 1) {
                 app->scroll = app->game->journal_count - 1;
             }
+        } else if (e->type == SDL_EVENT_KEY_DOWN || is_click(e)) {
+            close_overlay(app);
+        }
+        break;
+    case OV_MAP:
+        if (key_is(e, SDLK_TAB) || key_is(e, SDLK_LEFT) || key_is(e, SDLK_RIGHT)) {
+            app->map_sheet = (map_sheet(app) + 1) % (app->data->map_count > 0 ? app->data->map_count : 1) + 1;
         } else if (e->type == SDL_EVENT_KEY_DOWN || is_click(e)) {
             close_overlay(app);
         }

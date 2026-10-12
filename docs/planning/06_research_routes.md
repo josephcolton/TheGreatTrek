@@ -1,6 +1,6 @@
 # Research Pass 3: the Natal and Far North routes
 
-Status: **first pass done (2026-10-11).** This covers the two routes the user asked for: **Natal** over the Drakensberg, and the **Far North** to the Soutpansberg and Delagoa Bay. Both are new forks off the existing road.
+Status: **researched and built (2026-10-11).** Section 9 says how the game uses it and what trekbot shows. This covers the two routes the user asked for: **Natal** over the Drakensberg, and the **Far North** to the Soutpansberg and Delagoa Bay. Both are new forks off the existing road.
 
 Labels as in `02_research_resources.md`: **[sourced]**, **[conflict]**, **[recall, verify]**, **[estimate]**. Links are in §8.
 
@@ -239,3 +239,25 @@ The epilogue must give **both sides**, and note how the events have been remembe
 - Wikipedia, Piet Uys (Kommissietrek): https://en.wikipedia.org/wiki/Piet_Uys
 - Wikipedia, Biggar family: https://en.wikipedia.org/wiki/Biggar_family
 - Wikipedia, Dick King: https://en.wikipedia.org/wiki/Dick_King
+
+---
+
+## 9. In the game (built 2026-10-11)
+
+- **Route** (`route.json`): the forks are at the Vet River and the Vaal drift as in §2. Bloukrans and the Soutpansberg are goals: their set piece asks whether to stop (the trip ends there) or go on. Port Natal and Delagoa Bay end the trip on arrival. Each goal has a history page after the ending (`epilogue` keys in `routes.json` locale).
+- **At the Soutpansberg** the player can also **wait for the dry season** (until 20 April, with grain and sheep traded from the Venda and grown in a garden, as Tregardt's people did), then go on. This follows the Tsonga traders' practice (§3.2).
+- **Malaria** and **the fly** by region and month (`regions.json`, §6). Rates are estimates.
+- **Warnings** (§5): the fork advice at the Vet River and the Vaal, the council at the Vet River, Sekwati's people at Strydpoort and the Olifants, and the talk at the Soutpansberg (the Tsonga traders, the Pretorius party, the Van Rensburgs).
+- **trekbot** (`--goal`, 200 runs a family, Normal; the bot carries more food, powder and beads on the Far North, as a player would after the warnings):
+
+| Goal | Arrive | Deaths per trip (of about 8) | Main killers |
+|---|---|---|---|
+| Mooi River | 100% | ~0.1 | flux, hardship |
+| Bloukrans camps | 100% | ~0.2 | flux, hardship |
+| Port Natal | 100% | ~0.2 | flux, hardship |
+| Soutpansberg | 86–100% | 0.2–1.4 | flux; the big predikant family runs short of food |
+| Delagoa Bay in the rains | 0–88% by family | ~2.7–8 | **malaria**, hunger, stranded by the fly |
+| Delagoa Bay after waiting for the dry season | 0–87% by family | ~0.4–7 | hunger; malaria much less |
+
+  The Delagoa Bay road is meant to be the deadly one, as it was: about half of Tregardt's party died, most of them of malaria. Families with good shots and herds (the frontier farmer, the hunter) can make it; a large family with no hunter usually cannot. The warnings say so.
+

@@ -19,7 +19,7 @@ Read these before designing or writing content:
 - **One trek north.**
   - Default start: Grahamstown, April 1837. Opening scene: the English settlers' Bible gift to the Uys party.
   - Route: Cradock → Colesberg → Orange River drift → Thaba Nchu → Sand/Vet River → Vaal drift → ending at the Mooi River (Potchefstroom area).
-  - **Two more roads (decided 2026-10-11, being built):**
+  - **Two more roads (decided and built 2026-10-11):**
     - **Natal**, forking at the Vet River. The player chooses the goal: the Bloukrans/Bushman's River camps or Port Natal.
     - **Far North**, forking at the Vaal drift. The player chooses the goal: the Soutpansberg or Delagoa Bay.
     - A trip ends on arrival, followed by an **epilogue** of what really happened there. The epilogue says plainly who did not survive, without describing how they were killed. The player never plays through the killings of 1838.
@@ -88,7 +88,7 @@ cmake -S . -B "$B" -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build "$B"
 ctest --test-dir "$B" --output-on-failure
 "$B/bin/datacheck.exe" "$B/bin/data"
-"$B/bin/trekbot.exe" --runs 200 --data data         # balance stats per family (also --policy, --difficulty)
+"$B/bin/trekbot.exe" --runs 200 --data data         # balance stats per family (also --policy, --difficulty, --goal mooi|natal|port_natal|soutpansberg|delagoa|delagoa_dry)
 "$B/bin/TheGreatTrek.exe" --pref "$TEMP/p" --seed 7 --keys "2 1 1 enter up enter" --screenshot shot.png
 ```
 

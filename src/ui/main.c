@@ -110,7 +110,7 @@ static SDL_Keycode key_from_name(const char *s)
 {
     static const struct { const char *name; SDL_Keycode key; } KEYS[] = {
         {"enter", SDLK_RETURN}, {"esc", SDLK_ESCAPE}, {"up", SDLK_UP}, {"down", SDLK_DOWN},
-        {"left", SDLK_LEFT}, {"right", SDLK_RIGHT}, {"space", SDLK_SPACE}, {"bksp", SDLK_BACKSPACE}};
+        {"left", SDLK_LEFT}, {"right", SDLK_RIGHT}, {"space", SDLK_SPACE}, {"bksp", SDLK_BACKSPACE}, {"tab", SDLK_TAB}};
     for (size_t i = 0; i < sizeof KEYS / sizeof KEYS[0]; i++) {
         if (strcmp(s, KEYS[i].name) == 0) {
             return KEYS[i].key;

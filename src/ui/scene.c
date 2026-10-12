@@ -50,6 +50,18 @@ static SDL_Color ground_color(const App *app, int region)
     if (strcmp(rid, "karoo") == 0) {
         return (SDL_Color){176, 140, 96, 255};
     }
+    if (strcmp(rid, "natal") == 0) {
+        return (SDL_Color){92, 128, 64, 255}; /* deep green grass */
+    }
+    if (strcmp(rid, "escarpment") == 0) {
+        return (SDL_Color){98, 116, 74, 255};
+    }
+    if (strcmp(rid, "lowveld") == 0) {
+        return (SDL_Color){132, 128, 70, 255}; /* thorn bush and tall grass */
+    }
+    if (strcmp(rid, "bushveld") == 0) {
+        return (SDL_Color){150, 138, 82, 255};
+    }
     return (SDL_Color){154, 142, 88, 255};
 }
 
@@ -467,6 +479,14 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
             case SCENE_RIVER:
             case SCENE_END: {
                 float wy = base - 12;
+                /* Port Natal and Delagoa Bay end by the sea: water out to the horizon */
+                const char *here = app->game ? app->data->nodes[app->game->node].id : "";
+                if (kind == SCENE_END && (strcmp(here, "port_natal") == 0 || strcmp(here, "delagoa_bay") == 0)) {
+                    float sea_top = r.y + r.h * 0.5f + 2;
+                    river_band(d, r, sea_top, wy - sea_top, now);
+                    wagon(rd, d, ws, r.x + 330, base + 10, pairs > 5 ? 5 : pairs, false, 0, tint);
+                    break;
+                }
                 river_band(d, r, wy, 12, now);
                 if (kind == SCENE_END) {
                     for (int i = 0; i < 5; i++) {
@@ -564,7 +584,9 @@ SceneKind scene_for_game(const App *app)
         }
         if (!ev->setpiece) {
             int region = g->edge >= 0 ? d->edges[g->edge].region : -1;
-            return (region >= 0 && strcmp(d->regions[region].id, "stormberg") == 0) ? SCENE_MOUNTAIN : SCENE_ROAD;
+            bool high = region >= 0 && (strcmp(d->regions[region].id, "stormberg") == 0 ||
+                                        strcmp(d->regions[region].id, "escarpment") == 0);
+            return high ? SCENE_MOUNTAIN : SCENE_ROAD;
         }
     }
     if (g->dlg.kind == DLG_RIVER) {
@@ -578,10 +600,10 @@ SceneKind scene_for_game(const App *app)
         case NODE_MISSION: return SCENE_MISSION;
         case NODE_END: return SCENE_END;
         default:
-            if (strcmp(n->id, "sand_river") == 0) {
+            if (strcmp(n->id, "sand_river") == 0 || strcmp(n->id, "bloukrans") == 0) {
                 return SCENE_LAAGER;
             }
-            if (strcmp(n->id, "stormberg") == 0) {
+            if (strcmp(n->id, "stormberg") == 0 || strcmp(n->id, "kerkenberg") == 0 || strcmp(n->id, "escarpment") == 0) {
                 return SCENE_MOUNTAIN;
             }
             return SCENE_ROAD;

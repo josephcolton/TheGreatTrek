@@ -1,45 +1,241 @@
 {
-  "_about": "The route map (Map screen). Places are drawn at their real lat/lon from route.json; the map is stretched east-west about 2.5 times so that places close together stay readable. River courses, the coast and the mountains are simplified from a modern map by eye [approximate]. 'label_at' is the point a river's name is written beside (-1: no name). 'places' says on which side of its mark each place's name goes. Peoples are written softly over their country, with no borders: in 1837 there were no fixed lines.",
-  "size": [392, 280],
-  "lon": [24.4, 28.6],
-  "lat": [-26.15, -33.9],
-  "places": {
-    "grahamstown": "right", "cradock": "left", "colesberg": "left", "orange_colesberg": "below", "philippolis": "above",
-    "tarka": "right", "stormberg": "right", "buffelsvlei": "right", "caledon_drift": "right", "thaba_nchu": "right",
-    "vet_river": "right", "sand_river": "right", "vaal_drift": "below", "mooi_river": "left"
-  },
-  "rivers": [
-    { "key": "map.river.fish", "label_at": 0,
-      "points": [[25.2, -31.45], [25.62, -32.16], [25.95, -32.6], [26.5, -32.95], [27.13, -33.49]] },
-    { "key": "map.river.orange", "label_at": 9,
-      "points": [[24.4, -29.95], [24.75, -30.25], [25.1, -30.48], [25.45, -30.63], [25.7, -30.58], [25.97, -30.5], [26.3, -30.55], [26.71, -30.69], [27.05, -30.5], [27.45, -30.15], [27.8, -29.95]] },
-    { "key": "map.river.caledon", "label_at": 4,
-      "points": [[25.97, -30.5], [26.25, -30.25], [26.55, -30.0], [27.04, -29.73], [27.4, -29.4], [27.9, -28.95], [28.3, -28.6]] },
-    { "key": "map.river.vet", "label_at": 1,
-      "points": [[25.1, -27.95], [25.6, -28.05], [26.1, -28.2], [26.5, -28.32], [27.01, -28.52], [27.6, -28.45]] },
-    { "key": "map.river.sand", "label_at": 0,
-      "points": [[26.5, -28.32], [26.8, -28.2], [27.14, -28.09], [27.8, -28.15]] },
-    { "key": "map.river.vaal", "label_at": 3,
-      "points": [[24.6, -28.35], [25.1, -28.05], [25.6, -27.65], [26.1, -27.45], [26.45, -27.2], [26.7, -27.0], [27.05, -26.93], [27.45, -26.9], [27.85, -26.85], [28.5, -26.85]] },
-    { "key": "map.river.mooi", "label_at": -1,
-      "points": [[27.18, -26.25], [27.12, -26.5], [27.1, -26.71], [27.06, -26.93]] }
+  "_about": "The route maps (Map screen). Two sheets show the same rivers, coast, mountains and peoples, each projected for its own country: 'south' (the Colony to the Vaal, stretched east-west about 2.5 times so that places close together stay readable) and 'north' (Natal and the Far North, stretched about 1.6 times). Places are drawn at their real lat/lon from route.json. River courses, the coast and the mountains are simplified from a modern map by eye [approximate]. 'label_at' is the point a river's name is written beside (-1: no name). Each sheet's 'places' says on which side of its mark each place's name goes, and its 'sea' points close the coast into the sea. Peoples are written softly over their country, with no borders: in 1837 there were no fixed lines.",
+  "sheets": [
+    {
+      "id": "south",
+      "size": [392, 280],
+      "lon": [24.4, 28.6],
+      "lat": [-26.15, -33.9],
+      "sea": [[36.0, -24.2], [36.0, -35.0], [25.95, -35.0]],
+      "places": {
+        "grahamstown": "right",
+        "cradock": "left",
+        "colesberg": "left",
+        "orange_colesberg": "below",
+        "philippolis": "above",
+        "tarka": "right",
+        "stormberg": "right",
+        "buffelsvlei": "right",
+        "caledon_drift": "right",
+        "thaba_nchu": "right",
+        "vet_river": "right",
+        "sand_river": "right",
+        "vaal_drift": "below",
+        "mooi_river": "left"
+      }
+    },
+    {
+      "id": "north",
+      "size": [392, 280],
+      "lon": [26.5, 33.3],
+      "lat": [-22.6, -30.5],
+      "sea": [[36.0, -24.2], [36.0, -35.0], [25.95, -35.0]],
+      "places": {
+        "thaba_nchu": "right",
+        "vet_river": "right",
+        "sand_river": "right",
+        "vaal_drift": "below",
+        "mooi_river": "right",
+        "kerkenberg": "above",
+        "bloukrans": "right",
+        "port_natal": "left",
+        "magaliesberg": "right",
+        "strydpoort": "left",
+        "soutpansberg": "below",
+        "olifants_river": "above",
+        "escarpment": "below",
+        "lowveld": "above",
+        "komati": "left",
+        "delagoa_bay": "left"
+      }
+    }
   ],
-  "coast": [[25.95, -33.9], [26.6, -33.72], [27.13, -33.49], [27.6, -33.22], [27.95, -33.0], [28.6, -32.55]],
+  "rivers": [
+    {
+      "key": "map.river.fish",
+      "label_at": 0,
+      "points": [[25.2, -31.45], [25.62, -32.16], [25.95, -32.6], [26.5, -32.95], [27.13, -33.49]]
+    },
+    {
+      "key": "map.river.orange",
+      "label_at": 9,
+      "points": [
+        [24.4, -29.95],
+        [24.75, -30.25],
+        [25.1, -30.48],
+        [25.45, -30.63],
+        [25.7, -30.58],
+        [25.97, -30.5],
+        [26.3, -30.55],
+        [26.71, -30.69],
+        [27.05, -30.5],
+        [27.45, -30.15],
+        [27.8, -29.95]
+      ]
+    },
+    {
+      "key": "map.river.caledon",
+      "label_at": 4,
+      "points": [
+        [25.97, -30.5],
+        [26.25, -30.25],
+        [26.55, -30.0],
+        [27.04, -29.73],
+        [27.4, -29.4],
+        [27.9, -28.95],
+        [28.3, -28.6]
+      ]
+    },
+    {
+      "key": "map.river.vet",
+      "label_at": 1,
+      "points": [[25.1, -27.95], [25.6, -28.05], [26.1, -28.2], [26.5, -28.32], [27.01, -28.52], [27.6, -28.45]]
+    },
+    {
+      "key": "map.river.sand",
+      "label_at": 0,
+      "points": [[26.5, -28.32], [26.8, -28.2], [27.14, -28.09], [27.8, -28.15]]
+    },
+    {
+      "key": "map.river.vaal",
+      "label_at": 3,
+      "points": [
+        [24.6, -28.35],
+        [25.1, -28.05],
+        [25.6, -27.65],
+        [26.1, -27.45],
+        [26.45, -27.2],
+        [26.7, -27.0],
+        [27.05, -26.93],
+        [27.45, -26.9],
+        [27.85, -26.85],
+        [28.5, -26.85],
+        [29.0, -26.8],
+        [29.6, -26.7]
+      ]
+    },
+    {
+      "key": "map.river.mooi",
+      "label_at": -1,
+      "points": [[27.18, -26.25], [27.12, -26.5], [27.1, -26.71], [27.06, -26.93]]
+    },
+    {
+      "key": "map.river.limpopo",
+      "label_at": 1,
+      "points": [
+        [26.9, -24.2],
+        [27.6, -23.2],
+        [28.5, -22.6],
+        [29.4, -22.2],
+        [30.6, -22.3],
+        [31.3, -22.4],
+        [31.9, -23.0],
+        [32.4, -23.9],
+        [32.9, -24.6],
+        [33.6, -25.2]
+      ]
+    },
+    {
+      "key": "map.river.olifants",
+      "label_at": -1,
+      "points": [
+        [29.0, -25.9],
+        [29.5, -25.3],
+        [29.85, -24.32],
+        [30.3, -24.25],
+        [30.9, -24.1],
+        [31.5, -24.05],
+        [32.1, -24.0],
+        [32.6, -24.1]
+      ]
+    },
+    {
+      "key": "map.river.komati",
+      "label_at": 1,
+      "points": [[30.2, -26.0], [30.9, -25.75], [31.5, -25.5], [32.0, -25.45], [32.2, -25.4], [32.6, -25.6], [32.75, -25.9]]
+    },
+    {
+      "key": "map.river.tugela",
+      "label_at": 2,
+      "points": [[29.0, -28.75], [29.6, -28.75], [30.2, -28.8], [30.8, -28.9], [31.45, -29.23]]
+    }
+  ],
+  "coast": [
+    [25.95, -33.9],
+    [26.6, -33.72],
+    [27.13, -33.49],
+    [27.6, -33.22],
+    [27.95, -33.0],
+    [28.6, -32.55],
+    [29.2, -31.95],
+    [29.9, -31.3],
+    [30.5, -30.6],
+    [31.03, -29.86],
+    [31.5, -29.23],
+    [32.1, -28.8],
+    [32.42, -28.38],
+    [32.6, -27.6],
+    [32.88, -26.9],
+    [32.95, -26.3],
+    [32.62, -26.02],
+    [32.75, -25.7],
+    [33.2, -25.3],
+    [33.6, -25.05],
+    [34.3, -24.75],
+    [35.0, -24.2]
+  ],
   "mountains": [
-    [26.15, -31.38], [26.3, -31.32], [26.45, -31.45], [26.6, -31.35],
-    [27.75, -29.75], [27.95, -29.55], [28.15, -29.3], [28.35, -29.05], [28.0, -29.9], [28.25, -29.65], [28.45, -29.4],
-    [24.55, -31.8], [24.8, -31.9]
+    [26.15, -31.38],
+    [26.3, -31.32],
+    [26.45, -31.45],
+    [26.6, -31.35],
+    [27.75, -29.75],
+    [27.95, -29.55],
+    [28.15, -29.3],
+    [28.35, -29.05],
+    [28.0, -29.9],
+    [28.25, -29.65],
+    [28.45, -29.4],
+    [24.55, -31.8],
+    [24.8, -31.9],
+    [28.95, -28.65],
+    [29.1, -28.95],
+    [29.25, -29.25],
+    [29.4, -29.55],
+    [29.3, -28.4],
+    [30.45, -23.9],
+    [30.55, -24.3],
+    [30.6, -24.75],
+    [30.65, -25.2],
+    [30.55, -25.6],
+    [29.6, -23.0],
+    [30.0, -22.95],
+    [30.4, -22.95],
+    [27.5, -25.75],
+    [27.85, -25.75],
+    [29.2, -24.1],
+    [32.05, -24.7],
+    [32.05, -25.25],
+    [32.1, -25.8]
   ],
   "labels": [
-    { "key": "map.people.colony", "kind": "people", "at": [24.95, -32.75] },
-    { "key": "map.people.xhosa", "kind": "people", "at": [27.95, -32.35] },
-    { "key": "map.people.griqua", "kind": "people", "at": [24.85, -29.6] },
-    { "key": "map.people.barolong", "kind": "people", "at": [26.05, -29.05] },
-    { "key": "map.people.basotho", "kind": "people", "at": [28.0, -30.6] },
-    { "key": "map.people.ndebele", "kind": "people", "at": [25.6, -26.5] },
-    { "key": "map.mountains.stormberg", "kind": "feature", "at": [26.4, -31.05] },
-    { "key": "map.mountains.drakensberg", "kind": "feature", "at": [28.2, -30.15] },
-    { "key": "map.mountains.sneeuberg", "kind": "feature", "at": [24.7, -31.5] },
-    { "key": "map.sea", "kind": "sea", "at": [27.9, -33.6] }
+    {"key": "map.people.colony", "kind": "people", "at": [24.95, -32.75]},
+    {"key": "map.people.xhosa", "kind": "people", "at": [27.95, -32.35]},
+    {"key": "map.people.griqua", "kind": "people", "at": [24.85, -29.6]},
+    {"key": "map.people.barolong", "kind": "people", "at": [26.05, -29.05]},
+    {"key": "map.people.basotho", "kind": "people", "at": [28.0, -30.6]},
+    {"key": "map.people.ndebele", "kind": "people", "at": [25.6, -26.5]},
+    {"key": "map.mountains.stormberg", "kind": "feature", "at": [26.4, -31.05]},
+    {"key": "map.mountains.drakensberg", "kind": "feature", "at": [28.2, -30.15]},
+    {"key": "map.mountains.sneeuberg", "kind": "feature", "at": [24.7, -31.5]},
+    {"key": "map.sea", "kind": "sea", "at": [27.9, -33.6]},
+    {"key": "map.people.venda", "kind": "people", "at": [29.45, -22.85]},
+    {"key": "map.people.pedi", "kind": "people", "at": [29.6, -24.75]},
+    {"key": "map.people.tsonga", "kind": "people", "at": [31.6, -23.2]},
+    {"key": "map.people.zulu", "kind": "people", "at": [31.2, -28.3]},
+    {"key": "map.people.swazi", "kind": "people", "at": [31.4, -26.5]},
+    {"key": "map.people.ndebele", "kind": "people", "at": [27.3, -24.9]},
+    {"key": "map.mountains.lebombo", "kind": "feature", "at": [32.45, -25.0]},
+    {"key": "map.sea", "kind": "sea", "at": [32.6, -29.6]}
   ]
 }

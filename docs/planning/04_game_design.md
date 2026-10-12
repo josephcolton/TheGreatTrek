@@ -327,8 +327,8 @@ The party picks its road at forks, and each road has its own country, towns, eve
 | **Orange drift (western)** | Straight to Thaba Nchu | shortest | |
 | | By **Philippolis** (Griqua) | +~22 mi; Griqua trade and news; a relation-building stop | Philippolis as a Griqua centre |
 | **Thaba Nchu** | North to the Highveld (this game) | | settled route |
-| **Vet River** | *(planned)* East to **Natal** by Kerkenberg | goal: the Bloukrans camps or Port Natal | the Vet River vote for Natal, 6 June 1837 (`06` §2) |
-| **Vaal drift** | *(planned)* **Far North** to the Soutpansberg | goal: the Soutpansberg or Delagoa Bay; fever and the fly | Tregardt (`06` §3) |
+| **Vet River** | East to **Natal** by Kerkenberg | goal: the Bloukrans camps or Port Natal | the Vet River vote for Natal, 6 June 1837 (`06` §2) |
+| **Vaal drift** | **Far North** to the Soutpansberg | goal: the Soutpansberg or Delagoa Bay; fever and the fly | Tregardt (`06` §3) |
 
 **Timelines.** Because news travels by road, the two roads hear different things at different times (e.g. the eastern road meets people who saw Retief's party cross; the western road hears frontier prices and Colesberg gossip). Timed events use `date_gte` / `date_lt` conditions, so a fast party and a slow party meet different news.
 
@@ -337,7 +337,7 @@ Distances (×1.25 of straight line, see `05` §2): western road ≈ 673 mi in to
 ### 5.3 Two map views
 
 1. **Trail strip** (always on the travel screen): a horizontal line of landmarks with the wagon icon moving along it. Shows distance to the next landmark.
-2. **Map screen** (`M`, also from the ending screen): a parchment map of the eastern Cape to the Highveld, with a key beside it.
+2. **Map screen** (`M`, also from the ending screen): a parchment map with a key beside it, on **two sheets**: the Colony to the Vaal, and Natal and the Far North. It opens on the sheet the wagon is on; Tab or the arrow keys show the other. The sea is the coast closed by each sheet's sea corners (`map.json`).
    - Places sit at their real latitude and longitude (`route.json`), projected by `data/map.json`. The map is stretched east to west about 2.5 times so that places close together (Colesberg, the Orange drift, Philippolis) stay readable, and it says so.
    - Rivers drawn and labelled from simplified courses in `map.json`: Great Fish, Orange (Gariep), Caledon, Vet, Sand, Vaal, Mooi. Also the coast and the Indian Ocean, and the Stormberg, Sneeuberg and Drakensberg.
    - Each kind of place has its own mark (town, mission, drift, landmark, journey's end). Places the party has not come near show only a faded mark, with no name. `map.json` `places` says on which side each name goes, so names do not collide.
@@ -761,7 +761,8 @@ typedef struct {
 - Servants (Khoikhoi, formerly enslaved, Mfengu) are **full members** with names and skills. They are paid (wages in coin, livestock or goods) and can **choose to leave** if treated badly or unpaid; when one leaves, the game tells their side of it. Under **Ordinance 50 (1828)** Khoikhoi and other free people of colour no longer had to carry passes **[sourced]**, so leaving was a real option. It did **not** cover Africans (Ordinance 49), so an Mfengu herder had fewer rights, and the game shows that. Wages: about 10 Rds / 15s a month plus food **[sourced]**; underpaying lowers loyalty.
 - **Health conditions** (each with a daily progression and a recovery chance, nursing skill helps):
   - *flux* (dysentery; the Oregon Trail homage, unsourced as a major killer)
-  - *fever* (low on this route; higher on a future Natal/northern route; malaria is the documented killer on Tregardt's route **[sourced]**)
+  - *fever* (low on the Highveld route). **Malaria** is separate: it is never a random illness but is caught from the country, by the region's `fever` rate for the month (`regions.json`): high in the lowveld in the rains (Nov–Apr), low in winter, a trace in the bushveld. The party calls it "the fever"; a death and a grave name it as malaria. Each illness has a `cause.<id>` key for this (the flux dies as dysentery).
+  - *the fly* (nagana): in the lowveld a share of the oxen, cattle and horses dies each day (`regions.json` `fly`), so a party can be stranded, as the Pretorius party was (`06` §3.3).
   - *injury* (wagon accident, fall from horse, snakebite)
   - *exposure* (Highveld frost, wet nights)
   - *exhaustion* (hard pace, poor rations)

@@ -263,6 +263,77 @@ static void test_defend(const GameData *d)
     game_free(b);
 }
 
+/* The Far North: fever is caught in the low country in the rains and hardly at all in the dry
+ * season; the fly kills cattle there; the ending at Delagoa Bay has a history page. */
+static int fever_cases(const GameData *d, int month)
+{
+    int lowveld = -1;
+    for (int e = 0; e < d->edge_count; e++) {
+        if (strcmp(d->regions[d->edges[e].region].id, "lowveld") == 0) {
+            lowveld = e;
+        }
+    }
+    CHECK(lowveld >= 0 && d->illness_fever >= 0);
+    int cases = 0;
+    for (uint64_t seed = 1; seed <= 6; seed++) {
+        Game *g = play(d, seed, data_find_family(d, "grensboer"), 30);
+        g->edge = lowveld;
+        g->node = d->edges[lowveld].from;
+        g->day = cal_day(1838, month, 1);
+        for (int day = 0; day < 20; day++) {
+            g_pass_day(g, false, false);
+            for (int i = 0; i < g->party_count; i++) {
+                for (int c = 0; c < g->party[i].cond_count; c++) {
+                    if (g->party[i].conds[c].illness == d->illness_fever && g->party[i].conds[c].days == 0) {
+                        cases++;
+                    }
+                }
+            }
+        }
+        game_free(g);
+    }
+    return cases;
+}
+
+static void test_far_north(const GameData *d)
+{
+    int wet = fever_cases(d, 2), dry = fever_cases(d, 7);
+    CHECK(wet > 0);
+    CHECK(wet > dry * 3); /* the rains are the fever season */
+
+    /* the fly: cattle die in the low country in the rains */
+    Game *g = play(d, 2, data_find_family(d, "grensboer"), 30);
+    for (int e = 0; e < d->edge_count; e++) {
+        if (strcmp(d->regions[d->edges[e].region].id, "lowveld") == 0) {
+            g->edge = e;
+        }
+    }
+    g->day = cal_day(1838, 2, 1);
+    g->inv[d->item_cows] = 40;
+    for (int day = 0; day < 30; day++) {
+        g_pass_day(g, false, false);
+    }
+    CHECK(g->inv[d->item_cows] < 40);
+    CHECK(game_has_flag(g, "fly_seen"));
+
+    /* the history page belongs to the place the trip ended */
+    LocText lines[MAX_EPILOGUE];
+    CHECK(game_history_epilogue(g, lines, MAX_EPILOGUE) == 0); /* still on the road */
+    g->node = data_find_node(d, "delagoa_bay");
+    g->ending = ENDING_ARRIVED;
+    CHECK(game_history_epilogue(g, lines, MAX_EPILOGUE) >= 4);
+    g->ending = ENDING_STRANDED;
+    CHECK(game_history_epilogue(g, lines, MAX_EPILOGUE) == 0);
+    game_free(g);
+
+    /* every goal place has a history page */
+    static const char *GOALS[] = {"mooi_river", "bloukrans", "port_natal", "soutpansberg", "delagoa_bay"};
+    for (size_t i = 0; i < sizeof GOALS / sizeof GOALS[0]; i++) {
+        int n = data_find_node(d, GOALS[i]);
+        CHECK(n >= 0 && d->nodes[n].epilogue_count > 0);
+    }
+}
+
 static void test_mend(const GameData *d)
 {
     Game *g = NULL;
@@ -353,6 +424,7 @@ int main(void)
     test_wagon_trade(d);
     test_hunt(d);
     test_defend(d);
+    test_far_north(d);
     test_mend(d);
     test_portraits(d);
     for (int f = 0; f < d->family_count; f++) {

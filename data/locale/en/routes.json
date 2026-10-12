@@ -216,6 +216,20 @@
   "history.natal_green": "This is history: in 1834 Piet Uys led 21 people to scout Natal. They came back with good reports of green, well-watered land, and those reports helped start the Great Trek.",
   "history.natal_messengers": "This is history: from November 1837 Retief negotiated with the Zulu king Dingane for land in Natal, while the trekker families waited in the camps below the mountains. The messengers here are invented.",
 
+  "map.sheet.south": "The Colony to the Vaal",
+  "map.sheet.north": "Natal and the Far North",
+  "map.other_sheet": "Tab or the arrow keys: the other map.",
+  "map.river.limpopo": "Limpopo",
+  "map.river.olifants": "Olifants",
+  "map.river.komati": "Komati",
+  "map.river.tugela": "Tugela",
+  "map.people.venda": "Venda",
+  "map.people.pedi": "Pedi",
+  "map.people.tsonga": "Tsonga",
+  "map.people.zulu": "Zulu kingdom",
+  "map.people.swazi": "Swazi",
+  "map.mountains.lebombo": "Lebombo",
+
   "ending.history.title": "What happened next",
   "ending.footer.more": "Enter: what happened next.  M: the map of your road.",
 
@@ -235,7 +249,7 @@
 
   "epilogue.soutpansberg.1": "Your family stopped where Tregardt's people had lived for a year. Tregardt himself went on to the coast.",
   "epilogue.soutpansberg.2": "Tregardt's party reached Delagoa Bay on 13 April 1838, in the fever season. His wife Martha died on 1 May 1838, and he died on 25 October 1838. About half the party died at the bay, most of them of malaria.",
-  "epilogue.soutpansberg.3": "The trekkers came back to the Soutpansberg in 1848, when Potgieter founded a village there (later Schoemansdal). It was abandoned in 1867. The Venda remained.",
+  "epilogue.soutpansberg.3": "The trekkers came back to the Soutpansberg in 1848, when part of Potgieter's trek founded a village there, later called Schoemansdal. It was abandoned in 1867. The Venda remained.",
   "epilogue.far_north.1": "Only 26 of Tregardt's party, most of them children, were still alive when a ship took them to Port Natal in July 1839. The Van Rensburg party, 49 people who had gone ahead toward the coast in 1836, had all been killed.",
   "epilogue.delagoa.1": "Your family reached the bay as Tregardt's did. What happened to his people shows what the fever season meant.",
   "epilogue.delagoa.2": "Four days after they arrived, Tregardt's wife, three children and the old teacher Daniel Pfeffer fell ill. Pfeffer died on 21 April 1838. Martha Tregardt died on 1 May 1838, and Tregardt stopped writing his diary.",

@@ -16,6 +16,7 @@
 #define MAX_MEMBERS 12
 #define MAX_NODES 40
 #define MAX_EPILOGUE 8
+#define MAX_MAPS 2
 #define MAX_EDGES 64
 #define MAX_REGIONS 12
 #define MAX_RIVERS 12
@@ -167,8 +168,8 @@ typedef struct {
     char history_key[KEY_LEN];
     NodeKind kind;
     double lat, lon;
-    float map_x, map_y;         /* on the route map (map.json), from lat/lon */
-    int map_label;              /* MapLabelSide: where the name goes */
+    float map_x[MAX_MAPS], map_y[MAX_MAPS]; /* on each map sheet (map.json), from lat/lon */
+    int map_label[MAX_MAPS];    /* MapLabelSide: where the name goes on each sheet */
     int shop;                   /* -1 if none */
     int river;                  /* -1 if none */
     int setpiece;               /* event index played on first arrival, -1 if none */
@@ -430,10 +431,10 @@ typedef struct {
 } EventDef;
 
 /* ---- the route map (map.json) ---- */
-#define MAP_MAX_LINES 12
-#define MAP_MAX_POINTS 16
-#define MAP_MAX_PEAKS 32
-#define MAP_MAX_LABELS 16
+#define MAP_MAX_LINES 16
+#define MAP_MAX_POINTS 40
+#define MAP_MAX_PEAKS 64
+#define MAP_MAX_LABELS 32
 typedef enum { MAP_LABEL_RIGHT, MAP_LABEL_LEFT, MAP_LABEL_ABOVE, MAP_LABEL_BELOW } MapLabelSide;
 typedef enum { MAP_TEXT_PEOPLE, MAP_TEXT_FEATURE, MAP_TEXT_SEA } MapTextKind;
 
@@ -450,11 +451,14 @@ typedef struct {
     float x, y;
 } MapText;
 
+/* One map sheet: the same rivers, coast and mountains, projected for its own stretch of country. */
 typedef struct {
+    char id[ID_LEN];
+    char title_key[KEY_LEN];        /* map.sheet.<id> */
     float w, h;                     /* map size in screen pixels */
     double lon0, lon1, lat0, lat1;  /* left, right, top, bottom */
     MapLine rivers[MAP_MAX_LINES];  int river_count;
-    MapLine coast;                  /* the sea lies below and right of it */
+    MapLine coast;                  /* the coast, then the sheet's sea corners: the sea polygon */
     float peak_x[MAP_MAX_PEAKS], peak_y[MAP_MAX_PEAKS]; int peak_count;
     MapText texts[MAP_MAX_LABELS];  int text_count;
 } MapData;
@@ -478,7 +482,7 @@ typedef struct GameData {
     BarterPartner partners[MAX_PARTNERS]; int partner_count;
     int contraband[MAX_ITEMS];          int contraband_count;
     HuntRules hunt;
-    MapData map;
+    MapData maps[MAX_MAPS];             int map_count;
     /* well-known item indices, resolved at load */
     int item_oxen, item_water, item_vat, item_meat, item_medicine, item_sheep, item_tallow, item_iron, item_cows, item_biltong;
     int item_gunpowder, item_lead, item_horses, item_percussion, item_caps;
