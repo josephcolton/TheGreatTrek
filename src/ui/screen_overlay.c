@@ -287,9 +287,21 @@ static void map_dotted(App *app, float x0, float y0, float x1, float y1, SDL_Col
 }
 
 /* Text with a ring of paper round it, so it reads over lines and rivers. */
+/* the map sheet's left and right edges on screen: labels are kept inside them */
+static float sheet_left = 0, sheet_right = TREK_LOGICAL_W;
+
 static void map_label(App *app, TTF_Font *f, const char *s, float x, float y, SDL_Color c, TextAlign a)
 {
     Draw *d = &app->draw;
+    float w = (float)text_width(f, s);
+    float left = a == TEXT_RIGHT ? x - w : a == TEXT_CENTER ? x - w / 2 : x;
+    if (x < sheet_left || x > sheet_right) {
+        /* the thing it names is off this sheet: leave the name off too */
+    } else if (left < sheet_left + 2) {
+        x += sheet_left + 2 - left;
+    } else if (left + w > sheet_right - 2) {
+        x -= left + w - (sheet_right - 2);
+    }
     static const float OFF[8][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {1, -1}, {-1, 1}, {1, 1}};
     for (int i = 0; i < 8; i++) {
         draw_text(d, f, s, x + OFF[i][0], y + OFF[i][1], MAP_PAPER, a);
@@ -448,6 +460,8 @@ static void map_render(App *app)
 #define MX(x) (MAP_X + (x))
 #define MY(y) (MAP_Y + (y))
     SDL_FRect paper = {MAP_X, MAP_Y, m->w, m->h};
+    sheet_left = MAP_X;
+    sheet_right = MAP_X + m->w;
     draw_rect(d, (SDL_FRect){paper.x - 2, paper.y - 2, paper.w + 4, paper.h + 4}, MAP_EDGE);
     draw_rect(d, paper, MAP_PAPER);
     SDL_Rect clip = {(int)paper.x, (int)paper.y, (int)paper.w, (int)paper.h};

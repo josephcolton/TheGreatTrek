@@ -234,7 +234,7 @@
     {"key": "map.people.tsonga", "kind": "people", "at": [31.6, -23.2]},
     {"key": "map.people.zulu", "kind": "people", "at": [31.2, -28.3]},
     {"key": "map.people.swazi", "kind": "people", "at": [31.4, -26.5]},
-    {"key": "map.people.ndebele", "kind": "people", "at": [27.3, -24.9]},
+    {"key": "map.people.ndebele", "kind": "people", "at": [27.7, -24.9]},
     {"key": "map.mountains.lebombo", "kind": "feature", "at": [32.45, -25.0]},
     {"key": "map.sea", "kind": "sea", "at": [32.6, -29.6]}
   ]
