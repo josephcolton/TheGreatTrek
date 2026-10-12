@@ -12,6 +12,7 @@
   "journal.paid_in_sheep": "{who} was paid this month's wage in sheep ({n}).",
   "journal.sheep_eaten": "This week the party ate {n} sheep from the flock.",
   "journal.sheep_eaten.one": "This week the party ate a sheep from the flock.",
+  "notice.medicine_by_hand": "You are giving medicine by hand: you can give {who} medicine on the party screen (P).",
   "journal.medicine": "{who} is given medicine for {illness}.",
   "journal.recovered_medicine": "{who} has recovered from {illness}, after {n} doses of medicine.",
   "journal.slaughtered_cow": "With the sheep gone, a cow was slaughtered. Some of the meat was eaten fresh and the rest cut into strips and dried as biltong.",

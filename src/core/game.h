@@ -54,11 +54,8 @@ typedef struct {
     int days;
     int severity;             /* percent: how hard this case hits (60..220) */
     int doses;                /* doses of medicine given for it */
+    bool treated;             /* medicine is being given for it (always, unless given by hand) */
 } MemberCond;
-
-/* Medicine for one person: as the trek option says (automatic unless given by hand only), or the
- * player's own choice for them on the party screen. */
-typedef enum { MED_AS_OPTION, MED_GIVE, MED_KEEP } MedicineChoice;
 
 typedef struct {
     char name[32];
@@ -75,7 +72,6 @@ typedef struct {
     bool alive;
     bool with_party;
     bool warned;              /* Easy: already warned that this member is close to death */
-    MedicineChoice medicine;  /* the player's choice for this person on the party screen */
 } Member;
 
 typedef struct {
@@ -206,7 +202,7 @@ typedef struct Game {
     NightStance stance;
     bool sabbath;
     bool keep_flock;          /* slaughter sheep only when the stores run low, not every few days */
-    bool medicine_by_hand;    /* medicine only to those chosen on the party screen, not to everyone ill */
+    bool medicine_by_hand;    /* medicine given by hand to someone ill, not to everyone who falls ill */
 
     /* party, animals and goods */
     Member party[MAX_PARTY];
@@ -311,12 +307,14 @@ void game_set_orders(Game *g, Pace pace, Rations rations, NightStance stance, bo
 /* Eat the flock (a sheep whenever the fresh meat runs out, as the trekkers did) or keep it and eat
  * the wagon's stores, slaughtering only when they run low. */
 void game_set_keep_flock(Game *g, bool keep);
-/* Whether a member is given medicine when ill (a dose a day while it lasts): the player's choice
- * for them on the party screen, which overrides the trek option. */
-void game_set_medicine(Game *g, int member, bool give);
-bool game_gives_medicine(const Game *g, int member);
-/* The trek option: medicine to everyone who falls ill (the default), or only to those chosen. */
+/* Medicine is given for an illness, a dose a day while it lasts. With the trek option on automatic
+ * (the default) everyone who falls ill gets it; given by hand, the player starts it for someone who
+ * is ill, on the party screen. Nothing is decided in advance for anyone who is well. */
 void game_set_medicine_by_hand(Game *g, bool by_hand);
+/* Starts medicine for every illness a member has now; false if they are not ill or none is left. */
+bool game_give_medicine(Game *g, int member);
+/* Whether a member is ill and being given medicine for it. */
+bool game_medicine_given(const Game *g, int member);
 /* Pounds of food the party eats a day at the present rations. */
 double game_food_need(const Game *g);
 /* Plays one day on the road. Returns true if the party stopped (event, arrival, warning...). */

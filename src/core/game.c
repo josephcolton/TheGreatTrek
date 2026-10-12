@@ -688,22 +688,32 @@ void game_set_keep_flock(Game *g, bool keep)
     g->keep_flock = keep;
 }
 
-void game_set_medicine(Game *g, int member, bool give)
-{
-    if (member >= 0 && member < g->party_count) {
-        g->party[member].medicine = give ? MED_GIVE : MED_KEEP;
-    }
-}
-
-bool game_gives_medicine(const Game *g, int member)
-{
-    const Member *m = &g->party[member];
-    return m->medicine == MED_GIVE || (m->medicine == MED_AS_OPTION && !g->medicine_by_hand);
-}
-
 void game_set_medicine_by_hand(Game *g, bool by_hand)
 {
     g->medicine_by_hand = by_hand;
+}
+
+bool game_give_medicine(Game *g, int member)
+{
+    if (member < 0 || member >= g->party_count || !g_member_active(g, member) || g->inv[g->data->item_medicine] <= 0) {
+        return false;
+    }
+    Member *m = &g->party[member];
+    for (int c = 0; c < m->cond_count; c++) {
+        m->conds[c].treated = true;
+    }
+    return m->cond_count > 0;
+}
+
+bool game_medicine_given(const Game *g, int member)
+{
+    const Member *m = &g->party[member];
+    for (int c = 0; c < m->cond_count; c++) {
+        if (m->conds[c].treated || !g->medicine_by_hand) {
+            return true;
+        }
+    }
+    return false;
 }
 
 /* ---------------------------------------------------------------- settle: what to show next */

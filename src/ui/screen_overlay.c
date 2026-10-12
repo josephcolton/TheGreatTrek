@@ -212,7 +212,6 @@ static void party_render(App *app)
     overlay_panel(app, app_text(app, "party.title"));
     float y = 42;
     static const int HEALTH[] = {80, 60, 40};
-    draw_text(d, d->small, app_text(app, "party.col.medicine"), 604, 24, COL_GOLD, TEXT_RIGHT);
     for (int i = 0; i < g->party_count; i++) {
         const Member *m = &g->party[i];
         party_row_y[i] = y;
@@ -249,11 +248,13 @@ static void party_render(App *app)
             draw_rect(d, (SDL_FRect){30, y - 1, 580, 28}, COL_HILITE_BG);
         }
         portrait_draw(d->r, "face_", m->portrait, 36, y, 1, !m->alive || !m->with_party);
-        if (m->alive && m->with_party) {
-            /* medicine: given when ill (the default), or kept back */
-            bool give = game_gives_medicine(g, i);
-            const char *mk = !give ? "party.medicine.no" : (m->cond_count > 0 ? "party.medicine.giving" : "party.medicine.yes");
-            draw_text(d, d->font, app_text(app, mk), 604, y, !give ? COL_DIM : (m->cond_count > 0 ? COL_GOLD : COL_TEXT), TEXT_RIGHT);
+        if (m->alive && m->with_party && m->cond_count > 0) {
+            /* medicine is for the sick: being given, or (given by hand) offered */
+            bool given = game_medicine_given(g, i);
+            bool none_left = g->inv[app->data->item_medicine] <= 0;
+            const char *mk = given ? "party.medicine.giving" : none_left ? "party.medicine.none" : "party.medicine.give";
+            /* on the second line, under the illness, so a long illness name has room */
+            draw_text(d, d->font, app_text(app, mk), 604, y + d->line_h, given || !none_left ? COL_GOLD : COL_DIM, TEXT_RIGHT);
         }
         snprintf(line, sizeof line, "%s", m->name);
         draw_text(d, d->font, line, 70, y, c, TEXT_LEFT);
@@ -285,14 +286,14 @@ static void party_render(App *app)
     loctext_set(&t, "party.medicine_left");
     loctext_arg_int(&t, "n", g->inv[app->data->item_medicine]);
     draw_text(d, d->font, app_fmt(app, &t), 36, TREK_LOGICAL_H - 50, COL_DIM, TEXT_LEFT);
-    draw_text(d, d->font, app_text(app, "party.footer"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
+    draw_text(d, d->font, app_text(app, g->medicine_by_hand ? "party.footer.by_hand" : "party.footer"), TREK_LOGICAL_W / 2.0f,
+              TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
 }
 
-static void party_toggle(App *app, int i)
+static void party_give(App *app, int i)
 {
     Game *g = app->game;
-    if (i >= 0 && i < g->party_count && g->party[i].alive && g->party[i].with_party) {
-        game_set_medicine(g, i, !game_gives_medicine(g, i));
+    if (i >= 0 && i < g->party_count && !game_medicine_given(g, i) && game_give_medicine(g, i)) {
         app_commit(app);
     }
 }
@@ -306,13 +307,13 @@ static void party_event(App *app, const SDL_Event *e)
         for (int i = 0; i < g->party_count; i++) {
             if (app->my >= party_row_y[i] - 1 && app->my < party_row_y[i + 1] - 1 && app->mx >= 30 && app->mx < 610) {
                 app->sel = i;
-                party_toggle(app, i);
+                party_give(app, i);
                 return;
             }
         }
         close_overlay(app);
     } else if (is_confirm(e) || key_is(e, SDLK_SPACE)) {
-        party_toggle(app, app->sel);
+        party_give(app, app->sel);
     } else if (e->type == SDL_EVENT_KEY_DOWN) {
         close_overlay(app);
     }

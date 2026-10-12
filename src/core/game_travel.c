@@ -328,7 +328,12 @@ void g_add_illness(Game *g, int member, int illness)
     m->conds[m->cond_count].days = 0;
     /* Most cases are mild or middling; about one in five is grave. */
     m->conds[m->cond_count].severity = rng_chance(&g->rng, 0.2) ? rng_range(&g->rng, 150, 220) : rng_range(&g->rng, 60, 140);
+    m->conds[m->cond_count].doses = 0;
+    m->conds[m->cond_count].treated = false;
     m->cond_count++;
+    if (g->medicine_by_hand && g->inv[g->data->item_medicine] > 0) {
+        g_notice_member(g, "notice.medicine_by_hand", member); /* the player gives it from the party screen */
+    }
 }
 
 static void health_day(Game *g, bool travelling, bool had_water)
@@ -369,7 +374,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 if (!travelling) {
                     p += 0.05;
                 }
-                if (g->inv[d->item_medicine] > 0 && game_gives_medicine(g, i)) {
+                if (g->inv[d->item_medicine] > 0 && (m->conds[c].treated || !g->medicine_by_hand)) {
                     g->inv[d->item_medicine]--;
                     p += 0.08;
                     if (m->conds[c].doses++ == 0) {
