@@ -892,6 +892,50 @@ int game_epilogue(const Game *g, LocText *out, int max)
     return n;
 }
 
+int game_days_to(const Game *g, int node)
+{
+    const GameData *d = g->data;
+    if (node < 0 || node >= d->node_count) {
+        return -1;
+    }
+    /* shortest road, counted in days: each road at the pace's miles a day for its terrain and the
+     * wagon, with about three days in ten lost to Sundays, weather, rests and stops */
+    double best[MAX_NODES];
+    bool done[MAX_NODES] = {false};
+    for (int i = 0; i < d->node_count; i++) {
+        best[i] = 1e9;
+    }
+    int from = g->edge >= 0 ? d->edges[g->edge].to : g->node;
+    double per_day = d->rules.miles[g->pace] * d->wagons[g->wagon].speed * 0.7;
+    if (per_day <= 0) {
+        return -1;
+    }
+    best[from] = g->edge >= 0 ? (d->edges[g->edge].miles - g->miles_along) / per_day : 0;
+    for (int round = 0; round < d->node_count; round++) {
+        int u = -1;
+        for (int i = 0; i < d->node_count; i++) {
+            if (!done[i] && best[i] < 1e9 && (u < 0 || best[i] < best[u])) {
+                u = i;
+            }
+        }
+        if (u < 0) {
+            break;
+        }
+        done[u] = true;
+        for (int e = 0; e < d->edge_count; e++) {
+            const EdgeDef *ed = &d->edges[e];
+            if (ed->from != u) {
+                continue;
+            }
+            double days = best[u] + ed->miles / (per_day * ed->terrain_mul) + d->nodes[ed->to].delay_days;
+            if (days < best[ed->to]) {
+                best[ed->to] = days;
+            }
+        }
+    }
+    return best[node] >= 1e9 ? -1 : (int)lround(best[node]);
+}
+
 int game_grave_story(const Game *g, const Grave *gr, LocText *out, int max)
 {
     const GameData *d = g->data;

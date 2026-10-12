@@ -433,6 +433,9 @@ void loctext_arg_date(LocText *t, const char *name, int day);
 /* ---- ending ---- */
 /* Fills out[] with the epilogue lines; returns how many. */
 int game_epilogue(const Game *g, LocText *out, int max);
+/* About how many days on the road from here to a place, at the present pace with Sundays and
+ * stops, and any known hold-ups on the way (route.json delay_days); -1 if it can't be reached. */
+int game_days_to(const Game *g, int node);
 /* Who lies in a grave and why, for the grave screen: who they were, what they died of, and how
  * it came about. Returns the number of lines (at most 3). */
 int game_grave_story(const Game *g, const Grave *gr, LocText *out, int max);

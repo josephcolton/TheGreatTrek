@@ -179,6 +179,7 @@ typedef struct {
     int action_count;
     char epilogue[MAX_EPILOGUE][KEY_LEN]; /* what happened here after the trip ends: the history page */
     int epilogue_count;
+    int delay_days;             /* days a party is usually held up here (a descent); for planning only */
 } NodeDef;
 
 typedef struct {

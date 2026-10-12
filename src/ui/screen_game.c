@@ -554,7 +554,7 @@ static void dialog_render(App *app)
 /* ---------------------------------------------------------------- store */
 
 #define STORE_Y 92.0f
-#define STORE_ROWS 14
+#define STORE_ROWS 13
 
 static void store_event(App *app, const SDL_Event *e)
 {
@@ -681,8 +681,24 @@ static void store_render(App *app)
     loctext_arg_int(&t, "lb", game_food_lb(g));
     loctext_arg_int(&t, "sheep", g->inv[app->data->item_sheep]);
     draw_text(d, d->font, app_fmt(app, &t), 330, by, COL_DIM, TEXT_LEFT);
+    /* the road ahead, to set against the food: about how many days to each journey's end */
+    char plan[400];
+    snprintf(plan, sizeof plan, "%s", app_text(app, "store.plan"));
+    for (int n = 0, shown_ends = 0; n < app->data->node_count; n++) {
+        int days = app->data->nodes[n].epilogue_count > 0 ? game_days_to(g, n) : -1;
+        if (days <= 0) {
+            continue;
+        }
+        LocText p;
+        loctext_set(&p, shown_ends++ ? "store.plan.next" : "store.plan.first");
+        loctext_arg_key(&p, "place", app->data->nodes[n].name_key);
+        loctext_arg_int(&p, "days", days);
+        size_t len = strlen(plan);
+        app_fmt_to(app, &p, plan + len, sizeof plan - len);
+    }
+    draw_wrapped(d, d->small, plan, 20, by + d->line_h, 600, COL_DIM, false);
     if (app->message_timer > 0) {
-        draw_text(d, d->font, app->message, 320, by + d->line_h, COL_RED, TEXT_CENTER);
+        draw_text(d, d->font, app->message, 320, by + d->line_h * 2 + 4, COL_RED, TEXT_CENTER);
     }
     draw_footer(app, app_text(app, "store.footer"));
 }

@@ -82,6 +82,17 @@ static void advice(const Game *g, LocText *t)
 {
     const GameData *d = g->data;
     bool spare = g->inv[d->item_spare[WAGON_PART_WHEELS]] > 0 || g->inv[d->item_spare[WAGON_PART_AXLE]] > 0;
+    /* food enough for the nearest journey's end and a fortnight over */
+    int near_end = -1;
+    for (int n = 0; n < d->node_count; n++) {
+        int days = d->nodes[n].epilogue_count > 0 ? game_days_to(g, n) : -1;
+        if (days > 0 && (near_end < 0 || days < near_end)) {
+            near_end = days;
+        }
+    }
+    if (near_end < 0) {
+        near_end = 46; /* no end ahead to measure by: two months' food in all */
+    }
     bool dry_ahead = false;
     for (int i = 0; i < d->edge_count; i++) {
         if (d->edges[i].water == WATER_DRY && !g->visited[d->edges[i].to]) {
@@ -94,7 +105,7 @@ static void advice(const Game *g, LocText *t)
         loctext_set(t, "advice.spare");
     } else if (dry_ahead && g->inv[d->item_vat] < 3) {
         loctext_set(t, "advice.water");
-    } else if (game_food_days(g) < 60) {
+    } else if (game_food_days(g) < near_end + 14) {
         loctext_set(t, "advice.food");
     } else if (g->inv[d->item_medicine] < 4) {
         loctext_set(t, "advice.medicine");

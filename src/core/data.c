@@ -592,6 +592,7 @@ static void load_route(Loader *L, const char *dir)
         }
         n->setpiece = -1; /* resolved after events load */
         n->price_mul = jnum(o, "price_mul", 1.0);
+        n->delay_days = jint(o, "delay_days", 0);
         const cJSON *ep;
         cJSON_ArrayForEach(ep, jget(o, "epilogue"))
         {
