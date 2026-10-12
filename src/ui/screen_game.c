@@ -469,6 +469,13 @@ static float text_start(App *app, const DialogView *v, const DialogChoices *dc)
     return bottom + SCENE_H <= TREK_LOGICAL_H - 22 ? 26 + SCENE_H : 26;
 }
 
+float dialog_text_bottom(App *app, const DialogView *v)
+{
+    DialogChoices dc;
+    build_choices(app, v, &dc);
+    return choices_bottom(app, &dc, dialog_layout(app, v, false, 26));
+}
+
 static void dialog_event(App *app, const SDL_Event *e)
 {
     Game *g = app->game;

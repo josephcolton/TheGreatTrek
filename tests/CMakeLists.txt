@@ -10,3 +10,9 @@ endforeach()
 # Data files must validate, and the bot must finish games with saves round-tripping.
 add_test(NAME datacheck COMMAND datacheck ${CMAKE_SOURCE_DIR}/data)
 add_test(NAME trekbot COMMAND trekbot --runs 10 --savecheck --data ${CMAKE_SOURCE_DIR}/data)
+
+# Every page of text must fit on the screen (lays them out with the game's fonts, no window shown).
+if(TREK_BUILD_GAME)
+    add_test(NAME text_fits COMMAND TheGreatTrek --check-text WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set_tests_properties(text_fits PROPERTIES ENVIRONMENT "SDL_VIDEO_DRIVER=dummy")
+endif()

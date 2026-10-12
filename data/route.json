@@ -26,7 +26,7 @@
     { "id": "bloukrans", "kind": "landmark", "lat": -28.93, "lon": 29.93, "setpiece": "bloukrans_camps",
       "epilogue": ["epilogue.natal.1", "epilogue.natal.2", "epilogue.natal.3", "epilogue.natal.4", "epilogue.natal.5"] },
     { "id": "port_natal", "kind": "end", "lat": -29.86, "lon": 31.03, "setpiece": "port_natal_arrival",
-      "epilogue": ["epilogue.port_natal.1", "epilogue.port_natal.2", "epilogue.natal.1", "epilogue.port_natal.3", "epilogue.natal.4", "epilogue.port_natal.4"] },
+      "epilogue": ["epilogue.port_natal.1", "epilogue.port_natal.2", "epilogue.natal.1", "epilogue.natal.4", "epilogue.port_natal.4"] },
     { "id": "magaliesberg", "kind": "landmark", "lat": -25.73, "lon": 28.00, "setpiece": "magaliesberg_ndebele" },
     { "id": "strydpoort", "kind": "landmark", "lat": -24.25, "lon": 29.15, "setpiece": "strydpoort_sekwati" },
     { "id": "soutpansberg", "kind": "landmark", "lat": -23.05, "lon": 29.92, "setpiece": "soutpansberg_camp",

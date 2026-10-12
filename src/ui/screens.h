@@ -13,6 +13,11 @@ bool is_back(const SDL_Event *e);       /* Escape */
 bool is_click(const SDL_Event *e);
 /* Up/down arrows move app->sel within [0, n). Returns true if handled. */
 bool nav_updown(App *app, const SDL_Event *e, int n);
+/* Where a dialog's text and choices end, laid out with no scene above (the most room it gets). */
+float dialog_text_bottom(App *app, const DialogView *v);
+/* --check-text: lays out every piece of text the game can show and reports any that runs off
+ * the screen. Returns how many do. */
+int text_check(App *app);
 
 /* shared drawing */
 void draw_header(App *app, const char *left, const char *right);

@@ -1,6 +1,7 @@
 /* The Great Trek: SDL init, main loop, screen dispatch.
  * Testing options:
  *   --screenshot FILE   render a frame to a PNG after any --keys, then exit
+ *   --check-text        lay out every text the game can show; list any that run off the screen
  *   --keys "a b c"      feed key presses first: 1-9, a-z, enter, esc, up, down, left, right,
  *                       space, bksp, "text:Word", "wait:N" (N frames of 1/10 s),
  *                       "move:X,Y" and "click:X,Y" (mouse, in logical 640x360 pixels)
@@ -222,7 +223,11 @@ int main(int argc, char **argv)
 {
     const char *screenshot = NULL, *keys = NULL, *pref = NULL;
     uint64_t seed = 0;
+    bool check_text = false;
     for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--check-text") == 0) {
+            check_text = true;
+        }
         if (strcmp(argv[i], "--screenshot") == 0 && i + 1 < argc) {
             screenshot = argv[++i];
         } else if (strcmp(argv[i], "--keys") == 0 && i + 1 < argc) {
@@ -252,6 +257,11 @@ int main(int argc, char **argv)
         trips_scan(app.pref_path, &app.trips);
     }
     app.test_seed = seed;
+    if (check_text) {
+        int bad = text_check(&app);
+        app_shutdown(&app);
+        return bad ? 1 : 0;
+    }
     if (keys) {
         run_keys(&app, keys);
     }
