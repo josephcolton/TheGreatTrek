@@ -1,11 +1,12 @@
 {
-  "_about": "Rates are invented starting values to be tuned with trekbot (04_game_design.md section 8.5). Fever is low on this route; malaria was the killer on Tregardt's northern route.",
+  "_about": "Rates are invented starting values to be tuned with trekbot (04_game_design.md section 8.5). Fever is low on this route; malaria was the killer on Tregardt's northern route. Malaria (weight 0) is never a random illness: it is caught only from the country, by the regions' fever rates (regions.json). The party calls it the fever; a death names it as malaria.",
   "illnesses": [
     { "id": "flux",      "damage": 6,  "recover": 0.15, "nursing": 0.03, "contagion": 0.04, "min_days": 3, "weight": 3, "child_mul": 1.5 },
     { "id": "fever",     "damage": 5,  "recover": 0.12, "nursing": 0.03, "contagion": 0.02, "min_days": 4, "weight": 2, "child_mul": 1.3 },
     { "id": "chest",     "damage": 4,  "recover": 0.14, "nursing": 0.03, "contagion": 0.03, "min_days": 3, "weight": 2, "child_mul": 1.5 },
     { "id": "exposure",  "damage": 4,  "recover": 0.25, "nursing": 0.04, "contagion": 0.0,  "min_days": 2, "weight": 1, "child_mul": 1.5 },
     { "id": "injury",    "damage": 3,  "recover": 0.20, "nursing": 0.03, "contagion": 0.0,  "min_days": 3, "weight": 3, "child_mul": 1.0, "accident": true },
+    { "id": "malaria",   "damage": 6,  "recover": 0.09, "nursing": 0.02, "contagion": 0.0,  "min_days": 4, "weight": 0, "child_mul": 1.6 },
     { "id": "snakebite", "damage": 14, "recover": 0.40, "nursing": 0.05, "contagion": 0.0,  "min_days": 1, "weight": 1, "child_mul": 1.0, "accident": true }
   ]
 }

@@ -460,6 +460,12 @@ static void load_regions(Loader *L, const char *dir)
             const cJSON *v = cJSON_GetArrayItem(gr, m);
             r->grazing[m] = cJSON_IsNumber(v) ? v->valueint : 6;
         }
+        const cJSON *fever = jget(o, "fever"), *fly = jget(o, "fly");
+        for (int m = 0; m < 12; m++) {
+            const cJSON *v = cJSON_GetArrayItem(fever, m), *f = cJSON_GetArrayItem(fly, m);
+            r->fever[m] = cJSON_IsNumber(v) ? v->valuedouble : 0;
+            r->fly[m] = cJSON_IsNumber(f) ? f->valuedouble : 0;
+        }
         const cJSON *we = jget(o, "weather");
         for (int s = 0; s < SEASON_COUNT; s++) {
             const cJSON *arr = jget(we, SEASON_IDS[s]);
@@ -586,6 +592,13 @@ static void load_route(Loader *L, const char *dir)
         }
         n->setpiece = -1; /* resolved after events load */
         n->price_mul = jnum(o, "price_mul", 1.0);
+        const cJSON *ep;
+        cJSON_ArrayForEach(ep, jget(o, "epilogue"))
+        {
+            if (n->epilogue_count < MAX_EPILOGUE && cJSON_IsString(ep)) {
+                copy_str(n->epilogue[n->epilogue_count++], KEY_LEN, ep->valuestring);
+            }
+        }
     }
     const cJSON *terrain = jget(root, "terrain");
     cJSON_ArrayForEach(o, jget(root, "edges"))
@@ -1267,6 +1280,12 @@ static bool parse_effect(Loader *L, const cJSON *o, Effect *e, const char *ctx)
         if (e->a >= 0 && d->animals[e->a].raid_max <= 0) {
             fail(L, "%s: animal \"%s\" has no raid in animals.json", ctx, s);
         }
+    } else if (strcmp(k, "wait_until") == 0) {
+        /* "MM-DD": the party stays where it is until that date comes round */
+        e->type = EFF_WAIT_UNTIL;
+        if (!s || sscanf(s, "%d-%d", &e->a, &e->amount) != 2 || e->a < 1 || e->a > 12 || e->amount < 1 || e->amount > 31) {
+            fail(L, "%s: wait_until must be \"MM-DD\"", ctx);
+        }
     } else if (strcmp(k, "wagon") == 0) {
         e->type = EFF_WAGON; /* trade the wagon in for this one; its parts are new */
         e->a = need_index(L, data_find_wagon(d, s), "wagon", s, ctx);
@@ -1549,6 +1568,7 @@ static void load_events(Loader *L, const char *dir)
 
 static void resolve_known(Loader *L)
 {
+    L->d->illness_fever = data_find_illness(L->d, "malaria");
     GameData *d = L->d;
     L->file = "items.json";
     d->item_oxen = need_index(L, data_find_item(d, "oxen"), "item", "oxen", "required items");
@@ -1664,6 +1684,11 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
     }
     for (int i = 0; i < d->region_count; i++) {
         fn(d->regions[i].name_key, d->regions[i].id, ctx);
+    }
+    for (int i = 0; i < d->node_count; i++) {
+        for (int k = 0; k < d->nodes[i].epilogue_count; k++) {
+            fn(d->nodes[i].epilogue[k], d->nodes[i].id, ctx);
+        }
     }
     for (int i = 0; i < d->river_count; i++) {
         fn(d->rivers[i].name_key, d->rivers[i].id, ctx);

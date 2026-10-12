@@ -199,6 +199,7 @@ bool app_init(App *app)
 
 void app_close_game(App *app)
 {
+    app->ending_page = 0;
     game_free(app->game);
     app->game = NULL;
     app->travelling = false;

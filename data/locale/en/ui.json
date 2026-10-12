@@ -180,7 +180,7 @@
   "grave.footer": "Type, then Enter. You may leave it blank.",
 
   "ending.none": "The trek goes on.",
-  "ending.arrived": "The {family} family reached the Mooi River on {date}, after {days} days and {miles} miles.",
+  "ending.arrived": "The {family} family reached {place} on {date}, after {days} days and {miles} miles.",
   "ending.settled": "The {family} family settled before the end of the road.",
   "ending.turned_back": "The {family} family turned back to the Colony.",
   "ending.stranded": "The {family} family could go no further. Without oxen, the wagon stayed where it stood, and the trek ended on {date}.",

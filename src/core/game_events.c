@@ -474,6 +474,19 @@ static void apply_effect(Game *g, const Effect *e)
         g->ending = (EndingKind)e->amount;
         break;
     case EFF_DEFEND: game_defend_start(g, e->a); break;
+    case EFF_WAIT_UNTIL: {
+        /* the next time that date comes round, at most a year */
+        int y, mo, md;
+        cal_date(g->day, &y, &mo, &md);
+        int until = cal_day(y, e->a, e->amount);
+        if (until <= g->day) {
+            until = cal_day(y + 1, e->a, e->amount);
+        }
+        for (int day = g->day; day < until && g->ending == ENDING_NONE; day++) {
+            g_pass_day(g, false, false);
+        }
+        break;
+    }
     case EFF_SMITH_QUOTE:
     case EFF_SMITH_REPAIR: {
         int cost = g_smith_cost(g);

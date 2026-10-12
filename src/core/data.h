@@ -15,11 +15,12 @@
 #define MAX_FAMILIES 12
 #define MAX_MEMBERS 12
 #define MAX_NODES 40
+#define MAX_EPILOGUE 8
 #define MAX_EDGES 64
 #define MAX_REGIONS 12
 #define MAX_RIVERS 12
 #define MAX_SHOPS 24
-#define MAX_GROUPS 12
+#define MAX_GROUPS 16
 #define MAX_ILLNESSES 12
 #define MAX_SHOCKS 16
 #define MAX_WAGONS 6
@@ -146,6 +147,8 @@ typedef struct {
     double weather[SEASON_COUNT][WEATHER_COUNT];  /* weights */
     double event_mul;
     double water_find;                            /* chance a dry day still finds water */
+    double fever[12];   /* by month: chance a day that each person catches the fever (malaria) here */
+    double fly[12];     /* by month: share of the oxen, cattle and horses that die of the fly (nagana) a day */
 } RegionDef;
 
 typedef struct {
@@ -173,6 +176,8 @@ typedef struct {
     int action_event[3];        /* extra things to do here (talk, settle, turn back) */
     char action_label[3][KEY_LEN];
     int action_count;
+    char epilogue[MAX_EPILOGUE][KEY_LEN]; /* what happened here after the trip ends: the history page */
+    int epilogue_count;
 } NodeDef;
 
 typedef struct {
@@ -355,7 +360,7 @@ typedef enum {
     EFF_ITEM, EFF_MONEY, EFF_OX_STAMINA, EFF_WAGON_DAMAGE, EFF_HEALTH, EFF_ILLNESS,
     EFF_MORALE, EFF_LOYALTY, EFF_RELATION, EFF_FLAG, EFF_CLEAR_FLAG, EFF_COUNTER,
     EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING, EFF_WAGON, EFF_SMITH_REPAIR, EFF_SMITH_QUOTE,
-    EFF_DEFEND,
+    EFF_DEFEND, EFF_WAIT_UNTIL,
     EFF_COUNT
 } EffectType;
 
@@ -479,6 +484,7 @@ typedef struct GameData {
     int item_gunpowder, item_lead, item_horses, item_percussion, item_caps;
     int item_spare[WAGON_PART_COUNT];
     int group_trekkers;
+    int illness_fever;      /* "malaria", caught from the country (regions' fever), -1 if none */
 } GameData;
 
 /* Loads every data file under data_dir. Returns NULL and fills err on failure.

@@ -63,6 +63,7 @@ static const char *CODE_KEYS[] = {
     "landmark.barter", "barter.reply.empty", "barter.reply.insult", "barter.reply.short", "barter.reply.generous",
     "barter.reply.done", "barter.reply.powder", "journal.barter", "journal.barter_powder",
     "river.trouble.person_alone",
+    "notice.fever", "notice.fly", "journal.fly", "ending.history.title", "ending.footer.more",
     "defend.title", "defend.status.lost", "defend.status.night", "defend.footer", "defend.start", "defend.appears",
     "defend.appears_pack", "defend.took", "defend.dropped", "defend.killed", "defend.wounded", "defend.scared",
     "defend.give_up", "defend.quiet", "defend.dawn", "defend.summary.result", "defend.summary.nothing",

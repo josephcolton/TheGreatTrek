@@ -9,6 +9,11 @@
     { "id": "griqua",              "start": { "dutch": 0,   "english": 5 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.6 },
     { "id": "basotho",             "start": { "dutch": 0,   "english": 0 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.6 },
     { "id": "ndebele",             "start": { "dutch": 0,   "english": 0 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.6 },
-    { "id": "smouse",              "start": { "dutch": 10,  "english": 10 },  "price_mul": { "dutch": 1.15, "english": 1.1 },  "sell_spread": 0.4 }
+    { "id": "smouse",              "start": { "dutch": 10,  "english": 10 },  "price_mul": { "dutch": 1.15, "english": 1.1 },  "sell_spread": 0.4 },
+    { "id": "pedi",                "start": { "dutch": 0,   "english": 0 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.6 },
+    { "id": "venda",               "start": { "dutch": 0,   "english": 0 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.6 },
+    { "id": "tsonga",              "start": { "dutch": 0,   "english": 0 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.6 },
+    { "id": "portuguese",          "start": { "dutch": 0,   "english": 0 },   "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.5 },
+    { "id": "port_natal_traders",  "start": { "dutch": 5,   "english": 20 },  "price_mul": { "dutch": 1.0,  "english": 0.95 }, "sell_spread": 0.5 }
   ]
 }

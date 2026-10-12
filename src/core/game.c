@@ -818,6 +818,7 @@ int game_epilogue(const Game *g, LocText *out, int max)
         loctext_arg_date(t, "date", g->day);
         loctext_arg_int(t, "days", g->day - g->start_day);
         loctext_arg_int(t, "miles", g->miles_total);
+        loctext_arg_key(t, "place", d->nodes[g->node].name_key);
     }
     int with = game_member_count_with_party(g);
     if ((t = ADD("ending.survivors")) != NULL) {
@@ -857,6 +858,19 @@ int game_epilogue(const Game *g, LocText *out, int max)
         loctext_arg_int(t, "n", game_score(g));
     }
 #undef ADD
+    return n;
+}
+
+int game_history_epilogue(const Game *g, LocText *out, int max)
+{
+    if (g->ending != ENDING_ARRIVED && g->ending != ENDING_SETTLED) {
+        return 0;
+    }
+    const NodeDef *nd = &g->data->nodes[g->node];
+    int n = 0;
+    for (int k = 0; k < nd->epilogue_count && n < max; k++) {
+        loctext_set(&out[n++], nd->epilogue[k]);
+    }
     return n;
 }
 

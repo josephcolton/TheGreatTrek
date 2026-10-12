@@ -1,0 +1,254 @@
+{
+  "_about": "The Natal and Far North roads (06_research_routes.md): set pieces at each new place, the goals a party may stop at, and road events. The families' own doings are invented; the places, dates, people and dangers are sourced as each event says.",
+  "events": [
+    {
+      "id": "vet_river_council", "setpiece": true,
+      "history": "history.vet_river_council",
+      "sources": ["The nine Vet River articles were adopted at the Little Vet River on 6 June 1837 by a meeting of 140 men, which chose Port Natal and Natal as the trekkers' goal (LitNet, 'We the Reformed members ... in the nine Vet River articles of 1837'). Potgieter opposed going to Natal and stayed on the Highveld (Wikipedia: Hendrik Potgieter). 06_research_routes.md section 2. The family's part is invented."],
+      "text": "event.vet_river_council.body",
+      "choices": [
+        { "text": "event.vet_river_council.natal",
+          "outcomes": [ { "text": "event.vet_river_council.natal.done", "effects": [ { "flag": "heard_vet_council" } ] } ] },
+        { "text": "event.vet_river_council.north",
+          "outcomes": [ { "text": "event.vet_river_council.north.done", "effects": [ { "flag": "heard_vet_council" } ] } ] },
+        { "text": "event.vet_river_council.leave",
+          "outcomes": [ { "text": "event.vet_river_council.leave.done" } ] }
+      ]
+    },
+    {
+      "id": "kerkenberg_camp", "setpiece": true,
+      "history": "history.place.kerkenberg",
+      "sources": ["Retief camped with 54 wagons at Kerkenberg on 5 Oct 1837; the trekkers stayed from mid-October to mid-November and sent parties to find ways down the escarpment (Wikipedia: Piet Retief; Wikipedia: Kerkenberg). Bantjes brought word on 2 Nov 1837 that they could come down into Natal (Wikipedia: Piet Retief). How the wagons went down is not sourced (06_research_routes.md section 4.1); the outcomes here are invented."],
+      "text": "event.kerkenberg_camp.body",
+      "choices": [
+        { "text": "event.kerkenberg_camp.wait",
+          "outcomes": [ { "text": "event.kerkenberg_camp.wait.done", "effects": [ { "time_days": 8 }, { "ox_stamina": -5 } ] } ] },
+        { "text": "event.kerkenberg_camp.together", "requires": [ { "any": [ { "side": "dutch" }, { "relation_gte": ["trekkers", 20] } ] } ], "locked": "lock.not_trusted",
+          "outcomes": [ { "text": "event.kerkenberg_camp.together.done", "effects": [ { "time_days": 4 }, { "ox_stamina": -10 }, { "relation": "trekkers", "add": 3 } ] } ] },
+        { "text": "event.kerkenberg_camp.now",
+          "outcomes": [
+            { "weight": 55, "skill": "voorloper", "per_point": 5, "text": "event.kerkenberg_camp.now.ok", "effects": [ { "ox_stamina": -15 }, { "wagon_damage": "wheels", "amount": 20 } ] },
+            { "weight": 45, "text": "event.kerkenberg_camp.now.bad", "effects": [ { "ox_stamina": -20 }, { "wagon_damage": "axle", "amount": 45 }, { "health": -15, "who": "random" }, { "time_days": 2 } ] } ] }
+      ]
+    },
+    {
+      "id": "bloukrans_camps", "setpiece": true,
+      "history": "history.place.bloukrans",
+      "sources": ["The main body came down into Natal in November 1837 and spread out in small camps along the Bloukrans and Bushman's (Mtshezi) rivers, waiting while Retief went to see Dingane (Wikipedia: Weenen massacre; Wikipedia: Piet Retief; 06_research_routes.md section 4.1). Stopping here is the game's goal 1 for the Natal road."],
+      "text": "event.bloukrans_camps.body",
+      "choices": [
+        { "text": "event.bloukrans_camps.stay",
+          "outcomes": [ { "text": "event.bloukrans_camps.stay.done", "effects": [ { "morale": 8 }, { "ending": "arrived" } ] } ] },
+        { "text": "event.bloukrans_camps.go",
+          "outcomes": [ { "text": "event.bloukrans_camps.go.done" } ] }
+      ]
+    },
+    {
+      "id": "port_natal_arrival", "setpiece": true,
+      "history": "history.place.port_natal",
+      "sources": ["Port Natal: about 50 English settlers and traders in 1835; Allen Gardiner's mission on the hill above the bay; the American Board mission (Adams, Grout, Champion) from 1836; the traders welcomed Retief's party on 19 Oct 1837 (Wikipedia: Colony of Natal; SAHO Durban timeline) - 06_research_routes.md section 4.1. The family's arrival is invented."],
+      "text": "event.port_natal_arrival.body",
+      "choices": [
+        { "text": "event.port_natal_arrival.outspan",
+          "outcomes": [ { "text": "event.port_natal_arrival.outspan.done", "effects": [ { "morale": 10 }, { "relation": "port_natal_traders", "add": 5 } ] } ] }
+      ]
+    },
+    {
+      "id": "magaliesberg_ndebele", "setpiece": true,
+      "history": "history.place.magaliesberg",
+      "sources": ["Mzilikazi's Ndebele held the country north of the Vaal in 1837; after Mosega (17 Jan 1837) they were in the Marico until the trekker commando of Nov 1837 drove them north (05_research_pass2.md section 3; Britannica, Marico). Harris (1839) visited Mzilikazi in 1836 and hunted in the 'Cashan Mountains', the Magaliesberg [recall, verify]. The meeting is invented."],
+      "text": "event.magaliesberg_ndebele.body",
+      "choices": [
+        { "text": "event.magaliesberg_ndebele.gift", "requires": [ { "item_gte": ["beads", 4] } ], "locked": "lock.need_beads",
+          "outcomes": [ { "text": "event.magaliesberg_ndebele.gift.done", "effects": [ { "item": "beads", "add": -4 }, { "relation": "ndebele", "add": 8 } ] } ] },
+        { "text": "event.magaliesberg_ndebele.watch",
+          "outcomes": [ { "text": "event.magaliesberg_ndebele.watch.done", "effects": [ { "morale": -3 }, { "ox_stamina": -5 } ] } ] }
+      ]
+    },
+    {
+      "id": "strydpoort_sekwati", "setpiece": true,
+      "history": "history.place.strydpoort",
+      "sources": ["Tregardt's diary calls the Strydpoort 'the poort of Sekwati' (Preller, Dagboek van Louis Trichardt, intro p. LXXXV); Sekwati led the Pedi in these years (06_research_routes.md section 3.4). The family's visit is invented."],
+      "text": "event.strydpoort_sekwati.body",
+      "choices": [
+        { "text": "event.strydpoort_sekwati.gift", "requires": [ { "item_gte": ["beads", 3] } ], "locked": "lock.need_beads",
+          "outcomes": [ { "text": "event.strydpoort_sekwati.gift.done", "effects": [ { "item": "beads", "add": -3 }, { "relation": "pedi", "add": 8 } ] } ] },
+        { "text": "event.strydpoort_sekwati.ask",
+          "outcomes": [ { "text": "event.strydpoort_sekwati.ask.done", "effects": [ { "flag": "heard_of_tregardt" } ] } ] },
+        { "text": "event.strydpoort_sekwati.go",
+          "outcomes": [ { "text": "event.strydpoort_sekwati.go.done" } ] }
+      ]
+    },
+    {
+      "id": "soutpansberg_camp", "setpiece": true,
+      "history": "history.place.soutpansberg",
+      "sources": ["Tregardt waited at the Soutpansberg for more than a year, with houses, a smithy, gardens and a school of 21 children under Daniel Pfeffer; Portuguese soldiers came to guide him in August 1837 and he left for Delagoa Bay on 23 Aug 1837 (Preller, intro pp. LXXVII-LXXXV; Wikipedia: Louis Tregardt). Tsonga traders came up from the coast in the winter (Preller p. LXXXII). Ramabulana of the Venda gave Tregardt land (Wikipedia: Soutpansberg; dates conflict). 06_research_routes.md section 3. Stopping here is the game's goal 1 for the Far North; waiting for the dry season follows the traders' practice."],
+      "nodes": [
+        { "id": "start", "text": "event.soutpansberg_camp.body",
+          "choices": [
+            { "text": "event.soutpansberg_camp.visit", "requires": [ { "date_lt": "1837-08-23" } ], "locked": "lock.tregardt_gone",
+              "outcomes": [ { "text": "event.soutpansberg_camp.visit.done", "next": "goal", "effects": [ { "flag": "met_tregardt" } ] } ] },
+            { "text": "event.soutpansberg_camp.empty", "requires": [ { "date_gte": "1837-08-23" } ], "locked": "lock.tregardt_here",
+              "outcomes": [ { "text": "event.soutpansberg_camp.empty.done", "next": "goal" } ] }
+          ] },
+        { "id": "goal", "text": "event.soutpansberg_camp.goal",
+          "choices": [
+            { "text": "event.soutpansberg_camp.stay",
+              "outcomes": [ { "text": "event.soutpansberg_camp.stay.done", "effects": [ { "morale": 6 }, { "ending": "arrived" } ] } ] },
+            { "text": "event.soutpansberg_camp.wait", "requires": [ { "not": { "month": 4 } }, { "not": { "month": 5 } }, { "not": { "month": 6 } }, { "not": { "month": 7 } }, { "not": { "month": 8 } } ], "locked": "lock.dry_season_now",
+              "outcomes": [ { "text": "event.soutpansberg_camp.wait.done", "effects": [ { "item": "maize", "add": 900 }, { "item": "sheep", "add": 10 }, { "wait_until": "04-20" }, { "flag": "waited_dry_season" } ] } ] },
+            { "text": "event.soutpansberg_camp.go",
+              "outcomes": [ { "text": "event.soutpansberg_camp.go.done" } ] }
+          ] }
+      ]
+    },
+    {
+      "id": "talk_soutpansberg", "setpiece": true, "once": false,
+      "history": "history.place.soutpansberg",
+      "sources": ["Tsonga ('Magwamba') traders crossed the lowveld to Delagoa Bay in the winter; Tregardt warned the Pretorius party not to go down into the low country, and fever and the fly nearly destroyed them; Gert Scheepers died of the fever (Preller, intro pp. LXXXI-LXXXII); the Van Rensburg party was killed on the way to the coast in mid-1836 (Wikipedia: Louis Tregardt; details conflict). 06_research_routes.md sections 3.1-3.3. The conversations are invented."],
+      "text": "event.talk_soutpansberg.body",
+      "choices": [
+        { "text": "event.talk_soutpansberg.traders",
+          "outcomes": [ { "text": "event.talk_soutpansberg.traders.done", "effects": [ { "flag": "heard_dry_season" }, { "relation": "tsonga", "add": 2 } ] } ] },
+        { "text": "event.talk_soutpansberg.pretorius",
+          "outcomes": [ { "text": "event.talk_soutpansberg.pretorius.done" } ] },
+        { "text": "event.talk_soutpansberg.rensburg",
+          "outcomes": [ { "text": "event.talk_soutpansberg.rensburg.done" } ] },
+        { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
+      "id": "olifants_warning", "setpiece": true,
+      "history": "history.olifants_warning",
+      "sources": ["Sekwati warned Tregardt that the mountains were impassable for wagons; Tregardt did not believe him and went down the Olifants River, crossing it again and again, reaching it on 2 Oct 1837 (Preller, intro pp. LXXXV-LXXXVI). 06_research_routes.md section 3.2. The messenger scene is invented."],
+      "text": "event.olifants_warning.body",
+      "choices": [
+        { "text": "event.olifants_warning.thank", "requires": [ { "item_gte": ["tobacco", 2] } ], "locked": "lock.need_tobacco",
+          "outcomes": [ { "text": "event.olifants_warning.thank.done", "effects": [ { "item": "tobacco", "add": -2 }, { "relation": "pedi", "add": 5 } ] } ] },
+        { "text": "event.olifants_warning.go",
+          "outcomes": [ { "text": "event.olifants_warning.go.done" } ] }
+      ]
+    },
+    {
+      "id": "escarpment_descent", "setpiece": true,
+      "history": "history.escarpment_descent",
+      "sources": ["Tregardt's party made a road down the Drakensberg escarpment from 8 Nov 1837 to 25 Jan 1838, two months and eighteen days, in heavy rain and mist; the men nearly gave up and talked of leaving the wagons, and the women objected; on steep slopes the back wheels were taken off and tied on a sledge, and the rear oxen were tied to the front axle; going up took 18 oxen to a wagon; Jan Pretorius took his wagons apart and carried them down piece by piece (Preller, intro pp. LXXXVI-LXXXVIII, from the diary and Carolus Trichardt). 06_research_routes.md section 3.2. The times and losses here are estimates scaled from that."],
+      "nodes": [
+        { "id": "start", "text": "event.escarpment_descent.body",
+          "choices": [
+            { "text": "event.escarpment_descent.road",
+              "outcomes": [
+                { "weight": 50, "text": "event.escarpment_descent.road.done",
+                  "effects": [ { "time_days": 40 }, { "ox_stamina": -30 }, { "item": "oxen", "add": -2 }, { "health": -8, "who": "all" }, { "wagon_damage": "wheels", "amount": 25 } ] },
+                { "weight": 50, "text": "event.escarpment_descent.road.long",
+                  "effects": [ { "time_days": 60 }, { "ox_stamina": -40 }, { "item": "oxen", "add": -3 }, { "item": "cows", "add": -2 }, { "health": -12, "who": "all" }, { "wagon_damage": "wheels", "amount": 35 } ] } ] },
+            { "text": "event.escarpment_descent.apart",
+              "outcomes": [ { "text": "event.escarpment_descent.apart.done",
+                              "effects": [ { "time_days": 25 }, { "ox_stamina": -20 }, { "health": -10, "who": "all" }, { "wagon_damage": "axle", "amount": 35 }, { "wagon_damage": "dissel", "amount": 30 }, { "wagon_damage": "tent", "amount": 40 } ] } ] },
+            { "text": "event.escarpment_descent.scout",
+              "outcomes": [ { "text": "event.escarpment_descent.scout.done", "next": "start", "effects": [ { "time_days": 7 } ] } ] }
+          ] }
+      ]
+    },
+    {
+      "id": "lowveld_fly", "setpiece": true,
+      "history": "history.lowveld_fly",
+      "sources": ["In the lowveld in Feb-Mar 1838, 'the unhealthiest months of the year', Tregardt's cattle died of the 'bos-siekte' (the fly); friendly local people helped them through; their oxen were weak from the cold of the mountains (Preller, intro pp. LXXXVIII-LXXXIX). 'Fly-disease' struck the pioneers' herds in the north in 1836, the first record of tsetse there (Kappmeier et al. 1998). 06_research_routes.md sections 3.2 and 6. The choices are invented."],
+      "text": "event.lowveld_fly.body",
+      "choices": [
+        { "text": "event.lowveld_fly.guide", "requires": [ { "item_gte": ["beads", 2] } ], "locked": "lock.need_beads",
+          "outcomes": [ { "text": "event.lowveld_fly.guide.done", "effects": [ { "item": "beads", "add": -2 }, { "relation": "tsonga", "add": 6 }, { "distance": 8 } ] } ] },
+        { "text": "event.lowveld_fly.push",
+          "outcomes": [ { "text": "event.lowveld_fly.push.done", "effects": [ { "ox_stamina": -15 }, { "distance": 10 } ] } ] },
+        { "text": "event.lowveld_fly.rest",
+          "outcomes": [ { "text": "event.lowveld_fly.rest.done", "effects": [ { "time_days": 2 }, { "ox_stamina": 10 } ] } ] }
+      ]
+    },
+    {
+      "id": "komati_portuguese", "setpiece": true,
+      "history": "history.komati_portuguese",
+      "sources": ["At the Komati a Portuguese officer from the fort came to meet Tregardt's party; their ivory and heavy goods went down the river by boat while the wagons struggled on with weak oxen (Preller, intro p. LXXXIX). 06_research_routes.md section 3.2. The family's choice is invented."],
+      "text": "event.komati_portuguese.body",
+      "choices": [
+        { "text": "event.komati_portuguese.boat",
+          "outcomes": [ { "text": "event.komati_portuguese.boat.done", "effects": [ { "ox_stamina": 15 }, { "relation": "portuguese", "add": 5 } ] } ] },
+        { "text": "event.komati_portuguese.together",
+          "outcomes": [ { "text": "event.komati_portuguese.together.done", "effects": [ { "relation": "portuguese", "add": 3 } ] } ] }
+      ]
+    },
+    {
+      "id": "delagoa_arrival", "setpiece": true,
+      "history": "history.place.delagoa_bay",
+      "sources": ["Tregardt's party reached Lourenco Marques at 3 pm on 13 Apr 1838 with seven wagons: a small earth fort on a sand ridge by a swamp; their salute was not answered; the commandant who had sent for them had died, and Capt. Antonio Gamitto received them kindly but had their guns kept in the fort (Preller, intro pp. LXXXIX-XC). 06_research_routes.md section 3.2. The family's arrival is invented."],
+      "text": "event.delagoa_arrival.body",
+      "choices": [
+        { "text": "event.delagoa_arrival.guns",
+          "outcomes": [ { "text": "event.delagoa_arrival.guns.done", "effects": [ { "relation": "portuguese", "add": 5 } ] } ] },
+        { "text": "event.delagoa_arrival.argue",
+          "outcomes": [ { "text": "event.delagoa_arrival.argue.done", "effects": [ { "relation": "portuguese", "add": -5 } ] } ] }
+      ]
+    },
+
+    {
+      "id": "tsonga_traders_road", "regions": ["bushveld"], "weight": 6, "once": true,
+      "history": "history.tsonga_traders",
+      "sources": ["Tsonga ('Magwamba') traders came up from Delagoa Bay across the lowveld in the dry winter with trade goods, and later guided the way (Preller, intro pp. LXXIX, LXXXII). The meeting is invented."],
+      "text": "event.tsonga_traders_road.body",
+      "choices": [
+        { "text": "event.tsonga_traders_road.trade", "requires": [ { "item_gte": ["tobacco", 3] } ], "locked": "lock.need_tobacco",
+          "outcomes": [ { "text": "event.tsonga_traders_road.trade.done", "effects": [ { "item": "tobacco", "add": -3 }, { "item": "cloth", "add": 2 }, { "relation": "tsonga", "add": 4 } ] } ] },
+        { "text": "event.tsonga_traders_road.ask",
+          "outcomes": [ { "text": "event.tsonga_traders_road.ask.done", "effects": [ { "flag": "heard_dry_season" } ] } ] }
+      ]
+    },
+    {
+      "id": "far_north_lead", "regions": ["bushveld", "lowveld"], "weight": 4, "once": true,
+      "requires": [ { "item_gte": ["lead", 1] } ],
+      "history": "history.far_north_lead",
+      "sources": ["By 1837-38 Tregardt's party had about one keg of powder left and melted tin and copper for bullets (Preller, intro p. LXXXIV). The family's version is invented."],
+      "text": "event.far_north_lead.body",
+      "choices": [
+        { "text": "event.far_north_lead.melt", "requires": [ { "item_gte": ["iron", 1] } ], "locked": "lock.no_iron",
+          "outcomes": [ { "text": "event.far_north_lead.melt.done", "effects": [ { "item": "iron", "add": -1 }, { "item": "lead", "add": 2 } ] } ] },
+        { "text": "event.far_north_lead.save",
+          "outcomes": [ { "text": "event.far_north_lead.save.done", "effects": [ { "morale": -2 } ] } ] }
+      ]
+    },
+    {
+      "id": "fever_low_country", "regions": ["lowveld"], "weight": 8, "once": true,
+      "history": "history.fever",
+      "sources": ["People then called malaria 'the fever' (koors) and blamed the low country, the swamps and the rains; the mosquito was not linked to it until 1897 [recall, verify]. Owen wrote in 1838 that the Trichardts' fever was 'a consequence of the climate' and that nobody at the bay knew medicine (Preller, intro p. XCII). The scene is invented."],
+      "text": "event.fever_low_country.body",
+      "choices": [
+        { "text": "event.fever_low_country.high",
+          "outcomes": [ { "text": "event.fever_low_country.high.done", "effects": [ { "time_days": 0.5 } ] } ] },
+        { "text": "event.fever_low_country.on",
+          "outcomes": [ { "text": "event.fever_low_country.on.done" } ] }
+      ]
+    },
+    {
+      "id": "natal_green", "regions": ["natal"], "weight": 6, "once": true,
+      "history": "history.natal_green",
+      "sources": ["The 1834 Kommissietrek under Piet Uys came back with favourable reports of Natal that helped start the Trek (Wikipedia: Piet Uys); Retief called Natal a land worth settling (06_research_routes.md section 4.2). The scene is invented."],
+      "text": "event.natal_green.body",
+      "choices": [
+        { "text": "event.natal_green.rest",
+          "outcomes": [ { "text": "event.natal_green.rest.done", "effects": [ { "time_days": 1 }, { "ox_stamina": 15 }, { "morale": 5 } ] } ] },
+        { "text": "event.natal_green.on",
+          "outcomes": [ { "text": "event.natal_green.on.done", "effects": [ { "morale": 3 } ] } ] }
+      ]
+    },
+    {
+      "id": "natal_messengers", "regions": ["natal"], "weight": 5, "once": true,
+      "history": "history.natal_messengers",
+      "sources": ["Retief negotiated with the Zulu king Dingane for land in Natal from November 1837 (Wikipedia: Piet Retief); the trekker families waited in the camps below the mountains for the outcome (06_research_routes.md section 4.1). The passing messengers are invented."],
+      "text": "event.natal_messengers.body",
+      "choices": [
+        { "text": "event.natal_messengers.greet",
+          "outcomes": [ { "text": "event.natal_messengers.greet.done" } ] },
+        { "text": "event.natal_messengers.watch",
+          "outcomes": [ { "text": "event.natal_messengers.watch.done", "effects": [ { "morale": -2 } ] } ] }
+      ]
+    }
+  ]
+}

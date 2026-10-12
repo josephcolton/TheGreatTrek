@@ -406,6 +406,22 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 g_notice(g, &t);
             }
         }
+        /* The fever is caught from the country, in the low country in the rains (regions.json). */
+        const RegionDef *rg = &d->regions[g_current_region(g)];
+        double fever = rg->fever[cal_month(g->day) - 1] * harm;
+        if (fever > 0 && d->illness_fever >= 0 && rng_chance(&g->rng, fever * (m->age == AGE_CHILD ? 1.2 : 1.0))) {
+            bool has = false;
+            for (int c = 0; c < m->cond_count; c++) {
+                has = has || m->conds[c].illness == d->illness_fever;
+            }
+            if (!has && m->cond_count < MAX_MEMBER_CONDS) {
+                g_add_illness(g, i, d->illness_fever);
+                LocText t;
+                loctext_set(&t, "notice.fever");
+                loctext_arg_person(&t, "who", m);
+                g_notice(g, &t);
+            }
+        }
         if (travelling && rng_chance(&g->rng, r->accident_per_day * harm)) {
             int il = pick_illness(g, true);
             if (il >= 0) {
@@ -529,10 +545,44 @@ static bool fire_scheduled(Game *g)
     return false;
 }
 
+/* The fly: in tsetse country the oxen, cattle and horses sicken and die over the weeks (nagana). */
+static void fly_day(Game *g)
+{
+    const GameData *d = g->data;
+    double share = d->regions[g_current_region(g)].fly[cal_month(g->day) - 1] * g_harm(g);
+    if (share <= 0) {
+        return;
+    }
+    const int kinds[] = {d->item_oxen, d->item_cows, d->item_horses};
+    for (size_t k = 0; k < sizeof kinds / sizeof kinds[0]; k++) {
+        int item = kinds[k];
+        int died = 0;
+        for (int n = 0; n < g->inv[item]; n++) {
+            died += rng_chance(&g->rng, share) ? 1 : 0;
+        }
+        if (died == 0) {
+            continue;
+        }
+        g_add_item(g, item, -died);
+        LocText t;
+        bool first = !game_has_flag(g, "fly_seen");
+        loctext_set(&t, first ? "notice.fly" : "journal.fly");
+        loctext_arg_int(&t, "n", died);
+        loctext_arg_key(&t, "item", d->items[item].name_key);
+        if (first) {
+            g_set_flag(g, "fly_seen");
+            g_notice(g, &t);
+        } else {
+            game_journal(g, &t);
+        }
+    }
+}
+
 void g_pass_day(Game *g, bool travelling, bool allow_events)
 {
     const Rules *r = &g->data->rules;
     roll_weather(g);
+    fly_day(g);
     /* Game slowly comes back to country the party has hunted. */
     for (int r = 0; r < g->data->region_count; r++) {
         if (g->region_game[r] < 1.0) {

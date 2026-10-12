@@ -4,6 +4,8 @@
     { "id": "orange",  "depth": [6,7,7,5,3.5,3,2.5,2.5,2.5,3,4,5],       "spread": 1.5, "ford_max": 3.5, "float_min": 4.0 },
     { "id": "caledon", "depth": [4,5,5,3.5,2.5,2,1.5,1.5,1.5,2,3,3.5],    "spread": 1.0, "ford_max": 3.0, "float_min": 3.5 },
     { "id": "vet",     "depth": [3,3.5,3.5,2.5,1.5,1,1,1,1,1.5,2,2.5],    "spread": 0.8, "ford_max": 3.0, "float_min": 3.5 },
-    { "id": "vaal",    "depth": [5,6,6,4,3,2.5,2,2,2,2.5,3.5,4.5],        "spread": 1.2, "ford_max": 3.5, "float_min": 4.0 }
+    { "id": "vaal",    "depth": [5,6,6,4,3,2.5,2,2,2,2.5,3.5,4.5],        "spread": 1.2, "ford_max": 3.5, "float_min": 4.0 },
+    { "id": "olifants", "depth": [4.5,5,5,3.5,2.5,2,1.5,1.5,1.5,2,3,4],    "spread": 1.0, "ford_max": 3.0, "float_min": 3.5 },
+    { "id": "komati",  "depth": [6,7,7,5,3,2.5,2,2,2,2.5,4,5],            "spread": 1.2, "ford_max": 3.5, "float_min": 4.0 }
   ]
 }

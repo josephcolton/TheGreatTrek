@@ -13,6 +13,15 @@
       "offers": { "maize": [720, 0.6], "oxen": [4, 760], "sheep": [20, 50] } },
     { "id": "trekkers_sand_river", "group": "trekkers", "node": "sand_river", "fairness": 1.0,
       "wants": { "coffee": 18, "sugar": 10, "tobacco": 12, "cloth": 260, "gunpowder": 48, "lead": 9 },
-      "offers": { "oxen": [6, 900], "sheep": [20, 60], "biltong": [100, 4], "beskuit": [60, 4] } }
+      "offers": { "oxen": [6, 900], "sheep": [20, 60], "biltong": [100, 4], "beskuit": [60, 4] } },
+    { "id": "pedi_strydpoort", "group": "pedi", "node": "strydpoort", "fairness": 0.95,
+      "wants": { "beads": 16, "cloth": 280, "iron": 8, "tobacco": 10, "gunpowder": 300 },
+      "offers": { "sheep": [30, 45], "maize": [360, 0.6], "meat": [60, 2] } },
+    { "id": "venda_soutpansberg", "group": "venda", "node": "soutpansberg", "fairness": 0.95,
+      "wants": { "beads": 16, "cloth": 300, "iron": 8, "gunpowder": 300 },
+      "offers": { "cows": [6, 600], "sheep": [30, 45], "maize": [540, 0.6], "meat": [60, 2] } },
+    { "id": "tsonga_lowveld", "group": "tsonga", "node": "lowveld", "fairness": 0.9,
+      "wants": { "beads": 18, "cloth": 300, "iron": 9, "tobacco": 10 },
+      "offers": { "maize": [360, 0.7], "meat": [80, 2] } }
   ]
 }

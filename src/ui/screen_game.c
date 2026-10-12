@@ -752,6 +752,12 @@ static void ending_event(App *app, const SDL_Event *e)
         return;
     }
     if (is_confirm(e) || is_back(e) || is_click(e)) {
+        /* page 0 is the family's story; page 1, if there is one, what happened at that place afterwards */
+        LocText lines[MAX_EPILOGUE];
+        if (app->ending_page == 0 && !is_back(e) && game_history_epilogue(app->game, lines, MAX_EPILOGUE) > 0) {
+            app->ending_page = 1;
+            return;
+        }
         app_close_game(app);
         trips_scan(app->pref_path, &app->trips);
         app_switch(app, SCR_TITLE);
@@ -764,12 +770,23 @@ static void ending_render(App *app)
     Game *g = app->game;
     header_for_game(app);
     LocText lines[40];
+    LocText history[MAX_EPILOGUE];
+    int nh = game_history_epilogue(g, history, MAX_EPILOGUE);
+    if (app->ending_page == 1 && nh > 0) {
+        float y = 28;
+        y += draw_wrapped(d, d->font, app_text(app, "ending.history.title"), 24, y, 592, COL_GOLD, false) + 6;
+        for (int i = 0; i < nh && y < TREK_LOGICAL_H - 30; i++) {
+            y += draw_wrapped(d, d->font, app_fmt(app, &history[i]), 24, y, 592, COL_TEXT, false) + 5;
+        }
+        draw_footer(app, app_text(app, "ending.footer"));
+        return;
+    }
     int n = game_epilogue(g, lines, 40);
     float y = 28;
     for (int i = 0; i < n && y < TREK_LOGICAL_H - 30; i++) {
         y += draw_wrapped(d, d->font, app_fmt(app, &lines[i]), 24, y, 592, i == 0 ? COL_GOLD : COL_TEXT, false) + 4;
     }
-    draw_footer(app, app_text(app, "ending.footer"));
+    draw_footer(app, app_text(app, nh > 0 ? "ending.footer.more" : "ending.footer"));
 }
 
 /* ---------------------------------------------------------------- dispatch */
@@ -883,6 +900,9 @@ void game_screen_render(App *app)
     Game *g = app->game;
     if (!g) {
         return;
+    }
+    if (game_phase(g) != PHASE_ENDED) {
+        app->ending_page = 0;
     }
     switch (game_phase(g)) {
     case PHASE_TRAVEL: travel_render(app); break;

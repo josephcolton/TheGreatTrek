@@ -431,6 +431,9 @@ void loctext_arg_date(LocText *t, const char *name, int day);
 /* ---- ending ---- */
 /* Fills out[] with the epilogue lines; returns how many. */
 int game_epilogue(const Game *g, LocText *out, int max);
+/* What happened at the place the trip ended, after the family arrived (route.json epilogue): the
+ * history page after the ending. 0 lines if the trip did not end at a place with one. */
+int game_history_epilogue(const Game *g, LocText *out, int max);
 /* Probability of each outcome of a choice in the current event (for the "show odds" setting).
  * Returns the number of outcomes written, 0 if not an event choice. */
 int game_choice_odds(const Game *g, int choice, double *out, int max);

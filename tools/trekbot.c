@@ -1,5 +1,6 @@
 /* trekbot: plays many headless games to check that runs finish and to tune balance.
  * Usage: trekbot [--runs N] [--seed S] [--family ID|all] [--policy random|cautious|reckless]
+ *                [--goal mooi|natal|port_natal|soutpansberg|delagoa|delagoa_dry]  (the road taken and where to stop)
  *                [--difficulty easy|normal|hard] [--data DIR] [--verbose] [--savecheck]
  *                [--dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark|landmark:ID|night|speaker]  (save one game at that moment)
  * Prints arrival rate, days taken, deaths and causes, and events never seen. */
@@ -24,7 +25,57 @@ typedef struct {
     int cause_counts[32];
     char cause_keys[32][KEY_LEN];
     int cause_n;
+    int ended_at[MAX_NODES]; /* arrivals by the place the trip ended */
 } Stats;
+
+/* --goal: the road the bot takes and where it stops (mooi, natal, port_natal, soutpansberg, delagoa,
+ * delagoa_dry); NULL = half the runs take each road at every fork. */
+static const char *bot_goal = NULL;
+
+static bool goal_is(const char *g)
+{
+    return bot_goal && strcmp(bot_goal, g) == 0;
+}
+
+/* The road toward the goal at a fork: the edge whose route flag the goal wants, or -1. */
+static int goal_road(const Game *g, const DialogView *v)
+{
+    static const char *const MOOI[] = {"highveld_road", "mooi_road", NULL};
+    static const char *const NATAL[] = {"natal_road", NULL};
+    static const char *const NORTH[] = {"highveld_road", "far_north", NULL};
+    const char *const *want = goal_is("mooi") ? MOOI : (goal_is("natal") || goal_is("port_natal")) ? NATAL : NORTH;
+    int choice = 0;
+    for (int e = 0; e < g->data->edge_count; e++) {
+        if (g->data->edges[e].from != g->node) {
+            continue;
+        }
+        for (int k = 0; want[k]; k++) {
+            if (choice < v->choice_count && strcmp(g->data->edges[e].route_flag, want[k]) == 0) {
+                return choice;
+            }
+        }
+        choice++;
+    }
+    return -1;
+}
+
+/* A goal's stop-or-go-on question: the choice the goal wants, or -1 if this isn't one. */
+static int goal_stop(const DialogView *v)
+{
+    for (int i = 0; i < v->choice_count; i++) {
+        const char *k = v->choices[i].text.key;
+        if (strcmp(k, "event.bloukrans_camps.stay") == 0) {
+            return goal_is("natal") ? i : i + 1;
+        }
+        if (strcmp(k, "event.soutpansberg_camp.stay") == 0) {
+            if (goal_is("soutpansberg")) {
+                return i;
+            }
+            return goal_is("delagoa_dry") && v->choices[i + 1].enabled ? i + 1 : i + 2;
+        }
+    }
+    return -1;
+}
 
 static void count_cause(Stats *s, const char *key)
 {
@@ -66,8 +117,19 @@ static void outfit(Game *g, Policy policy)
             game_store_buy(g, item, 1);
         }
     }
-    if ((item = data_find_item(d, "meal")) >= 0 && game_food_days(g) < 110) {
-        game_store_buy(g, item, 2);
+    /* The far north is months past the last store: carry more food, powder and lead to hunt, and
+     * beads to trade, as a careful player would after the warnings. */
+    bool far = bot_goal && (goal_is("soutpansberg") || strncmp(bot_goal, "delagoa", 7) == 0);
+    if ((item = data_find_item(d, "meal")) >= 0 && game_food_days(g) < (far ? 200 : 110)) {
+        game_store_buy(g, item, far ? 4 : 2);
+    }
+    if (far) {
+        static const char *const KEEP[][2] = {{"gunpowder", "6"}, {"lead", "10"}, {"beads", "10"}};
+        for (size_t k = 0; k < sizeof KEEP / sizeof KEEP[0]; k++) {
+            if ((item = data_find_item(d, KEEP[k][0])) >= 0 && g->inv[item] < atoi(KEEP[k][1])) {
+                game_store_buy(g, item, 1);
+            }
+        }
     }
 }
 
@@ -100,7 +162,11 @@ static int pick_choice(Game *g, const DialogView *v, Policy policy, TrekRng *bot
         return 3;
     }
     if (v->kind == DLG_ROUTE) {
-        return enabled[(g->seed / 2) % (uint64_t)n]; /* half the runs take each road */
+        int road = bot_goal ? goal_road(g, v) : -1;
+        return road >= 0 ? road : enabled[(g->seed / 2) % (uint64_t)n]; /* half the runs take each road */
+    }
+    if (bot_goal && goal_stop(v) >= 0) {
+        return goal_stop(v);
     }
     if (v->kind == DLG_STRANDED) {
         if (v->choices[2].enabled) {
@@ -280,13 +346,18 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
             game_travel(g, policy == POLICY_RECKLESS ? 30 : 7);
             break;
         case PHASE_BARTER: {
-            /* Offer beads and tobacco for oxen if the span is short, then leave. */
+            /* Offer beads and tobacco for oxen if the span is short, and for grain or sheep if food
+             * is running low on a long road, then leave. */
             BarterView bv;
             game_barter_view(g, &bv);
-            if (g->inv[d->item_oxen] < d->wagons[g->wagon].full_span) {
+            bool want_oxen = g->inv[d->item_oxen] < d->wagons[g->wagon].full_span;
+            bool want_food = game_food_days(g) < 60;
+            if (want_oxen || want_food) {
                 for (int r = 0; r < bv.take_count; r++) {
-                    if (bv.take[r].item == d->item_oxen) {
-                        game_barter_adjust(g, true, r, 1);
+                    int item = bv.take[r].item;
+                    if ((want_oxen && item == d->item_oxen) ||
+                        (want_food && (item == data_find_item(d, "maize") || item == d->item_sheep))) {
+                        game_barter_adjust(g, true, r, item == d->item_oxen ? 1 : 2);
                     }
                 }
                 for (int r = 0; r < bv.give_count; r++) {
@@ -353,6 +424,7 @@ static int play(const GameData *d, const Locale *loc, uint64_t seed, int family,
     st->runs++;
     st->ended[g->ending]++;
     if (g->ending == ENDING_ARRIVED) {
+        st->ended_at[g->node]++;
         st->arrived++;
         st->days += days;
         if (days < st->min_days || st->min_days == 0) {
@@ -418,6 +490,8 @@ int main(int argc, char **argv)
             diff = strcmp(p, "easy") == 0 ? DIFF_EASY : strcmp(p, "hard") == 0 ? DIFF_HARD : DIFF_NORMAL;
         } else if (strcmp(a, "--verbose") == 0) {
             verbose = true;
+        } else if (strcmp(a, "--goal") == 0 && next) {
+            bot_goal = argv[++i];
         } else if (strcmp(a, "--savecheck") == 0) {
             savecheck = true;
         } else if (strcmp(a, "--dump") == 0 && next) {
@@ -458,6 +532,13 @@ int main(int argc, char **argv)
                st.arrived ? st.days / st.arrived : 0, st.min_days, st.max_days,
                st.runs ? (double)st.deaths / st.runs : 0, st.runs ? (double)st.survivors / st.runs : 0);
         printf("  endings: stranded %d lost %d\n", st.ended[ENDING_STRANDED], st.ended[ENDING_LOST]);
+        printf("           arrived at:");
+        for (int n = 0; n < d->node_count; n++) {
+            if (st.ended_at[n]) {
+                printf(" %s=%d", d->nodes[n].id, st.ended_at[n]);
+            }
+        }
+        printf("\n");
         if (st.cause_n) {
             printf("           causes:");
             for (int i = 0; i < st.cause_n; i++) {

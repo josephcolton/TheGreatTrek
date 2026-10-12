@@ -19,6 +19,8 @@
     { "id": "thaba_nchu_mission", "group": "missionaries", "keeper": "shop.thaba_nchu.keeper",
       "stock": { "oxen": 6, "sheep": 20, "maize": 10, "meal": 3, "coffee": 10, "sugar": 10, "medicine": 20 } },
     { "id": "sand_river_laager", "group": "trekkers", "keeper": "shop.sand_river.keeper",
-      "stock": { "oxen": 8, "sheep": 30, "biltong": 10, "beskuit": 6, "meal": 4, "gunpowder": 8, "lead": 15, "spare_wheel": 1 } }
+      "stock": { "oxen": 8, "sheep": 30, "biltong": 10, "beskuit": 6, "meal": 4, "gunpowder": 8, "lead": 15, "spare_wheel": 1 } },
+    { "id": "kerkenberg_laager", "group": "trekkers", "keeper": "shop.kerkenberg.keeper",
+      "stock": { "oxen": 6, "sheep": 20, "biltong": 8, "meal": 3, "gunpowder": 6, "lead": 10, "tallow": 4 } }
   ]
 }
