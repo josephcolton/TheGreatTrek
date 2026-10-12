@@ -269,6 +269,65 @@ void g_event_view(const Game *g, DialogView *v)
 
 /* ---------------------------------------------------------------- effects */
 
+/* Passes a long stretch of days in one go (weeks of road-making, waiting out the rains) and says
+ * on the result page what happened in them, rather than a notice for each illness and loss. */
+static void pass_days_summarised(Game *g, int days)
+{
+    const GameData *d = g->data;
+    int start = g->day, notices = g->notice_count, graves = g->grave_count;
+    const int kinds[] = {d->item_oxen, d->item_cows, d->item_horses, d->item_sheep};
+    enum { KINDS = sizeof kinds / sizeof kinds[0] };
+    int before[KINDS];
+    for (int k = 0; k < KINDS; k++) {
+        before[k] = g->inv[kinds[k]];
+    }
+    for (int i = 0; i < days && g->ending == ENDING_NONE; i++) {
+        g_pass_day(g, false, false);
+    }
+    if (days < 3) {
+        return; /* a day or two: the notices say it well enough */
+    }
+    /* keep only the warnings that still matter; the rest is told below */
+    int kept = notices;
+    for (int i = notices; i < g->notice_count; i++) {
+        if (strcmp(g->notices[i].key, "notice.food_low") == 0 || strcmp(g->notices[i].key, "notice.water_low") == 0) {
+            g->notices[kept++] = g->notices[i];
+        }
+    }
+    g->notice_count = kept;
+    LocText t;
+    loctext_set(&t, "summary.days");
+    loctext_arg_int(&t, "n", g->day - start);
+    g_add_result(g, &t);
+    int ill = 0, recovered = 0;
+    for (int j = g->journal_count - 1; j >= 0 && g->journal[j].day >= start; j--) {
+        const char *k = g->journal[j].text.key;
+        ill += strcmp(k, "notice.fell_ill") == 0 || strcmp(k, "notice.fever") == 0 || strcmp(k, "notice.accident") == 0;
+        recovered += strcmp(k, "journal.recovered") == 0;
+    }
+    if (ill > 0) {
+        loctext_set(&t, "summary.ill");
+        loctext_arg_int(&t, "n", ill);
+        loctext_arg_int(&t, "recovered", recovered);
+        g_add_result(g, &t);
+    }
+    for (int i = graves; i < g->grave_count; i++) {
+        loctext_set(&t, "summary.died");
+        loctext_arg_person(&t, "who", &g->party[g->graves[i].member]);
+        loctext_arg_key(&t, "cause", g->graves[i].cause_key);
+        g_add_result(g, &t);
+    }
+    for (int k = 0; k < KINDS; k++) {
+        int lost = before[k] - g->inv[kinds[k]];
+        if (lost > 0) {
+            loctext_set(&t, "summary.lost");
+            loctext_arg_int(&t, "n", lost);
+            loctext_arg_key(&t, "item", d->items[kinds[k]].name_key);
+            g_add_result(g, &t);
+        }
+    }
+}
+
 void g_add_result(Game *g, const LocText *t)
 {
     if (g->dlg.result_count < MAX_RESULT_LINES) {
@@ -422,9 +481,7 @@ static void apply_effect(Game *g, const Effect *e)
     case EFF_COUNTER: g_add_counter(g, e->str, e->amount); break;
     case EFF_TIME_DAYS: {
         int whole = (int)floor(e->famount);
-        for (int i = 0; i < whole; i++) {
-            g_pass_day(g, false, false);
-        }
+        pass_days_summarised(g, whole);
         double frac = e->famount - whole;
         if (frac > 0) {
             g_move_along(g, -frac * d->rules.miles[g->pace]);
@@ -472,9 +529,7 @@ static void apply_effect(Game *g, const Effect *e)
         if (until <= g->day) {
             until = cal_day(y + 1, e->a, e->amount);
         }
-        for (int day = g->day; day < until && g->ending == ENDING_NONE; day++) {
-            g_pass_day(g, false, false);
-        }
+        pass_days_summarised(g, until - g->day);
         break;
     }
     case EFF_SMITH_QUOTE:

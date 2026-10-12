@@ -63,6 +63,10 @@
   "result.died": "{who} did not survive.",
 
   "cause.unknown": "unknown causes",
+  "summary.days": "{n} days go by.",
+  "summary.ill": "In that time there were {n} cases of illness or injury in the party, and {recovered} recovered.",
+  "summary.died": "{who} died of {cause}.",
+  "summary.lost": "{n} of the {item} were slaughtered for food, died or strayed.",
   "cause.hardship": "hunger and hardship",
   "cause.accident": "an accident",
   "cause.drowned": "drowning",
