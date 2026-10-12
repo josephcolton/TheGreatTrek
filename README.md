@@ -6,6 +6,19 @@ Written in C with SDL3. Licensed under the GNU GPL v3 (see `LICENSE`).
 
 **Status:** playable from start to finish, still being tested and balanced. See `docs/planning/` for the design and the historical research.
 
+![The title screen: a wagon and span crossing the highveld among thorn trees](docs/screenshots/title.png)
+
+| | |
+|---|---|
+| ![Choosing a family](docs/screenshots/family.png) | ![Outfitting at a Grahamstown store](docs/screenshots/store.png) |
+| Choose one of five families on each side, each with its own story. | Outfit the wagon in Grahamstown at 1837 prices. |
+| ![Cradock](docs/screenshots/cradock.png) | ![On the road](docs/screenshots/road.png) |
+| Towns on the road: trade, mend the wagon, go to church. | On the road, the people in your party meet trouble and decide. |
+| ![The Orange River drift](docs/screenshots/river.png) | ![Hunting](docs/screenshots/hunt.png) |
+| Cross the rivers: ford, float the wagon, or wait for the water to drop. | Hunt for meat on the veld. |
+| ![Night camp](docs/screenshots/night.png) | ![The map](docs/screenshots/map.png) |
+| Nights in camp, and losing the oxen. | The map of the road travelled, from the Colony to the Vaal. |
+
 ## Playing
 
 Pick a side and one of seven fictional families, read how they came to be in Grahamstown, name your party, and set out in April 1837. On the road you choose the pace, the rations and how to keep watch at night; you buy supplies in the colonial towns, barter beyond the Orange River, hunt, cross rivers, and decide what to do when things go wrong. The trip saves itself after every step, and there is one save per trip, so what happens on the road stays happened.
@@ -56,5 +69,7 @@ Options: `-DTREK_USE_SYSTEM_SDL=ON` to use SDL3 packages already installed on yo
 `tools/package.sh` builds a Release and packs a zip with the game, its data, the licence and the credits into `dist/`. On Windows, if [Inno Setup](https://jrsoftware.org/isinfo.php) 6 is installed (`winget install JRSoftware.InnoSetup`), it also builds the installer from `packaging/windows/TheGreatTrek.iss`.
 
 The icon (an ox wagon on Karoo brown) is drawn by `tools/make_icon.py` into `assets/icon/`: `icon.ico` is built into the Windows exe and can be used by an installer, and `icon.png` is the window icon. On Linux, `packaging/linux/thegreattrek.desktop` is a desktop launcher: set `Exec=` to the full path of `TheGreatTrek`, copy it to `~/.local/share/applications/`, and copy `assets/icon/icon.png` to `~/.local/share/icons/hicolor/256x256/apps/thegreattrek.png`.
+
+`tools/screenshots.sh build` retakes the screenshots above.
 
 Tools: `datacheck` checks the data files and text, and `trekbot` plays hundreds of games to check balance (`trekbot --runs 200`).

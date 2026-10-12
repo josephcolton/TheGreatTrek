@@ -251,21 +251,9 @@ int main(int argc, char **argv)
     }
 
     App app;
-    if (!app_init(&app)) {
+    if (!app_init(&app, pref)) { /* --pref: a folder for saves and settings instead of the user's own */
         app_shutdown(&app);
         return 1;
-    }
-    if (pref) {
-        free(app.pref_path);
-        size_t n = strlen(pref);
-        app.pref_path = malloc(n + 2);
-        memcpy(app.pref_path, pref, n + 1);
-        if (n > 0 && pref[n - 1] != '/' && pref[n - 1] != '\\') {
-            app.pref_path[n] = '/';
-            app.pref_path[n + 1] = '\0';
-        }
-        SDL_CreateDirectory(app.pref_path);
-        trips_scan(app.pref_path, &app.trips);
     }
     app.test_seed = seed;
     if (check_text) {

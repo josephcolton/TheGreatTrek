@@ -20,6 +20,9 @@ typedef enum {
 void scene_draw(App *app, SDL_FRect rect, SceneKind kind, int region, bool moving);
 /* Sky, clouds and two lines of hills down to the horizon, dimmed by light (1 = full day). */
 void scene_backdrop(App *app, SDL_FRect r, float horizon, int region, float light);
+/* The title screen's picture: the highveld with thorn trees, and a wagon and span going by.
+ * Needs no game. */
+void scene_title(App *app, SDL_FRect r);
 /* The colour of the ground in a region. */
 SDL_Color scene_ground(const App *app, int region);
 /* The scene that fits the game's current dialog or place. */

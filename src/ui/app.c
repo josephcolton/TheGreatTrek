@@ -133,7 +133,7 @@ const char *app_random_name(App *app, Side side, bool servant, Pronoun pronoun)
 
 /* ---------------------------------------------------------------- init */
 
-bool app_init(App *app)
+bool app_init(App *app, const char *pref_override)
 {
     SDL_zerop(app);
     app->edit_member = -1;
@@ -148,9 +148,18 @@ bool app_init(App *app)
     }
     const char *base = SDL_GetBasePath();
     app->base_path = util_strdup(base ? base : "./");
-    char *pref = SDL_GetPrefPath("TheGreatTrek", "TheGreatTrek");
-    app->pref_path = util_strdup(pref ? pref : "./");
-    SDL_free(pref);
+    if (pref_override) {
+        /* tests keep their saves, settings and scores out of the player's own folder */
+        size_t n = strlen(pref_override);
+        bool slash = n > 0 && (pref_override[n - 1] == '/' || pref_override[n - 1] == '\\');
+        app->pref_path = malloc(n + 2);
+        snprintf(app->pref_path, n + 2, "%s%s", pref_override, slash ? "" : "/");
+        SDL_CreateDirectory(app->pref_path);
+    } else {
+        char *pref = SDL_GetPrefPath("TheGreatTrek", "TheGreatTrek");
+        app->pref_path = util_strdup(pref ? pref : "./");
+        SDL_free(pref);
+    }
     app->data_dir = util_path_join(app->base_path, "data");
 
     char err[512] = "";

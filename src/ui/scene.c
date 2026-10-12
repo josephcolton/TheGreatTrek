@@ -111,10 +111,8 @@ static void sky(Draw *d, SDL_FRect r, float horizon, SDL_Color top, bool night)
     }
 }
 
-static void clouds(Draw *d, SDL_FRect r, const Game *g, double t)
+static void cloud_row(Draw *d, SDL_FRect r, int n, bool grey, double t)
 {
-    bool grey = g->weather == WEATHER_RAIN || g->weather == WEATHER_STORM;
-    int n = grey ? 7 : (g->weather == WEATHER_CLEAR || g->weather == WEATHER_HOT ? 2 : 4);
     SDL_Color c = grey ? (SDL_Color){120, 124, 132, 230} : (SDL_Color){244, 242, 236, 220};
     for (int i = 0; i < n; i++) {
         float w = 30.0f + (i * 37) % 40;
@@ -124,6 +122,12 @@ static void clouds(Draw *d, SDL_FRect r, const Game *g, double t)
         draw_rect(d, (SDL_FRect){r.x + x + w * 0.15f, y + 1, w * 0.45f, 4}, c);
         draw_rect(d, (SDL_FRect){r.x + x + w * 0.45f, y, w * 0.35f, 5}, c);
     }
+}
+
+static void clouds(Draw *d, SDL_FRect r, const Game *g, double t)
+{
+    bool grey = g->weather == WEATHER_RAIN || g->weather == WEATHER_STORM;
+    cloud_row(d, r, grey ? 7 : (g->weather == WEATHER_CLEAR || g->weather == WEATHER_HOT ? 2 : 4), grey, t);
 }
 
 static void rain(Draw *d, SDL_FRect r, bool storm, double t)
@@ -225,7 +229,7 @@ void scene_backdrop(App *app, SDL_FRect r, float horizon, int region, float ligh
  * front, and the voorloper leading. Pairs of oxen are yoked side by side: the far ox is drawn
  * a little higher and darker. */
 static void wagon(SDL_Renderer *rd, Draw *d, WagonShape shape, float x, float y, int pairs, bool moving, double t,
-                  SDL_Color tint)
+                  SDL_Color tint, float sc)
 {
     static const char *NAMES[3][2] = {{"wagon_trek_0", "wagon_trek_1"},
                                       {"wagon_transport_0", "wagon_transport_1"},
@@ -238,34 +242,34 @@ static void wagon(SDL_Renderer *rd, Draw *d, WagonShape shape, float x, float y,
     if (shape == WAGON_CART && pairs > 2) {
         pairs = 2;
     }
-    float top = y - w->h;
-    float front = x + w->w - 2;
+    float top = y - w->h * sc;
+    float front = x + (w->w - 2) * sc;
     if (pairs > 0) {
         /* the trek chain runs from the disselboom past every pair */
         SDL_Color chain = shade((SDL_Color){70, 60, 52, 255}, tint.r / 255.0f);
-        draw_rect(d, (SDL_FRect){front - 2, y - 6, pairs * 20.0f + 2, 1}, chain);
+        draw_rect(d, (SDL_FRect){front - 2 * sc, y - 6 * sc, (pairs * 20.0f + 2) * sc, sc}, chain);
     }
     for (int p = pairs - 1; p >= 0; p--) {
-        float ox = front - 2 + p * 20.0f;
+        float ox = front + (p * 20.0f - 2) * sc;
         int leg = moving ? (int)(t * 6 + p) % 2 : 0;
         char far_name[24], near_name[24];
         snprintf(far_name, sizeof far_name, "ox_%s_%d", p % 2 ? "red" : "black", 1 - leg);
         snprintf(near_name, sizeof near_name, "ox_%s_%d", p % 2 ? "black" : "red", leg);
         const Sprite *far_ox = sprite_find(far_name), *near_ox = sprite_find(near_name);
         if (far_ox) {
-            sprite_draw_tinted(rd, far_ox, ox + 2, y - far_ox->h - 3, 1, false, shade(tint, 0.72f));
+            sprite_draw_tinted(rd, far_ox, ox + 2 * sc, y - (far_ox->h + 3) * sc, sc, false, shade(tint, 0.72f));
         }
         if (near_ox) {
-            sprite_draw_tinted(rd, near_ox, ox, y - near_ox->h, 1, false, tint);
+            sprite_draw_tinted(rd, near_ox, ox, y - near_ox->h * sc, sc, false, tint);
         }
     }
-    sprite_draw_tinted(rd, w, x, top, 1, false, tint);
+    sprite_draw_tinted(rd, w, x, top, sc, false, tint);
     if (pairs > 0) {
-        float vx = front + pairs * 20.0f + 2;
+        float vx = front + (pairs * 20.0f + 2) * sc;
         const Sprite *boy = sprite_find(moving && (int)(t * 6) % 2 ? "voorloper_1" : "voorloper_0");
         if (boy) {
-            draw_rect(d, (SDL_FRect){vx - 5, y - 9, 6, 1}, shade((SDL_Color){90, 64, 40, 255}, tint.r / 255.0f));
-            sprite_draw_tinted(rd, boy, vx, y - boy->h, 1, false, tint);
+            draw_rect(d, (SDL_FRect){vx - 5 * sc, y - 9 * sc, 6 * sc, sc}, shade((SDL_Color){90, 64, 40, 255}, tint.r / 255.0f));
+            sprite_draw_tinted(rd, boy, vx, y - boy->h * sc, sc, false, tint);
         }
     }
 }
@@ -385,7 +389,7 @@ static void town(SDL_Renderer *rd, Draw *d, TownLook look, SDL_FRect r, float ba
         sprite_stand(rd, "house_cottage", r.x + 480, base - 6, 1, true, tint);
         break;
     }
-    wagon(rd, d, ws, r.x + 250, base + 6, pairs > 4 ? 4 : pairs, false, 0, tint);
+    wagon(rd, d, ws, r.x + 250, base + 6, pairs > 4 ? 4 : pairs, false, 0, tint, 1);
 }
 
 void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
@@ -474,7 +478,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
                     sprite_stand(rd, i % 2 ? "hut_1" : "hut_0", r.x + 30 + i * 26.0f, base - 10 + (i % 3) * 3, 1, i % 2, tint);
                 }
                 sprite_stand(rd, "church_mission", r.x + 240, base - 4, 1, false, tint);
-                wagon(rd, d, ws, r.x + 300, base + 8, pairs > 3 ? 3 : pairs, false, 0, tint);
+                wagon(rd, d, ws, r.x + 300, base + 8, pairs > 3 ? 3 : pairs, false, 0, tint, 1);
                 break;
             case SCENE_RIVER:
             case SCENE_END: {
@@ -484,7 +488,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
                 if (kind == SCENE_END && (strcmp(here, "port_natal") == 0 || strcmp(here, "delagoa_bay") == 0)) {
                     float sea_top = r.y + r.h * 0.5f + 2;
                     river_band(d, r, sea_top, wy - sea_top, now);
-                    wagon(rd, d, ws, r.x + 330, base + 10, pairs > 5 ? 5 : pairs, false, 0, tint);
+                    wagon(rd, d, ws, r.x + 330, base + 10, pairs > 5 ? 5 : pairs, false, 0, tint, 1);
                     break;
                 }
                 river_band(d, r, wy, 12, now);
@@ -496,7 +500,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
                     sprite_stand(rd, "tree_small", r.x + 80, wy - 2, 1, false, tint);
                     sprite_stand(rd, "tree_big", r.x + 560, wy - 2, 1, true, tint);
                 }
-                wagon(rd, d, ws, r.x + 330, base + 10, pairs > 5 ? 5 : pairs, false, 0, tint);
+                wagon(rd, d, ws, r.x + 330, base + 10, pairs > 5 ? 5 : pairs, false, 0, tint, 1);
                 break;
             }
             case SCENE_LAAGER:
@@ -521,7 +525,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
                 }
                 break;
             case SCENE_NIGHT: {
-                wagon(rd, d, ws, r.x + 380, base + 2, 0, false, 0, tint);
+                wagon(rd, d, ws, r.x + 380, base + 2, 0, false, 0, tint, 1);
                 float fx = r.x + 280, fy = base + 12;
                 /* the camp is drawn twice as large: it is the subject of the scene */
                 sprite_stand(rd, "sitter_man", fx - 38, fy, 2, false, tint);
@@ -545,7 +549,7 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
             default: {
                 /* the oxen take ~7 sprites; leave room so the voorloper stays on screen */
                 float wx = r.x + (ws == WAGON_TRANSPORT ? 150 : 180) - pairs * 9.0f;
-                wagon(rd, d, ws, wx, base + 4, pairs, moving, t, tint);
+                wagon(rd, d, ws, wx, base + 4, pairs, moving, t, tint, 1);
                 break;
             }
             }
@@ -566,6 +570,59 @@ void scene_draw(App *app, SDL_FRect r, SceneKind kind, int region, bool moving)
     }
     if (!night && (g->weather == WEATHER_RAIN || g->weather == WEATHER_STORM)) {
         rain(d, r, g->weather == WEATHER_STORM, now);
+    }
+    SDL_SetRenderClipRect(rd, NULL);
+}
+
+void scene_title(App *app, SDL_FRect r)
+{
+    Draw *d = &app->draw;
+    SDL_Renderer *rd = app->renderer;
+    double t = SDL_GetTicks() / 1000.0;
+    SDL_Color white = {255, 255, 255, 255};
+    /* the highveld in the middle of the country: grass, flat-topped koppies, thorn trees */
+    SDL_Color skyc = {80, 126, 178, 255}, groundc = {168, 152, 94, 255};
+    float horizon = r.y + r.h * 0.42f;
+    SDL_Rect clip = {(int)r.x, (int)r.y, (int)r.w, (int)r.h};
+    SDL_SetRenderClipRect(rd, &clip);
+    sky(d, r, horizon, skyc, false);
+    cloud_row(d, r, 3, false, t);
+    hills(d, r, horizon + 1, mix(skyc, groundc, 0.4f), 24, 0.012f, 1.7f, 0, true);
+    hills(d, r, horizon + 1, mix(skyc, groundc, 0.7f), 9, 0.027f, 4.3f, 0, false);
+    ground(d, r, horizon, groundc, false);
+    float gh = r.y + r.h - horizon;
+    /* thorn trees far off, then nearer, at the sides where the menu does not cover them */
+    static const struct { const char *sprite; float x, depth; bool flip; } TREES[] = {
+        {"tree_small", 70, 0.02f, false},  {"tree_small", 250, 0.0f, true},  {"tree_small", 410, 0.03f, false},
+        {"tree_small", 585, 0.01f, true},  {"bush", 120, 0.18f, false},      {"tree_big", 470, 0.2f, true},
+        {"tree_big", 150, 0.3f, false},    {"tuft", 300, 0.35f, false},      {"tree_big", 585, 0.42f, false},
+        {"bush", 520, 0.5f, true},         {"tree_big", 42, 0.55f, true},    {"tuft", 210, 0.6f, false},
+        {"tuft", 455, 0.66f, true},        {"aloe", 615, 0.72f, false},      {"tuft", 20, 0.95f, false},
+        {"tuft", 360, 0.97f, true},        {"bush", 600, 1.0f, false},
+    };
+    float base = r.y + r.h - 8; /* where the wagon's wheels touch the ground */
+    for (size_t i = 0; i < sizeof TREES / sizeof TREES[0]; i++) {
+        float y = horizon + 2 + TREES[i].depth * (gh - 2);
+        if (TREES[i].depth > 0.9f) {
+            continue; /* in front of the wagon, drawn after it */
+        }
+        float haze = 0.82f + 0.18f * TREES[i].depth;
+        sprite_stand(rd, TREES[i].sprite, r.x + TREES[i].x, y, 1, TREES[i].flip, shade(white, haze));
+    }
+    /* a big thorn tree near the track, which the wagon passes in front of */
+    sprite_stand(rd, "tree_big", r.x + 560, base - 22, 2, false, white);
+    /* the track the wagons have worn, and a wagon with its span going north across it */
+    draw_rect(d, (SDL_FRect){r.x, base - 2, r.w, 3}, shade(groundc, 0.86f));
+    /* drawn twice the size: it is the subject. Wagon, six pairs of oxen and the voorloper; it
+     * starts in view, crosses, and comes round again from the left. */
+    const float sc = 2;
+    float span = (62 + 6 * 20.0f + 20) * sc;
+    float x = (float)fmod(t * 22.0 + span + 60, r.w + span + 40) - span - 20;
+    wagon(rd, d, WAGON_TREK, r.x + x, base, 6, true, t, white, sc);
+    for (size_t i = 0; i < sizeof TREES / sizeof TREES[0]; i++) {
+        if (TREES[i].depth > 0.9f) {
+            sprite_stand(rd, TREES[i].sprite, r.x + TREES[i].x, r.y + r.h, 1, TREES[i].flip, white);
+        }
     }
     SDL_SetRenderClipRect(rd, NULL);
 }

@@ -1,4 +1,5 @@
 /* Main menu, trip list, settings, credits. */
+#include "scene.h"
 #include "scores.h"
 #include "format.h"
 #include "screens.h"
@@ -106,7 +107,7 @@ static void title_items(App *app, ChoiceItem *items)
 }
 
 #define TITLE_MENU_X 220.0f
-#define TITLE_MENU_Y 150.0f
+#define TITLE_MENU_Y 106.0f
 #define TITLE_MENU_W 200
 
 /* the high scores, read once when the screen opens */
@@ -165,16 +166,19 @@ void title_render(App *app)
 {
     Draw *d = &app->draw;
     float cx = TREK_LOGICAL_W / 2.0f;
-    /* a simple horizon: sky, veld and a far ridge */
-    draw_rect(d, (SDL_FRect){0, 0, TREK_LOGICAL_W, 110}, (SDL_Color){52, 44, 40, 255});
-    draw_rect(d, (SDL_FRect){0, 95, TREK_LOGICAL_W, 15}, (SDL_Color){70, 58, 44, 255});
-    draw_text(d, d->big, app_text(app, "app.title"), cx, 30, COL_TEXT, TEXT_CENTER);
-    draw_text(d, d->font, app_text(app, "app.subtitle"), cx, 66, COL_GOLD, TEXT_CENTER);
+    scene_title(app, (SDL_FRect){0, 0, TREK_LOGICAL_W, TREK_LOGICAL_H});
+    /* the title in a dark band across the sky, the menu on a panel over the veld */
+    draw_rect(d, (SDL_FRect){0, 8, TREK_LOGICAL_W, 70}, (SDL_Color){COL_BG.r, COL_BG.g, COL_BG.b, 170});
+    draw_text(d, d->big, app_text(app, "app.title"), cx, 14, COL_TEXT, TEXT_CENTER);
+    draw_text(d, d->font, app_text(app, "app.subtitle"), cx, 50, COL_GOLD, TEXT_CENTER);
     ChoiceItem items[TM_COUNT];
     title_items(app, items);
+    SDL_FRect menu_r = {TITLE_MENU_X - 14, TITLE_MENU_Y - 10, TITLE_MENU_W + 28, 160};
+    draw_rect(d, menu_r, (SDL_Color){COL_BG.r, COL_BG.g, COL_BG.b, 225});
+    draw_frame(d, menu_r, COL_BORDER);
     draw_choices(d, items, TM_COUNT, TITLE_MENU_X, TITLE_MENU_Y, TITLE_MENU_W, app->mx, app->my, app->sel, true, NULL);
     if (app->message_timer > 0) {
-        draw_text(d, d->font, app->message, cx, 128, COL_RED, TEXT_CENTER);
+        draw_text(d, d->font, app->message, cx, 84, COL_RED, TEXT_CENTER);
     }
 }
 

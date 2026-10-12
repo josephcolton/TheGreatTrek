@@ -90,7 +90,7 @@ typedef struct App {
     uint64_t test_seed;   /* --seed: fixed seed for new trips (testing) */
 } App;
 
-bool app_init(App *app);
+bool app_init(App *app, const char *pref_override);
 void app_shutdown(App *app);
 
 const char *app_text(const App *app, const char *key);
