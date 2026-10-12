@@ -95,17 +95,6 @@ void draw_footer(App *app, const char *text)
 
 typedef enum { TM_CONTINUE, TM_NEW, TM_SCORES, TM_SETTINGS, TM_CREDITS, TM_QUIT, TM_COUNT } TitleItem;
 
-static int unfinished_trips(const App *app)
-{
-    int n = 0;
-    for (int i = 0; i < app->trips.count; i++) {
-        if (app->trips.trips[i].ending == 0) {
-            n++;
-        }
-    }
-    return n;
-}
-
 static void title_items(App *app, ChoiceItem *items)
 {
     items[TM_CONTINUE] = (ChoiceItem){app_text(app, "menu.continue"), app->trips.count == 0 ? app_text(app, "menu.no_trips") : NULL};
@@ -136,11 +125,7 @@ static void title_activate(App *app, int item)
         if (app->trips.count == 0) {
             break;
         }
-        if (unfinished_trips(app) == 1 && app->trips.count == 1) {
-            open_trip(app, app->trips.trips[0].id);
-        } else {
-            app_switch(app, SCR_TRIPS);
-        }
+        app_switch(app, SCR_TRIPS); /* always the list, so a trip can also be deleted from there */
         break;
     case TM_NEW:
         app_switch(app, SCR_LEVEL);
@@ -238,8 +223,9 @@ void trips_event(App *app, const SDL_Event *e)
         app_switch(app, SCR_TITLE);
         return;
     }
-    if (n > 0 && (key_is(e, SDLK_DELETE) || key_is(e, SDLK_D)) && app->trips.trips[app->sel].ending != 0) {
-        app->overlay = OV_CONFIRM_DELETE; /* only finished trips can be deleted */
+    if (n > 0 && (key_is(e, SDLK_DELETE) || key_is(e, SDLK_D))) {
+        /* any trip may be deleted: abandoning one goes back on nothing (the confirm says which) */
+        app->overlay = OV_CONFIRM_DELETE;
         return;
     }
     if (n > 0 && is_confirm(e)) {
@@ -261,6 +247,9 @@ void trips_render(App *app)
     draw_header(app, app_text(app, "trips.title"), NULL);
     draw_text(d, d->font, app_text(app, "trips.about"), TRIPS_X, 26, COL_DIM, TEXT_LEFT);
     float y = TRIPS_Y;
+    if (app->trips.count == 0) {
+        draw_text(d, d->font, app_text(app, "trips.empty"), TRIPS_X, y, COL_DIM, TEXT_LEFT);
+    }
     for (int i = 0; i < app->trips.count; i++) {
         const TripInfo *t = &app->trips.trips[i];
         char line[300];
@@ -272,7 +261,11 @@ void trips_render(App *app)
         draw_wrapped(d, d->font, line, TRIPS_X, y, TRIPS_W, t->ending ? COL_DIM : (hot ? COL_GOLD : COL_TEXT), false);
         y += d->line_h * 2;
     }
-    draw_footer(app, app_text(app, app->overlay == OV_CONFIRM_DELETE ? "trips.confirm_delete" : "trips.footer"));
+    const char *footer = "trips.footer";
+    if (app->overlay == OV_CONFIRM_DELETE && app->sel < app->trips.count) {
+        footer = app->trips.trips[app->sel].ending != 0 ? "trips.confirm_delete" : "trips.confirm_abandon";
+    }
+    draw_footer(app, app_text(app, footer));
 }
 
 /* ---------------------------------------------------------------- settings */

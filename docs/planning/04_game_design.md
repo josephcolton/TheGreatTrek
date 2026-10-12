@@ -837,7 +837,7 @@ THE GREAT TREK
 ```
 
 - **Difficulty is the first step of a new trip** ("How hard a trek?"), named plainly **Easy, Normal, Hard**, with a description of the highlighted one (§8.5). It is fixed for the whole trip. The last choice is remembered (`settings.json`) and offered first. (Decided 2026-10-12; it used to be a line on the main menu.) Then come the side, the family, the story and the names.
-- **Continue** goes straight into the trip if there is only one; otherwise it opens **Your trips**.
+- **Continue** opens **Your trips**, newest first. Enter opens one; D deletes one after a Y/N question. A trip that is not finished can be deleted too (abandoning it goes back on nothing); the question says it is unfinished.
 
 ### 13.2 One save per trip, newest first
 

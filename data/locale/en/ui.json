@@ -26,7 +26,9 @@
   "trips.row": "{family} · {difficulty} · {date} · near {place} · {alive} of {party} with the party",
   "trips.row_finished": "Finished: {family} · {difficulty} · {date} · {place} · {alive} of {party} reached the end",
   "trips.footer": "Enter: open   D: delete a trip   Esc: back",
-  "trips.confirm_delete": "Delete this trip for good? Y / N",
+  "trips.confirm_delete": "Delete this finished trip for good? Y / N",
+  "trips.empty": "No trips saved. Press Esc and start a new trip.",
+  "trips.confirm_abandon": "This trip is not finished. Abandon it and delete it for good? Y / N",
 
   "settings.title": "Settings",
   "settings.odds": "Show the odds on choices:",
