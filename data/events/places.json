@@ -109,6 +109,39 @@
         { "text": "event.turn_back.yes", "outcomes": [ { "text": "event.turn_back_orange.yes.done", "effects": [ { "ending": "turned_back" } ] } ] },
         { "text": "event.turn_back.no", "outcomes": [ { "text": "" } ] }
       ]
+    },
+    {
+      "id": "church_town", "setpiece": true, "once": false,
+      "history": "history.church_town",
+      "sources": ["By 1837 Graham's Town had an Anglican church (St George's) and a Wesleyan chapel; Cradock (1818) and Colesberg (1826) were Dutch Reformed congregations, the towns having grown round their churches [recall, verify the dates]. Sunday rest was kept as a matter of conscience (Tregardt's diary, 05_research_pass2.md section 7). The day at church and its effects are invented."],
+      "text": "event.church_town.body",
+      "choices": [
+        { "text": "event.church.attend",
+          "outcomes": [ { "text": "event.church_town.attend.done", "effects": [ { "time_days": 1 }, { "morale": 6 }, { "health": 2, "who": "all" } ] } ] },
+        { "text": "event.church.not_today", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
+      "id": "church_mission", "setpiece": true, "once": false,
+      "history": "history.church_mission",
+      "sources": ["The Wesleyan missionaries moved to Thaba Nchu with Moroka's Barolong from Platberg in 1833 (05_research_pass2.md section 7); services were held for the Barolong congregation [recall, verify the languages used]. The day at the mission and its effects are invented."],
+      "text": "event.church_mission.body",
+      "choices": [
+        { "text": "event.church.attend",
+          "outcomes": [ { "text": "event.church_mission.attend.done", "effects": [ { "time_days": 1 }, { "morale": 6 }, { "health": 2, "who": "all" }, { "relation": "missionaries", "add": 3 }, { "relation": "barolong", "add": 2 } ] } ] },
+        { "text": "event.church.not_today", "outcomes": [ { "text": "" } ] }
+      ]
+    },
+    {
+      "id": "church_laager", "setpiece": true, "once": false,
+      "history": "history.church_laager",
+      "sources": ["Erasmus Smit was ordained as minister to the trekkers on 21 May 1837 (LitNet, the nine Vet River articles of 1837; 06_research_routes.md section 2); the trekkers held services in their laagers. The service here and its effects are invented."],
+      "text": "event.church_laager.body",
+      "choices": [
+        { "text": "event.church.attend",
+          "outcomes": [ { "text": "event.church_laager.attend.done", "effects": [ { "time_days": 1 }, { "morale": 6 }, { "health": 2, "who": "all" }, { "relation": "trekkers", "add": 3 } ] } ] },
+        { "text": "event.church.not_today", "outcomes": [ { "text": "" } ] }
+      ]
     }
   ]
 }

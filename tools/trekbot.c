@@ -135,7 +135,7 @@ static void outfit(Game *g, Policy policy)
 
 static int pick_choice(Game *g, const DialogView *v, Policy policy, TrekRng *bot_rng)
 {
-    int enabled[8], n = 0;
+    int enabled[MAX_CHOICES], n = 0;
     for (int i = 0; i < v->choice_count; i++) {
         if (v->choices[i].enabled) {
             enabled[n++] = i;

@@ -20,7 +20,7 @@
 #define MAX_RESULT_LINES 10
 #define MAX_NOTICES 12
 #define EPITAPH_LEN 96
-#define MAX_CHOICES 8
+#define MAX_CHOICES 9 /* the number keys reach 9 */
 
 typedef enum {
     PHASE_DIALOG,   /* events, landmarks, rivers, road choices, notices */
