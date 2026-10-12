@@ -90,7 +90,7 @@
       "perks": { "hunt": 1.3 },
       "members": [
         { "name": "Edward", "portrait": "hunter_edward", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1812, "skills": { "shooting": 4, "tracking": 2 } },
-        { "name": "James", "portrait": "hunter_james",  "role": "child",   "age": "adult", "pronoun": "he",  "born": 1818, "skills": { "shooting": 3 } },
+        { "name": "James", "portrait": "hunter_james",  "role": "sibling",   "age": "adult", "pronoun": "he",  "born": 1818, "skills": { "shooting": 3 } },
         { "name": "Ruiter", "portrait": "hunter_ruiter", "role": "servant", "age": "adult", "pronoun": "he",  "born": 1803, "skills": { "tracking": 4, "voorloper": 3, "interpreting": 3 } },
         { "name": "Kobus", "portrait": "hunter_kobus",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1814, "skills": { "herding": 3, "voorloper": 2 } }
       ],

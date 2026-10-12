@@ -55,6 +55,9 @@
   "role.child.he": "son",
   "role.elder": "elder",
   "role.servant": "servant",
+  "role.sibling": "brother or sister",
+  "role.sibling.he": "brother",
+  "role.sibling.she": "sister",
 
   "result.gained": "Gained: {n} {item}.",
   "result.lost": "Lost: {n} {item}.",

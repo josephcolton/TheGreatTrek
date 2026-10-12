@@ -19,7 +19,7 @@ static const char *DIFF_IDS[DIFF_COUNT] = {"easy", "normal", "hard"};
 static const char *WEATHER_IDS[WEATHER_COUNT] = {"clear", "hot", "windy", "cold", "frost", "rain", "storm"};
 static const char *SKILL_IDS[SKILL_COUNT] = {"shooting", "herding", "voorloper", "interpreting",
                                              "nursing", "smithing", "tracking"};
-static const char *ROLE_IDS[ROLE_COUNT] = {"head", "spouse", "child", "elder", "servant"};
+static const char *ROLE_IDS[ROLE_COUNT] = {"head", "spouse", "child", "elder", "servant", "sibling"};
 static const char *SEASON_IDS[SEASON_COUNT] = {"summer", "autumn", "winter", "spring"};
 static const char *AGE_IDS[AGE_COUNT] = {"child", "adult", "elder"};
 static const char *CATEGORY_IDS[ITEMCAT_COUNT] = {"animals", "food", "water", "guns", "wagon", "trade", "medicine"};

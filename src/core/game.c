@@ -84,7 +84,7 @@ void loctext_arg_money(LocText *t, const char *name, long long v)
 
 void member_role_key(Role role, Pronoun pronoun, char *out, size_t cap)
 {
-    if (role == ROLE_CHILD || role == ROLE_SPOUSE) {
+    if (role == ROLE_CHILD || role == ROLE_SPOUSE || role == ROLE_SIBLING) {
         snprintf(out, cap, "role.%s.%s", role_id(role), pronoun == PRONOUN_SHE ? "she" : "he");
     } else {
         snprintf(out, cap, "role.%s", role_id(role));

@@ -49,7 +49,7 @@ static const char *CODE_KEYS[] = {
     "cause.unknown", "cause.hardship", "cause.accident", "cause.drowned",
     "advice.oxen", "advice.spare", "advice.water", "advice.food", "advice.medicine", "advice.ok",
     "money.rds", "money.pounds", "money.shillings", "money.pounds_shillings", "date.format",
-    "role.head", "role.spouse", "role.child", "role.elder", "role.servant", "role.spouse.she", "role.spouse.he", "role.child.she", "role.child.he",
+    "role.head", "role.spouse", "role.child", "role.elder", "role.servant", "role.spouse.she", "role.spouse.he", "role.child.she", "role.child.he", "role.sibling", "role.sibling.he", "role.sibling.she",
     "weekday.0", "weekday.1", "weekday.2", "weekday.3", "weekday.4", "weekday.5", "weekday.6",
     "month.1", "month.2", "month.3", "month.4", "month.5", "month.6",
     "month.7", "month.8", "month.9", "month.10", "month.11", "month.12",
