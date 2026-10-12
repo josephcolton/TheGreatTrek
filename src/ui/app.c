@@ -56,6 +56,7 @@ static void load_settings(App *app)
     }
     s->show_odds = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "show_odds"));
     s->fullscreen = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "fullscreen"));
+    s->help_seen = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "help_seen"));
     if (cJSON_IsBool(v = cJSON_GetObjectItemCaseSensitive(o, "sound"))) {
         s->sound = cJSON_IsTrue(v);
     }
@@ -73,6 +74,7 @@ void app_save_settings(App *app)
     cJSON_AddBoolToObject(o, "fullscreen", app->settings.fullscreen);
     cJSON_AddNumberToObject(o, "travel_speed", app->settings.travel_speed);
     cJSON_AddBoolToObject(o, "sound", app->settings.sound);
+    cJSON_AddBoolToObject(o, "help_seen", app->settings.help_seen);
     char *json = cJSON_Print(o);
     cJSON_Delete(o);
     char *path = util_path_join(app->pref_path, "settings.json");

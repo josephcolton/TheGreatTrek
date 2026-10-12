@@ -19,7 +19,7 @@ typedef enum {
 } ScreenId;
 
 typedef enum {
-    OV_NONE, OV_PAUSE, OV_SUPPLIES, OV_PARTY, OV_MAP, OV_JOURNAL, OV_HISTORY, OV_ORDERS, OV_CONFIRM_DELETE, OV_GLOSSARY
+    OV_NONE, OV_PAUSE, OV_SUPPLIES, OV_PARTY, OV_MAP, OV_JOURNAL, OV_HISTORY, OV_ORDERS, OV_CONFIRM_DELETE, OV_GLOSSARY, OV_HELP
 } Overlay;
 
 typedef struct {
@@ -29,6 +29,7 @@ typedef struct {
     bool fullscreen;
     int travel_speed;       /* 0 slow, 1 normal, 2 fast */
     bool sound;
+    bool help_seen;         /* the how-to-play page has been shown once, on the first trip */
 } Settings;
 
 #define MAX_NAME_LIST 64

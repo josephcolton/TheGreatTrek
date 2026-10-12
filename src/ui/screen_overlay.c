@@ -26,12 +26,13 @@ static void overlay_panel(App *app, const char *title)
 
 /* ---------------------------------------------------------------- pause */
 
-typedef enum { PA_RESUME, PA_SAVE_QUIT, PA_GLOSSARY, PA_SETTINGS, PA_COUNT } PauseItem;
+typedef enum { PA_RESUME, PA_SAVE_QUIT, PA_HELP, PA_GLOSSARY, PA_SETTINGS, PA_COUNT } PauseItem;
 
 static void pause_items(App *app, ChoiceItem *items)
 {
     items[PA_RESUME] = (ChoiceItem){app_text(app, "pause.resume"), NULL};
     items[PA_SAVE_QUIT] = (ChoiceItem){app_text(app, "pause.save_quit"), NULL};
+    items[PA_HELP] = (ChoiceItem){app_text(app, "help.title"), NULL};
     items[PA_GLOSSARY] = (ChoiceItem){app_text(app, "glossary.title"), NULL};
     items[PA_SETTINGS] = (ChoiceItem){app_text(app, "pause.settings"), NULL};
 }
@@ -46,6 +47,7 @@ static void pause_activate(App *app, int item)
         trips_scan(app->pref_path, &app->trips);
         app_switch(app, SCR_TITLE);
         break;
+    case PA_HELP: app->overlay = OV_HELP; break;
     case PA_GLOSSARY: app->overlay = OV_GLOSSARY; app->scroll = 0; break;
     case PA_SETTINGS: app_switch(app, SCR_SETTINGS); break;
     default: break;
@@ -646,6 +648,20 @@ static void history_render(App *app)
     draw_text(&app->draw, app->font, app_text(app, "overlay.close"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
 }
 
+/* ---------------------------------------------------------------- how to play */
+
+static void help_render(App *app)
+{
+    overlay_panel(app, app_text(app, "help.title"));
+    float y = 44;
+    for (int i = 1; i <= 7; i++) {
+        char key[16];
+        snprintf(key, sizeof key, "help.%d", i);
+        y += draw_wrapped(&app->draw, app->font, app_text(app, key), 36, y, 568, i == 1 ? COL_GOLD : COL_TEXT, false) + 5;
+    }
+    draw_text(&app->draw, app->font, app_text(app, "overlay.close"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
+}
+
 /* ---------------------------------------------------------------- dispatch */
 
 void overlay_event(App *app, const SDL_Event *e)
@@ -756,6 +772,7 @@ void overlay_render(App *app)
     case OV_SUPPLIES: supplies_render(app); break;
     case OV_PARTY: party_render(app); break;
     case OV_MAP: map_render(app); break;
+    case OV_HELP: help_render(app); break;
     case OV_JOURNAL: journal_render(app); break;
     case OV_HISTORY: history_render(app); break;
     case OV_GLOSSARY: glossary_render(app); break;

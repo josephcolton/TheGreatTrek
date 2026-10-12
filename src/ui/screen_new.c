@@ -217,6 +217,12 @@ static void start_trip(App *app)
     app_commit(app);
     trips_scan(app->pref_path, &app->trips);
     app_switch(app, SCR_GAME);
+    if (!app->settings.help_seen) {
+        /* the first trip opens with how to play; it is in the pause menu after that */
+        app->overlay = OV_HELP;
+        app->settings.help_seen = true;
+        app_save_settings(app);
+    }
 }
 
 static void begin_edit(App *app, int member)
