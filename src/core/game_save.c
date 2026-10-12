@@ -91,6 +91,7 @@ char *game_save_json(const Game *g)
     cJSON_AddStringToObject(o, "stance", stance_id(g->stance));
     cJSON_AddBoolToObject(o, "sabbath", g->sabbath);
     cJSON_AddBoolToObject(o, "keep_flock", g->keep_flock);
+    cJSON_AddBoolToObject(o, "medicine_by_hand", g->medicine_by_hand);
 
     cJSON *party = cJSON_AddArrayToObject(o, "party");
     for (int i = 0; i < g->party_count; i++) {
@@ -109,7 +110,9 @@ char *game_save_json(const Game *g)
             }
         }
         cJSON_AddNumberToObject(mj, "health", m->health);
-        cJSON_AddBoolToObject(mj, "no_medicine", m->no_medicine);
+        if (m->medicine != MED_AS_OPTION) {
+            cJSON_AddStringToObject(mj, "medicine", m->medicine == MED_GIVE ? "give" : "keep");
+        }
         cJSON *conds = cJSON_AddArrayToObject(mj, "conds");
         for (int c = 0; c < m->cond_count; c++) {
             cJSON *cj = cJSON_CreateObject();
@@ -438,6 +441,7 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
     g->stance = s < 0 ? NIGHT_LAAGER : (NightStance)s;
     g->sabbath = bget(o, "sabbath");
     g->keep_flock = bget(o, "keep_flock"); /* older saves: eat the flock, as before */
+    g->medicine_by_hand = bget(o, "medicine_by_hand");
 
     g->party_count = 0;
     const cJSON *mj;
@@ -469,7 +473,11 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         }
         m->health = (int)nget(mj, "health", 50);
         const cJSON *cj;
-        m->no_medicine = bget(mj, "no_medicine");
+        const char *med = sget(mj, "medicine");
+        m->medicine = strcmp(med, "give") == 0 ? MED_GIVE : strcmp(med, "keep") == 0 ? MED_KEEP : MED_AS_OPTION;
+        if (bget(mj, "no_medicine")) {
+            m->medicine = MED_KEEP; /* a save from just before the trek option */
+        }
         cJSON_ArrayForEach(cj, cJSON_GetObjectItemCaseSensitive(mj, "conds"))
         {
             int il = data_find_illness(data, sget(cj, "illness"));

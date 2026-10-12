@@ -124,9 +124,16 @@ static void render(App *app)
     case SCR_CREDITS: credits_render(app); break;
     case SCR_SCORES: scores_render(app); break;
     case SCR_GAME:
-        game_screen_render(app);
         if (app->overlay != OV_NONE) {
+            /* the screen behind an overlay is only a picture: its lists must not move the
+             * overlay's selection (a greyed-out line there would push it along) */
+            app->draw.sel = NULL;
+            game_screen_render(app);
+            app->draw.sel = &app->sel;
+            app->draw.list_n = 0;
             overlay_render(app);
+        } else {
+            game_screen_render(app);
         }
         break;
     }

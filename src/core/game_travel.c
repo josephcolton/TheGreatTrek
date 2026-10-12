@@ -369,7 +369,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 if (!travelling) {
                     p += 0.05;
                 }
-                if (g->inv[d->item_medicine] > 0 && !m->no_medicine) {
+                if (g->inv[d->item_medicine] > 0 && game_gives_medicine(g, i)) {
                     g->inv[d->item_medicine]--;
                     p += 0.08;
                     if (m->conds[c].doses++ == 0) {

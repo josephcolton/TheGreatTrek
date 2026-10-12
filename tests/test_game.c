@@ -392,6 +392,19 @@ static void test_medicine(const GameData *d)
     }
     CHECK(used[0] == 0); /* kept back: none used, even with a sick person */
     CHECK(used[1] > 0);
+
+    /* the trek option: by hand, only those chosen get it; a choice for one person stands */
+    Game *g = play(d, 6, data_find_family(d, "grensboer"), 30);
+    game_set_medicine_by_hand(g, true);
+    CHECK(!game_gives_medicine(g, 1));
+    game_set_medicine(g, 1, true);
+    CHECK(game_gives_medicine(g, 1));
+    CHECK(!game_gives_medicine(g, 2));
+    game_set_medicine_by_hand(g, false);
+    CHECK(game_gives_medicine(g, 2));
+    game_set_medicine(g, 2, false);
+    CHECK(!game_gives_medicine(g, 2));
+    game_free(g);
 }
 
 static void test_mend(const GameData *d)

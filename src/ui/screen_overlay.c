@@ -89,7 +89,7 @@ static void glossary_render(App *app)
 
 /* ---------------------------------------------------------------- orders */
 
-typedef enum { OR_PACE, OR_RATIONS, OR_NIGHT, OR_SABBATH, OR_FLOCK, OR_COUNT } OrderItem;
+typedef enum { OR_PACE, OR_RATIONS, OR_NIGHT, OR_SABBATH, OR_FLOCK, OR_MEDICINE, OR_COUNT } OrderItem;
 
 static void orders_change(App *app, int item, int delta)
 {
@@ -104,6 +104,7 @@ static void orders_change(App *app, int item, int delta)
     case OR_NIGHT: s = (NightStance)((s + NIGHT_COUNT + delta) % NIGHT_COUNT); break;
     case OR_SABBATH: sab = !sab; break;
     case OR_FLOCK: game_set_keep_flock(g, !g->keep_flock); break;
+    case OR_MEDICINE: game_set_medicine_by_hand(g, !g->medicine_by_hand); break;
     default: break;
     }
     game_set_orders(g, p, r, s, sab);
@@ -121,7 +122,9 @@ static void orders_render(App *app)
     snprintf(keys[OR_NIGHT], 48, "stance.%s", stance_id(g->stance));
     snprintf(keys[OR_SABBATH], 48, "settings.%s", g->sabbath ? "on" : "off");
     snprintf(keys[OR_FLOCK], 48, "orders.flock.%s", g->keep_flock ? "keep" : "eat");
-    static const char *LABELS[OR_COUNT] = {"orders.pace", "orders.rations", "orders.night", "orders.sabbath", "orders.flock"};
+    snprintf(keys[OR_MEDICINE], 48, "orders.medicine.%s", g->medicine_by_hand ? "chosen" : "auto");
+    static const char *LABELS[OR_COUNT] = {"orders.pace", "orders.rations", "orders.night", "orders.sabbath", "orders.flock",
+                                           "orders.medicine"};
     float y = 48;
     for (int i = 0; i < OR_COUNT; i++) {
         bool hot = i == app->sel;
@@ -136,7 +139,7 @@ static void orders_render(App *app)
     }
     char about[80];
     static const char *ABOUT[OR_COUNT] = {"orders.pace.about", "orders.rations.about", "orders.night.about", "orders.sabbath.about",
-                                          "orders.flock.about"};
+                                          "orders.flock.about", "orders.medicine.about"};
     snprintf(about, sizeof about, "%s", ABOUT[app->sel < OR_COUNT ? app->sel : 0]);
     draw_wrapped(d, d->font, app_text(app, about), 36, y + 12, 568, COL_DIM, false);
     draw_text(d, d->font, app_text(app, "orders.footer"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
@@ -248,9 +251,9 @@ static void party_render(App *app)
         portrait_draw(d->r, "face_", m->portrait, 36, y, 1, !m->alive || !m->with_party);
         if (m->alive && m->with_party) {
             /* medicine: given when ill (the default), or kept back */
-            const char *mk = m->no_medicine ? "party.medicine.no" : (m->cond_count > 0 ? "party.medicine.giving" : "party.medicine.yes");
-            draw_text(d, d->font, app_text(app, mk), 604, y, m->no_medicine ? COL_DIM : (m->cond_count > 0 ? COL_GOLD : COL_TEXT),
-                      TEXT_RIGHT);
+            bool give = game_gives_medicine(g, i);
+            const char *mk = !give ? "party.medicine.no" : (m->cond_count > 0 ? "party.medicine.giving" : "party.medicine.yes");
+            draw_text(d, d->font, app_text(app, mk), 604, y, !give ? COL_DIM : (m->cond_count > 0 ? COL_GOLD : COL_TEXT), TEXT_RIGHT);
         }
         snprintf(line, sizeof line, "%s", m->name);
         draw_text(d, d->font, line, 70, y, c, TEXT_LEFT);
@@ -289,7 +292,7 @@ static void party_toggle(App *app, int i)
 {
     Game *g = app->game;
     if (i >= 0 && i < g->party_count && g->party[i].alive && g->party[i].with_party) {
-        game_set_medicine(g, i, g->party[i].no_medicine);
+        game_set_medicine(g, i, !game_gives_medicine(g, i));
         app_commit(app);
     }
 }

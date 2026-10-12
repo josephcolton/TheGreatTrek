@@ -691,8 +691,19 @@ void game_set_keep_flock(Game *g, bool keep)
 void game_set_medicine(Game *g, int member, bool give)
 {
     if (member >= 0 && member < g->party_count) {
-        g->party[member].no_medicine = !give;
+        g->party[member].medicine = give ? MED_GIVE : MED_KEEP;
     }
+}
+
+bool game_gives_medicine(const Game *g, int member)
+{
+    const Member *m = &g->party[member];
+    return m->medicine == MED_GIVE || (m->medicine == MED_AS_OPTION && !g->medicine_by_hand);
+}
+
+void game_set_medicine_by_hand(Game *g, bool by_hand)
+{
+    g->medicine_by_hand = by_hand;
 }
 
 /* ---------------------------------------------------------------- settle: what to show next */
