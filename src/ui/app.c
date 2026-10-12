@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include "format.h"
+#include "scores.h"
 #include "sprites.h"
 #include "sound.h"
 #include "util.h"
@@ -276,6 +277,9 @@ void app_commit(App *app)
 {
     if (app->game && app->trip_id[0]) {
         trips_write(app->pref_path, app->trip_id, app->game);
+        if (game_phase(app->game) == PHASE_ENDED) {
+            scores_record(app->pref_path, app->trip_id, app->game); /* the high scores */
+        }
     }
 }
 

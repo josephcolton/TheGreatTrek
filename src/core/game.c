@@ -996,20 +996,21 @@ int game_history_epilogue(const Game *g, LocText *out, int max)
 
 /* ---------------------------------------------------------------- score */
 
-/* The score is mostly the people brought through and the road covered, so a long hard trek
- * counts for more than stopping early with everything intact; herds, money and good relations
- * add a little. A trek that did not end where it meant to (stranded, turned back, everyone lost)
- * counts half, and harder difficulties count more. */
+/* The score is mostly the people brought through (250 and their health each), then the road
+ * covered (1 a mile), so a longer trek counts for more but never more than the lives it costs;
+ * herds, money and good relations add a little. Settling short of a journey's end counts three
+ * quarters, a trek that got nowhere (stranded, turned back, everyone lost) half, and harder
+ * difficulties count more. */
 void game_score_parts(const Game *g, int *people, int *road, int *goods, int *total)
 {
     const GameData *d = g->data;
     int p = 0, r = 0, s = 0;
     for (int i = 0; i < g->party_count; i++) {
         if (g_member_active(g, i)) {
-            p += 100 + g->party[i].health / 2;
+            p += 250 + g->party[i].health;
         }
     }
-    r = g->miles_total * 3 / 2;
+    r = g->miles_total;
     s += g->inv[d->item_oxen] * 3 + g->inv[d->item_cows] + g->inv[d->item_horses] * 2 + g->inv[d->item_sheep] / 4;
     s += g->money / (g->side == SIDE_DUTCH ? 20 : 30);
     for (int i = 0; i < d->group_count; i++) {
@@ -1017,7 +1018,8 @@ void game_score_parts(const Game *g, int *people, int *road, int *goods, int *to
             s += g->relation[i] / 2;
         }
     }
-    double mul = g->ending == ENDING_ARRIVED || g->ending == ENDING_SETTLED ? 1.0 : 0.5;
+    /* settling short of a journey's end counts three quarters; not getting anywhere, half */
+    double mul = g->ending == ENDING_ARRIVED ? 1.0 : g->ending == ENDING_SETTLED ? 0.75 : 0.5;
     static const double DIFF_MUL[DIFF_COUNT] = {0.5, 1.0, 1.5};
     mul *= DIFF_MUL[g->difficulty];
     *people = (int)lround(p * mul);

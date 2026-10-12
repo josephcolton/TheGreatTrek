@@ -79,6 +79,7 @@ static void dispatch_screen_event(App *app, const SDL_Event *e)
     case SCR_NAMES: names_event(app, e); break;
     case SCR_SETTINGS: settings_event(app, e); break;
     case SCR_CREDITS: credits_event(app, e); break;
+    case SCR_SCORES: scores_event(app, e); break;
     case SCR_GAME: game_screen_event(app, e); break;
     }
 }
@@ -119,6 +120,7 @@ static void render(App *app)
     case SCR_NAMES: names_render(app); break;
     case SCR_SETTINGS: settings_render(app); break;
     case SCR_CREDITS: credits_render(app); break;
+    case SCR_SCORES: scores_render(app); break;
     case SCR_GAME:
         game_screen_render(app);
         if (app->overlay != OV_NONE) {

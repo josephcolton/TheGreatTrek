@@ -32,6 +32,8 @@ void settings_event(App *app, const SDL_Event *e);
 void settings_render(App *app);
 void credits_event(App *app, const SDL_Event *e);
 void credits_render(App *app);
+void scores_event(App *app, const SDL_Event *e);
+void scores_render(App *app);
 
 /* new trip (screen_new.c) */
 void side_event(App *app, const SDL_Event *e);

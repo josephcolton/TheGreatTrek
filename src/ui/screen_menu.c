@@ -1,4 +1,5 @@
 /* Main menu, trip list, settings, credits. */
+#include "scores.h"
 #include "format.h"
 #include "screens.h"
 
@@ -92,7 +93,7 @@ void draw_footer(App *app, const char *text)
 
 /* ---------------------------------------------------------------- title */
 
-typedef enum { TM_CONTINUE, TM_NEW, TM_DIFFICULTY, TM_SETTINGS, TM_CREDITS, TM_QUIT, TM_COUNT } TitleItem;
+typedef enum { TM_CONTINUE, TM_NEW, TM_DIFFICULTY, TM_SCORES, TM_SETTINGS, TM_CREDITS, TM_QUIT, TM_COUNT } TitleItem;
 
 static int unfinished_trips(const App *app)
 {
@@ -113,6 +114,7 @@ static void title_items(App *app, ChoiceItem *items, char *diff_buf, size_t cap)
     items[TM_CONTINUE] = (ChoiceItem){app_text(app, "menu.continue"), app->trips.count == 0 ? app_text(app, "menu.no_trips") : NULL};
     items[TM_NEW] = (ChoiceItem){app_text(app, "menu.new"), NULL};
     items[TM_DIFFICULTY] = (ChoiceItem){diff_buf, NULL};
+    items[TM_SCORES] = (ChoiceItem){app_text(app, "menu.scores"), NULL};
     items[TM_SETTINGS] = (ChoiceItem){app_text(app, "menu.settings"), NULL};
     items[TM_CREDITS] = (ChoiceItem){app_text(app, "menu.credits"), NULL};
     items[TM_QUIT] = (ChoiceItem){app_text(app, "menu.quit"), NULL};
@@ -121,6 +123,15 @@ static void title_items(App *app, ChoiceItem *items, char *diff_buf, size_t cap)
 #define TITLE_MENU_X 220.0f
 #define TITLE_MENU_Y 150.0f
 #define TITLE_MENU_W 200
+
+/* the high scores, read once when the screen opens */
+static ScoreEntry scores[MAX_SCORES];
+static int score_count;
+
+static void load_scores(App *app)
+{
+    score_count = scores_load(app->pref_path, &app->trips, app->data, scores, MAX_SCORES);
+}
 
 static void title_activate(App *app, int item)
 {
@@ -140,6 +151,7 @@ static void title_activate(App *app, int item)
         app->settings.difficulty = (Difficulty)((app->settings.difficulty + 1) % DIFF_COUNT);
         app_save_settings(app);
         break;
+    case TM_SCORES: load_scores(app); app_switch(app, SCR_SCORES); break;
     case TM_SETTINGS: app_switch(app, SCR_SETTINGS); break;
     case TM_CREDITS: app_switch(app, SCR_CREDITS); break;
     case TM_QUIT: app->running = false; break;
@@ -350,6 +362,66 @@ void settings_render(App *app)
     float bottom = 0;
     draw_choices(&app->draw, items, ST_COUNT, 160, 70, 320, app->mx, app->my, app->sel, true, &bottom);
     draw_wrapped(&app->draw, app->font, app_text(app, "settings.odds.about"), 160, bottom + 20, 320, COL_DIM, false);
+    draw_footer(app, app_text(app, "footer.back"));
+}
+
+/* ---------------------------------------------------------------- high scores */
+
+void scores_event(App *app, const SDL_Event *e)
+{
+    if (is_back(e) || is_confirm(e) || is_click(e)) {
+        app_switch(app, SCR_TITLE);
+    }
+}
+
+void scores_render(App *app)
+{
+    Draw *d = &app->draw;
+    const GameData *data = app->data;
+    int n = score_count;
+    draw_header(app, app_text(app, "scores.title"), NULL);
+    if (n == 0) {
+        draw_wrapped(d, d->font, app_text(app, "scores.empty"), 30, 40, 580, COL_DIM, false);
+        draw_footer(app, app_text(app, "footer.back"));
+        return;
+    }
+    static const float COL_RANK = 20, COL_FAMILY = 44, COL_END = 250, COL_PEOPLE = 470, COL_DIFF = 530, COL_SCORE = 620;
+    float y = 30;
+    draw_text(d, d->font, app_text(app, "scores.col.family"), COL_FAMILY, y, COL_DIM, TEXT_LEFT);
+    draw_text(d, d->font, app_text(app, "scores.col.end"), COL_END, y, COL_DIM, TEXT_LEFT);
+    draw_text(d, d->font, app_text(app, "scores.col.people"), COL_PEOPLE, y, COL_DIM, TEXT_LEFT);
+    draw_text(d, d->font, app_text(app, "scores.col.difficulty"), COL_DIFF, y, COL_DIM, TEXT_LEFT);
+    draw_text(d, d->font, app_text(app, "scores.col.score"), COL_SCORE, y, COL_DIM, TEXT_RIGHT);
+    y += d->line_h + 4;
+    for (int i = 0; i < n && i < 10; i++) {
+        const ScoreEntry *e = &scores[i];
+        SDL_Color c = i == 0 ? COL_GOLD : COL_TEXT;
+        char buf[160];
+        snprintf(buf, sizeof buf, "%d", i + 1);
+        draw_text(d, d->font, buf, COL_RANK, y, COL_DIM, TEXT_LEFT);
+        int f = data_find_family(data, e->family_id);
+        LocText t;
+        loctext_set(&t, "scores.family");
+        loctext_arg_str(&t, "surname", e->surname);
+        loctext_arg_key(&t, "name", f >= 0 ? data->families[f].name_key : "scores.unknown");
+        draw_text(d, d->font, app_fmt(app, &t), COL_FAMILY, y, c, TEXT_LEFT);
+        static const char *ENDS[] = {"scores.end.arrived", "scores.end.arrived", "scores.end.settled", "scores.end.turned_back",
+                                     "scores.end.stranded", "scores.end.lost"};
+        int node = data_find_node(data, e->node);
+        loctext_set(&t, ENDS[e->ending >= 0 && e->ending <= ENDING_LOST ? e->ending : 0]);
+        loctext_arg_key(&t, "place", node >= 0 ? data->nodes[node].name_key : "scores.unknown");
+        loctext_arg_date(&t, "date", e->day);
+        draw_text(d, d->font, app_fmt(app, &t), COL_END, y, c, TEXT_LEFT);
+        snprintf(buf, sizeof buf, "%d / %d", e->alive, e->party);
+        draw_text(d, d->font, buf, COL_PEOPLE, y, c, TEXT_LEFT);
+        char key[48];
+        snprintf(key, sizeof key, "difficulty.%s", difficulty_id(e->difficulty));
+        draw_text(d, d->font, app_text(app, key), COL_DIFF, y, c, TEXT_LEFT);
+        snprintf(buf, sizeof buf, "%d", e->score);
+        draw_text(d, d->font, buf, COL_SCORE, y, c, TEXT_RIGHT);
+        y += d->line_h + 6;
+    }
+    draw_wrapped(d, d->small, app_text(app, "scores.note"), 20, TREK_LOGICAL_H - 46, 600, COL_DIM, false);
     draw_footer(app, app_text(app, "footer.back"));
 }
 
