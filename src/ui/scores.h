@@ -20,11 +20,15 @@ typedef struct {
     int alive, party;
     int miles;
     int score;
+    bool cleared;           /* deleted by the player: kept only so the trip is not added again */
 } ScoreEntry;
 
 /* Records (or updates) a finished trip's score. */
 void scores_record(const char *pref_path, const char *trip_id, const Game *g);
 /* Reads the scores, best first, after adding any finished trip in `trips` not yet recorded. */
 int scores_load(const char *pref_path, const TripList *trips, const GameData *data, ScoreEntry *out, int max);
+/* Deletes every high score. Saved trips are kept, and are not scored again; trips finished
+ * afterwards are. */
+void scores_clear(const char *pref_path, const TripList *trips, const GameData *data);
 
 #endif

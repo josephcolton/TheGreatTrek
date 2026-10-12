@@ -356,6 +356,20 @@ void settings_render(App *app)
 
 void scores_event(App *app, const SDL_Event *e)
 {
+    if (app->overlay == OV_CONFIRM_DELETE) {
+        if (key_is(e, SDLK_Y)) {
+            scores_clear(app->pref_path, &app->trips, app->data);
+            load_scores(app);
+            app->overlay = OV_NONE;
+        } else if (key_is(e, SDLK_N) || is_back(e)) {
+            app->overlay = OV_NONE;
+        }
+        return;
+    }
+    if (score_count > 0 && (key_is(e, SDLK_DELETE) || key_is(e, SDLK_D))) {
+        app->overlay = OV_CONFIRM_DELETE; /* nothing is deleted until the player presses Y */
+        return;
+    }
     if (is_back(e) || is_confirm(e) || is_click(e)) {
         app_switch(app, SCR_TITLE);
     }
@@ -408,7 +422,15 @@ void scores_render(App *app)
         draw_text(d, d->font, buf, COL_SCORE, y, c, TEXT_RIGHT);
         y += d->line_h + 6;
     }
-    draw_footer(app, app_text(app, "footer.back"));
+    if (app->overlay == OV_CONFIRM_DELETE) {
+        SDL_FRect box = {120, 130, 400, 70};
+        draw_rect(d, box, COL_PANEL);
+        draw_frame(d, box, COL_RED);
+        draw_wrapped(d, d->font, app_text(app, "scores.confirm_clear"), box.x + 14, box.y + 12, (int)box.w - 28, COL_TEXT, false);
+        draw_footer(app, app_text(app, "scores.confirm_footer"));
+    } else {
+        draw_footer(app, app_text(app, "scores.footer"));
+    }
 }
 
 /* ---------------------------------------------------------------- credits */
