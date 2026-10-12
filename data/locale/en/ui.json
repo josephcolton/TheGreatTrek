@@ -106,7 +106,8 @@
   "orders.footer": "Up/down to choose, left/right to change. Enter or Esc to close.",
 
   "dialog.footer": "Choose with the number keys or the mouse.  P: party  S: supplies  M: map  G: words",
-  "dialog.footer_history": "Choose with the number keys or the mouse.  H: the history behind this  G: words",
+  "dialog.footer_history": "Choose with the number keys or the mouse.  H: the history behind this  M: map  G: words",
+  "dialog.see_map": "Look at the map",
 
   "store.money": "You have {n}",
   "store.col.item": "Goods",

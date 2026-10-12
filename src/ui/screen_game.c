@@ -381,6 +381,7 @@ typedef struct {
     char text[MAX_CHOICES][400];
     char locked[MAX_CHOICES][200];
     int n;
+    int map_item;             /* the extra "Look at the map" line, -1 if none */
 } DialogChoices;
 
 static void build_choices(App *app, const DialogView *v, DialogChoices *dc)
@@ -408,6 +409,14 @@ static void build_choices(App *app, const DialogView *v, DialogChoices *dc)
             app_fmt_to(app, &v->choices[i].locked, dc->locked[i], sizeof dc->locked[i]);
             dc->items[i].locked = dc->locked[i];
         }
+    }
+    /* in a place, and where the road divides, the map is one of the choices */
+    dc->map_item = -1;
+    if ((v->kind == DLG_LANDMARK || v->kind == DLG_ROUTE) && dc->n < MAX_CHOICES) {
+        dc->map_item = dc->n;
+        snprintf(dc->text[dc->n], sizeof dc->text[dc->n], "%s", app_text(app, "dialog.see_map"));
+        dc->items[dc->n] = (ChoiceItem){dc->text[dc->n], NULL};
+        dc->n++;
     }
 }
 
@@ -521,6 +530,10 @@ static void dialog_event(App *app, const SDL_Event *e)
     } else if (is_click(e)) {
         float y = dialog_layout(app, &v, false, text_start(app, &v, &dc));
         pick = choices_hit(&app->draw, dc.items, dc.n, DLG_X, y, DLG_W, app->mx, app->my, true);
+    }
+    if (pick >= 0 && pick == dc.map_item) {
+        app->overlay = OV_MAP;
+        return;
     }
     if (pick >= 0 && pick < dc.n && !dc.items[pick].locked) {
         game_choose(g, pick);

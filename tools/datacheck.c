@@ -63,6 +63,7 @@ static const char *CODE_KEYS[] = {
     "landmark.barter", "barter.reply.empty", "barter.reply.insult", "barter.reply.short", "barter.reply.generous",
     "barter.reply.done", "barter.reply.powder", "journal.barter", "journal.barter_powder",
     "river.trouble.person_alone",
+    "dialog.see_map",
     "level.title", "level.footer",
     "scores.title", "scores.empty", "scores.col.family", "scores.col.end", "scores.col.people", "scores.col.difficulty",
     "scores.col.score", "scores.family", "scores.unknown", "scores.end.arrived", "scores.end.settled",
