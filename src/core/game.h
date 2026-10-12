@@ -410,6 +410,9 @@ int  game_counter(const Game *g, const char *name);
 int  game_miles_to_next(const Game *g);
 int  game_next_node(const Game *g);
 int  game_score(const Game *g);
+/* The score and what it is made of: the people brought through, the road covered, and herds,
+ * money and good relations. */
+void game_score_parts(const Game *g, int *people, int *road, int *goods, int *total);
 /* Price of one pack of item at the current shop in the side's unit (0 = not for sale). */
 int  game_price(const Game *g, int item, bool selling);
 /* Pence to the side's unit (Rds or shillings), rounded, at least 1 if pence > 0. */

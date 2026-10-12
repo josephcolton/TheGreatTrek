@@ -144,7 +144,7 @@ Per the content rules, none of these is a generic "tribe" encounter. Each has it
 - **Retief rode ahead** on 6 Oct 1837 with about 15 men and 4 wagons, down what is now **Retief's Pass**. He was **welcomed at Port Natal by the traders on 19 Oct 1837** **[sourced]**.
 - **2 Nov 1837:** Bantjes rode back to Kerkenberg with word that the trekkers could come down into Natal **[sourced]**.
 - The main body went down in **November 1837**. They spread out in many small camps along the **Bloukrans and Bushman's (Mtshezi) rivers**, near present Estcourt and Weenen, to wait while Retief went to see the Zulu king Dingane **[sourced]**. This is where most trekkers stopped, so it is **goal 1**.
-- **How the descent was done:** no first-hand method was found in this pass **[recall, verify]**. Likely methods are locked wheels, drag-shoes and trees dragged behind, and men on ropes. Only the Tregardt method (§3.2) is sourced. Don't invent detail: describe it as "long and dangerous" until a source turns up.
+- **How the descent was done:** SA History Online says the hind wheels were removed and heavy branches tied securely underneath, which protected the axles and acted as a brake **[sourced, general: no party, date or pass named]**. That matches Tregardt's method on the northern escarpment (§3.2). A tourism page says wagon scars on the slopes near Retief's Pass are from the stub axles **[unsourced]**.
 - **Port Natal in 1837 (goal 2):**
   - English traders: about **50 settlers in 1835** **[sourced]**; 1837 numbers unknown.
   - **Allen Gardiner's** mission on the hill above the bay, from 1835. In 1837 he was given authority over the traders, which they refused **[sourced]**.
@@ -210,7 +210,7 @@ The epilogue must give **both sides**, and note how the events have been remembe
 
 ## 7. Open questions and gaps
 
-- **The Natal descent method:** needs a source (Voortrekker Museum, Bezuidenhout's Pass, Retief's Pass).
+- **The Natal descent method:** found in a general secondary source (SAHO, §4.1); a first-hand account would still be better.
 - **Exact route of the main Natal descent:** several passes were used; which ones, and when.
 - **Fuller (1932), *Louis Trichardt's Trek across the Drakensberg*** (Van Riebeeck Society 13) has maps of the whole Far North route. It wasn't found online in this pass.
 - **The Kommissietrek report** itself: we have only secondary summaries.
@@ -239,6 +239,7 @@ The epilogue must give **both sides**, and note how the events have been remembe
 - Wikipedia, Piet Uys (Kommissietrek): https://en.wikipedia.org/wiki/Piet_Uys
 - Wikipedia, Biggar family: https://en.wikipedia.org/wiki/Biggar_family
 - Wikipedia, Dick King: https://en.wikipedia.org/wiki/Dick_King
+- SAHO, The Great Trek 1835-1846 (wagon descent of the Drakensberg): https://sahistory.org.za/article/great-trek-1835-1846
 
 ---
 

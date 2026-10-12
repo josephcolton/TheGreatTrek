@@ -886,7 +886,12 @@ int game_epilogue(const Game *g, LocText *out, int max)
         }
     }
     if ((t = ADD("ending.score")) != NULL) {
-        loctext_arg_int(t, "n", game_score(g));
+        int people, road, goods, total;
+        game_score_parts(g, &people, &road, &goods, &total);
+        loctext_arg_int(t, "n", total);
+        loctext_arg_int(t, "people", people);
+        loctext_arg_int(t, "road", road);
+        loctext_arg_int(t, "goods", goods);
     }
 #undef ADD
     return n;
@@ -991,29 +996,39 @@ int game_history_epilogue(const Game *g, LocText *out, int max)
 
 /* ---------------------------------------------------------------- score */
 
-int game_score(const Game *g)
+/* The score is mostly the people brought through and the road covered, so a long hard trek
+ * counts for more than stopping early with everything intact; herds, money and good relations
+ * add a little. A trek that did not end where it meant to (stranded, turned back, everyone lost)
+ * counts half, and harder difficulties count more. */
+void game_score_parts(const Game *g, int *people, int *road, int *goods, int *total)
 {
-    int score = 0;
+    const GameData *d = g->data;
+    int p = 0, r = 0, s = 0;
     for (int i = 0; i < g->party_count; i++) {
         if (g_member_active(g, i)) {
-            score += 200 + g->party[i].health;
+            p += 100 + g->party[i].health / 2;
         }
     }
-    const GameData *d = g->data;
-    for (int i = 0; i < d->item_count; i++) {
-        if (d->items[i].category == ITEMCAT_ANIMALS) {
-            score += g->inv[i] * (i == d->item_oxen ? 10 : 2);
-        }
-    }
-    score += g->money / (g->side == SIDE_DUTCH ? 10 : 15);
+    r = g->miles_total * 3 / 2;
+    s += g->inv[d->item_oxen] * 3 + g->inv[d->item_cows] + g->inv[d->item_horses] * 2 + g->inv[d->item_sheep] / 4;
+    s += g->money / (g->side == SIDE_DUTCH ? 20 : 30);
     for (int i = 0; i < d->group_count; i++) {
         if (g->relation[i] > 0) {
-            score += g->relation[i];
+            s += g->relation[i] / 2;
         }
     }
-    if (g->ending != ENDING_ARRIVED && g->ending != ENDING_SETTLED) {
-        score /= 2;
-    }
+    double mul = g->ending == ENDING_ARRIVED || g->ending == ENDING_SETTLED ? 1.0 : 0.5;
     static const double DIFF_MUL[DIFF_COUNT] = {0.5, 1.0, 1.5};
-    return (int)(score * DIFF_MUL[g->difficulty]);
+    mul *= DIFF_MUL[g->difficulty];
+    *people = (int)lround(p * mul);
+    *road = (int)lround(r * mul);
+    *goods = (int)lround(s * mul);
+    *total = *people + *road + *goods;
+}
+
+int game_score(const Game *g)
+{
+    int people, road, goods, total;
+    game_score_parts(g, &people, &road, &goods, &total);
+    return total;
 }

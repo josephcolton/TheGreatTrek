@@ -24,7 +24,7 @@
   "place.delagoa_bay": "Delagoa Bay",
   "place.delagoa_bay.desc": "The Portuguese fort of Lourenco Marques: earth walls on a sand ridge by the bay, with a swamp behind.",
 
-  "history.place.kerkenberg": "This is history: Retief camped at Kerkenberg with 54 wagons on 5 October 1837. The trekkers stayed there from mid-October to mid-November and sent men out to find ways down the escarpment. On 2 November Bantjes rode back up with word that they could come down into Natal. How the wagons got down is not well recorded: the trekkers used several passes.",
+  "history.place.kerkenberg": "This is history: Retief camped at Kerkenberg with 54 wagons on 5 October 1837. The trekkers stayed there from mid-October to mid-November and sent men out to find ways down the escarpment. On 2 November Bantjes rode back up with word that they could come down into Natal. The trekkers used several passes. On the steep slopes the back wheels were taken off and heavy branches tied underneath, which dragged as a brake and kept the axles off the rocks.",
   "history.place.bloukrans": "This is history: in November 1837 the trekker families came down the Drakensberg and spread out in small camps along the Bloukrans and Bushman's rivers, near today's Estcourt and Weenen. Most of the people who trekked to Natal stopped here, waiting while Piet Retief went to the Zulu king Dingane to ask for land.",
   "history.place.port_natal": "This is history: Port Natal (later Durban) had about fifty English settlers and traders in 1835. Allen Gardiner had a mission on the hill above the bay, and American missionaries came in 1836. The traders welcomed Retief's riders on 19 October 1837.",
   "history.place.magaliesberg": "This is history: in 1837 the Ndebele under Mzilikazi held the country north of the Vaal. After the trekker attack on Mosega in January 1837 they were in the Marico, to the west, until a second commando in November 1837 drove them north over the Limpopo. The hunter Harris called this ridge the Cashan Mountains in 1836.",
@@ -92,8 +92,8 @@
   "event.kerkenberg_camp.together": "Go down together with a trekker party",
   "event.kerkenberg_camp.together.done": "With many hands on the ropes and many oxen, the wagons go down one at a time. It takes days, but nobody is hurt.",
   "event.kerkenberg_camp.now": "Go down now by the first way found",
-  "event.kerkenberg_camp.now.ok": "With the back wheels locked and everyone hanging on the ropes, the wagon slides and lurches down the slope. It reaches the bottom in one piece.",
-  "event.kerkenberg_camp.now.bad": "Halfway down the wagon runs away from the ropes and slams into a rock. The axle is cracked, and someone is hurt trying to hold it.",
+  "event.kerkenberg_camp.now.ok": "The back wheels are taken off and heavy branches tied underneath to drag as a brake. With everyone hauling back on the riems, the wagon slides and lurches down the slope and reaches the bottom in one piece.",
+  "event.kerkenberg_camp.now.bad": "Halfway down, the branches tear loose and the wagon runs away from the riems and slams into a rock. The axle is cracked, and someone is hurt trying to hold it.",
 
   "event.bloukrans_camps.body": "Below the mountains, trekker families have spread out in small camps along the Bloukrans and Bushman's rivers. The grass is deep and the water is good. Everyone is waiting for news of Retief's talks with the Zulu king.",
   "event.bloukrans_camps.stay": "Make your home here with the other families",

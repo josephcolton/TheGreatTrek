@@ -18,7 +18,7 @@
     {
       "id": "kerkenberg_camp", "setpiece": true,
       "history": "history.place.kerkenberg",
-      "sources": ["Retief camped with 54 wagons at Kerkenberg on 5 Oct 1837; the trekkers stayed from mid-October to mid-November and sent parties to find ways down the escarpment (Wikipedia: Piet Retief; Wikipedia: Kerkenberg). Bantjes brought word on 2 Nov 1837 that they could come down into Natal (Wikipedia: Piet Retief). How the wagons went down is not sourced (06_research_routes.md section 4.1); the outcomes here are invented."],
+      "sources": ["Retief camped with 54 wagons at Kerkenberg on 5 Oct 1837; the trekkers stayed from mid-October to mid-November and sent parties to find ways down the escarpment (Wikipedia: Piet Retief; Wikipedia: Kerkenberg). Bantjes brought word on 2 Nov 1837 that they could come down into Natal (Wikipedia: Piet Retief). On the descent the hind wheels were removed and heavy branches tied underneath as a brake (SAHO, 'Great Trek 1835-1846', general account, no party or pass named; the same method as Tregardt's, Preller p. LXXXVIII) - 06_research_routes.md section 4.1. The outcomes and odds here are invented."],
       "text": "event.kerkenberg_camp.body",
       "choices": [
         { "text": "event.kerkenberg_camp.wait",

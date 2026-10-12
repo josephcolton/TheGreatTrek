@@ -213,6 +213,6 @@
   "ending.flag.met_moroka": "You met Moroka at Thaba Nchu, whose oxen saved the people of Vegkop.",
   "ending.flag.heard_mosega": "You heard what Mosega meant for the people who lived there.",
   "ending.flag.saw_bible_gift": "You were at Grahamstown when the settlers gave the trekkers their Bible.",
-  "ending.score": "Family score: {n}",
+  "ending.score": "Family score: {n} ({people} for the people brought through, {road} for the road, {goods} for herds, money and friends).",
   "ending.footer": "M: the map of your road.  Enter: back to the main menu. This trip is kept in Finished trips."
 }
