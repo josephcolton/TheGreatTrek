@@ -12,13 +12,18 @@ Read these before designing or writing content:
 - `docs/planning/01_gemini_review.md`: early Gemini design ideas worth keeping, and the factual errors in them.
 - `docs/planning/04_game_design.md`: how the game works: screens, dialog, map, timing, stores and barter, events format, hunting, saves, core API.
 - `docs/planning/05_research_pass2.md`: distances, 1837 calendar, period prices and wages, checked facts, family origin stories, name lists, glossary.
+- `docs/planning/06_research_routes.md`: the Natal and Far North routes: Tregardt, Kerkenberg, malaria and the fly, warnings, epilogues.
 
 ## Settled decisions (don't re-open without the user)
 
 - **One trek north.**
   - Default start: Grahamstown, April 1837. Opening scene: the English settlers' Bible gift to the Uys party.
   - Route: Cradock → Colesberg → Orange River drift → Thaba Nchu → Sand/Vet River → Vaal drift → ending at the Mooi River (Potchefstroom area).
-  - Natal/Drakensberg is a possible later fork at Thaba Nchu.
+  - **Two more roads (decided 2026-10-11, being built):**
+    - **Natal**, forking at the Vet River. The player chooses the goal: the Bloukrans/Bushman's River camps or Port Natal.
+    - **Far North**, forking at the Vaal drift. The player chooses the goal: the Soutpansberg or Delagoa Bay.
+    - A trip ends on arrival, followed by an **epilogue** of what really happened there. The epilogue says plainly who did not survive, without describing how they were killed. The player never plays through the killings of 1838.
+  - **Malaria and the fly** are real dangers on the Far North road, tied to the lowveld and the rainy season. People in towns and camps warn about specific roads.
 - **"Dutch or English" is the side you play, not the interface language.** The side changes:
   - wagons and items on offer
   - starting money and livestock
@@ -29,7 +34,9 @@ Read these before designing or writing content:
 - **All playable families and named characters are fictional** (e.g. the English settler family is the fictional *Ashworth* family). Do not base characters on, or name, real private families. Historical public figures (Retief, Uys, Potgieter, Moroka, Mzilikazi, Harris, etc.) may appear as themselves.
 - **The interface is in English**, with period Dutch words (laager, smous, voorloper, kakebeenwa, drift, sanna).
 - All player-facing text lives in locale files, so a Dutch or Afrikaans translation can be added later.
-- **Family-friendly:** danger and death are present, but violence is told in text and kept non-graphic.
+- **Audience: adults** (people in their late 30s and 40s who grew up on Oregon Trail), not young children.
+  - Death on the trail is fine and should be honest, including disease.
+  - Violence is still told in text and kept non-graphic, and is never something the player does for sport.
 - **Educational realism:** odds are not shown (a "Show odds" setting exists, off by default) but should match history where sources allow. Every rate and price carries a source or is marked invented.
 - **Money:** whole rixdollars (Dutch side) or pounds and shillings (English side), priced as close to 1837 as sources allow. Historical events move prices, and sellers cite them.
 - **Saves are permadeath:** one save per trip, written after every step, listed newest first; no going back to an earlier point. Difficulty (Easy/Normal/Hard) is chosen on the main menu before a trip.

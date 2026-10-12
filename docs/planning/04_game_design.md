@@ -327,7 +327,8 @@ The party picks its road at forks, and each road has its own country, towns, eve
 | **Orange drift (western)** | Straight to Thaba Nchu | shortest | |
 | | By **Philippolis** (Griqua) | +~22 mi; Griqua trade and news; a relation-building stop | Philippolis as a Griqua centre |
 | **Thaba Nchu** | North to the Highveld (this game) | | settled route |
-| | *(later)* East over the Drakensberg to Natal | not in the first release | plan §1 |
+| **Vet River** | *(planned)* East to **Natal** by Kerkenberg | goal: the Bloukrans camps or Port Natal | the Vet River vote for Natal, 6 June 1837 (`06` §2) |
+| **Vaal drift** | *(planned)* **Far North** to the Soutpansberg | goal: the Soutpansberg or Delagoa Bay; fever and the fly | Tregardt (`06` §3) |
 
 **Timelines.** Because news travels by road, the two roads hear different things at different times (e.g. the eastern road meets people who saw Retief's party cross; the western road hears frontier prices and Colesberg gossip). Timed events use `date_gte` / `date_lt` conditions, so a fast party and a slow party meet different news.
 

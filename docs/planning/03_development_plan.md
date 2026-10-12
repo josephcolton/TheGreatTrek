@@ -18,7 +18,12 @@ Builds on `01_gemini_review.md` and `02_research_resources.md`.
 
 ### Still open (minor; defaults chosen)
 - **Start year and place.** Default: **Grahamstown, April 1837.** That is when the Uys party camped outside town and received the Dutch Bible from the English settlers. It is a natural opening scene where both sides meet. The alternative is Graaff-Reinet in 1836, which is more Dutch and lets Vegkop happen live.
-- **End point.** Default: **the Mooi River (Potchefstroom area)**, founded 1838–39. The Natal/Drakensberg route could become a later "expansion" fork at Thaba Nchu.
+- **End point.** Default: **the Mooi River (Potchefstroom area)**, founded 1838–39.
+- **More roads (decided 2026-10-11):**
+  - **Natal**, forking at the Vet River. Goal: the Bloukrans/Bushman's River camps or Port Natal.
+  - **Far North**, forking at the Vaal drift. Goal: the Soutpansberg or Delagoa Bay.
+  - The trip ends on arrival, followed by a historical epilogue.
+  - See `06_research_routes.md`.
 - **Dutch spellings.** Default: period Dutch words in English text (laager, smous, voorloper, kakebeenwa, drift).
 
 ---
@@ -29,7 +34,10 @@ Builds on `01_gemini_review.md` and `02_research_resources.md`.
 2. **Your side matters.** Dutch and English players see different prices, wagons, welcomes and dangers on the same road.
 3. **Every event has a source,** or is clearly labeled as invented.
 4. **People, not obstacles.** The Barolong, Griqua, Basotho and Ndebele, Khoikhoi servants, missionaries and British officials are named actors with their own reasons.
-5. **Family-friendly.** Danger and death are present, but violence is told in the text and off-screen, not graphically. A full run takes 30–60 minutes.
+5. **Honest, not graphic.** The audience is adults who remember Oregon Trail.
+   - Death and disease are present and honest.
+   - Violence is told in the text and off-screen, not graphically.
+   - A full run takes 30–60 minutes.
 6. **Text kept separate from code** from the start, so a translation is easy later.
 
 ---
