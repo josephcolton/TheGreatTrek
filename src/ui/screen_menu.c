@@ -121,7 +121,7 @@ static void title_items(App *app, ChoiceItem *items, char *diff_buf, size_t cap)
 }
 
 #define TITLE_MENU_X 220.0f
-#define TITLE_MENU_Y 150.0f
+#define TITLE_MENU_Y 142.0f
 #define TITLE_MENU_W 200
 
 /* the high scores, read once when the screen opens */
@@ -194,10 +194,13 @@ void title_render(App *app)
     ChoiceItem items[TM_COUNT];
     char diff[96];
     title_items(app, items, diff, sizeof diff);
-    draw_choices(d, items, TM_COUNT, TITLE_MENU_X, TITLE_MENU_Y, TITLE_MENU_W, app->mx, app->my, app->sel, true, NULL);
+    float menu_bottom = 0;
+    draw_choices(d, items, TM_COUNT, TITLE_MENU_X, TITLE_MENU_Y, TITLE_MENU_W, app->mx, app->my, app->sel, true, &menu_bottom);
     char key[48];
     snprintf(key, sizeof key, "difficulty.%s.about", difficulty_id(app->settings.difficulty));
-    draw_wrapped(d, d->font, app_text(app, key), 120, 300, 400, COL_DIM, false);
+    /* below the menu, which is a line taller when there are no saved trips */
+    float about_y = menu_bottom + 10 > 300 ? menu_bottom + 10 : 300;
+    draw_wrapped(d, d->font, app_text(app, key), 70, about_y, 500, COL_DIM, false);
     if (app->message_timer > 0) {
         draw_text(d, d->font, app->message, cx, 128, COL_RED, TEXT_CENTER);
     }
