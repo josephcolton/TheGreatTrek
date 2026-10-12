@@ -688,6 +688,13 @@ void game_set_keep_flock(Game *g, bool keep)
     g->keep_flock = keep;
 }
 
+void game_set_medicine(Game *g, int member, bool give)
+{
+    if (member >= 0 && member < g->party_count) {
+        g->party[member].no_medicine = !give;
+    }
+}
+
 /* ---------------------------------------------------------------- settle: what to show next */
 
 static bool everyone_gone(const Game *g)

@@ -369,15 +369,24 @@ static void health_day(Game *g, bool travelling, bool had_water)
                 if (!travelling) {
                     p += 0.05;
                 }
-                if (g->inv[d->item_medicine] > 0) {
+                if (g->inv[d->item_medicine] > 0 && !m->no_medicine) {
                     g->inv[d->item_medicine]--;
                     p += 0.08;
+                    if (m->conds[c].doses++ == 0) {
+                        /* the journal says when the medicine chest is opened for someone */
+                        LocText t;
+                        loctext_set(&t, "journal.medicine");
+                        loctext_arg_person(&t, "who", m);
+                        loctext_arg_key(&t, "illness", il->name_key);
+                        game_journal(g, &t);
+                    }
                 }
                 if (rng_chance(&g->rng, p)) {
                     LocText t;
-                    loctext_set(&t, "journal.recovered");
+                    loctext_set(&t, m->conds[c].doses > 0 ? "journal.recovered_medicine" : "journal.recovered");
                     loctext_arg_person(&t, "who", m);
                     loctext_arg_key(&t, "illness", il->name_key);
+                    loctext_arg_int(&t, "n", m->conds[c].doses);
                     game_journal(g, &t);
                     m->conds[c] = m->conds[m->cond_count - 1];
                     m->cond_count--;

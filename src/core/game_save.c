@@ -109,12 +109,14 @@ char *game_save_json(const Game *g)
             }
         }
         cJSON_AddNumberToObject(mj, "health", m->health);
+        cJSON_AddBoolToObject(mj, "no_medicine", m->no_medicine);
         cJSON *conds = cJSON_AddArrayToObject(mj, "conds");
         for (int c = 0; c < m->cond_count; c++) {
             cJSON *cj = cJSON_CreateObject();
             cJSON_AddStringToObject(cj, "illness", d->illnesses[m->conds[c].illness].id);
             cJSON_AddNumberToObject(cj, "days", m->conds[c].days);
             cJSON_AddNumberToObject(cj, "severity", m->conds[c].severity);
+            cJSON_AddNumberToObject(cj, "doses", m->conds[c].doses);
             cJSON_AddItemToArray(conds, cj);
         }
         cJSON_AddNumberToObject(mj, "loyalty", m->loyalty);
@@ -467,6 +469,7 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         }
         m->health = (int)nget(mj, "health", 50);
         const cJSON *cj;
+        m->no_medicine = bget(mj, "no_medicine");
         cJSON_ArrayForEach(cj, cJSON_GetObjectItemCaseSensitive(mj, "conds"))
         {
             int il = data_find_illness(data, sget(cj, "illness"));
@@ -474,6 +477,7 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
                 m->conds[m->cond_count].illness = il;
                 m->conds[m->cond_count].days = (int)nget(cj, "days", 0);
                 m->conds[m->cond_count].severity = (int)nget(cj, "severity", 100);
+                m->conds[m->cond_count].doses = (int)nget(cj, "doses", 0);
                 m->cond_count++;
             }
         }

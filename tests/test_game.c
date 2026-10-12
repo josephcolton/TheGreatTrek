@@ -362,6 +362,38 @@ static void test_flock(const GameData *d)
     CHECK(left[1] == 50);      /* keeping it, with plenty of meal: none */
 }
 
+/* Medicine goes only to the sick who are not kept back from it, and the journal says so. */
+static void test_medicine(const GameData *d)
+{
+    int used[2];
+    for (int give = 0; give < 2; give++) {
+        Game *g = play(d, 6, data_find_family(d, "grensboer"), 30);
+        int med = d->item_medicine;
+        g->inv[med] = 20;
+        for (int i = 0; i < g->party_count; i++) {
+            g->party[i].cond_count = 0;
+            game_set_medicine(g, i, give);
+        }
+        g->party[1].conds[0] = (MemberCond){.illness = data_find_illness(d, "flux"), .days = 5, .severity = 60};
+        g->party[1].cond_count = 1;
+        int journal0 = g->journal_count;
+        for (int day = 0; day < 4; day++) {
+            g_pass_day(g, false, false);
+        }
+        used[give] = 20 - g->inv[med];
+        if (give) {
+            bool noted = false;
+            for (int j = journal0; j < g->journal_count; j++) {
+                noted = noted || strcmp(g->journal[j].text.key, "journal.medicine") == 0;
+            }
+            CHECK(noted);
+        }
+        game_free(g);
+    }
+    CHECK(used[0] == 0); /* kept back: none used, even with a sick person */
+    CHECK(used[1] > 0);
+}
+
 static void test_mend(const GameData *d)
 {
     Game *g = NULL;
@@ -454,6 +486,7 @@ int main(void)
     test_defend(d);
     test_far_north(d);
     test_flock(d);
+    test_medicine(d);
     test_mend(d);
     test_portraits(d);
     for (int f = 0; f < d->family_count; f++) {

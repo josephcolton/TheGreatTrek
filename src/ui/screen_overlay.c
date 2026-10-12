@@ -199,6 +199,9 @@ static void supplies_render(App *app)
 
 /* ---------------------------------------------------------------- party */
 
+/* where each row of the party screen starts, for the mouse (one more for the bottom) */
+static float party_row_y[MAX_PARTY + 1];
+
 static void party_render(App *app)
 {
     Draw *d = &app->draw;
@@ -206,8 +209,10 @@ static void party_render(App *app)
     overlay_panel(app, app_text(app, "party.title"));
     float y = 42;
     static const int HEALTH[] = {80, 60, 40};
+    draw_text(d, d->small, app_text(app, "party.col.medicine"), 604, 24, COL_GOLD, TEXT_RIGHT);
     for (int i = 0; i < g->party_count; i++) {
         const Member *m = &g->party[i];
+        party_row_y[i] = y;
         char role_key[32], line[300], cond[160] = "";
         member_role_key(m->role, m->pronoun, role_key, sizeof role_key);
         SDL_Color c = COL_TEXT;
@@ -237,7 +242,16 @@ static void party_render(App *app)
             }
         }
         float row_y = y;
+        if (i == app->sel) {
+            draw_rect(d, (SDL_FRect){30, y - 1, 580, 28}, COL_HILITE_BG);
+        }
         portrait_draw(d->r, "face_", m->portrait, 36, y, 1, !m->alive || !m->with_party);
+        if (m->alive && m->with_party) {
+            /* medicine: given when ill (the default), or kept back */
+            const char *mk = m->no_medicine ? "party.medicine.no" : (m->cond_count > 0 ? "party.medicine.giving" : "party.medicine.yes");
+            draw_text(d, d->font, app_text(app, mk), 604, y, m->no_medicine ? COL_DIM : (m->cond_count > 0 ? COL_GOLD : COL_TEXT),
+                      TEXT_RIGHT);
+        }
         snprintf(line, sizeof line, "%s", m->name);
         draw_text(d, d->font, line, 70, y, c, TEXT_LEFT);
         snprintf(line, sizeof line, "%s, %d", app_text(app, role_key), 1837 - m->birth_year);
@@ -263,7 +277,42 @@ static void party_render(App *app)
             y = row_y + 30; /* room for the face */
         }
     }
-    draw_text(d, d->font, app_text(app, "overlay.close"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
+    party_row_y[g->party_count] = y;
+    LocText t;
+    loctext_set(&t, "party.medicine_left");
+    loctext_arg_int(&t, "n", g->inv[app->data->item_medicine]);
+    draw_text(d, d->font, app_fmt(app, &t), 36, TREK_LOGICAL_H - 50, COL_DIM, TEXT_LEFT);
+    draw_text(d, d->font, app_text(app, "party.footer"), TREK_LOGICAL_W / 2.0f, TREK_LOGICAL_H - 32, COL_DIM, TEXT_CENTER);
+}
+
+static void party_toggle(App *app, int i)
+{
+    Game *g = app->game;
+    if (i >= 0 && i < g->party_count && g->party[i].alive && g->party[i].with_party) {
+        game_set_medicine(g, i, g->party[i].no_medicine);
+        app_commit(app);
+    }
+}
+
+static void party_event(App *app, const SDL_Event *e)
+{
+    Game *g = app->game;
+    if (key_is(e, SDLK_UP) || key_is(e, SDLK_DOWN)) {
+        nav_updown(app, e, g->party_count);
+    } else if (is_click(e)) {
+        for (int i = 0; i < g->party_count; i++) {
+            if (app->my >= party_row_y[i] - 1 && app->my < party_row_y[i + 1] - 1 && app->mx >= 30 && app->mx < 610) {
+                app->sel = i;
+                party_toggle(app, i);
+                return;
+            }
+        }
+        close_overlay(app);
+    } else if (is_confirm(e) || key_is(e, SDLK_SPACE)) {
+        party_toggle(app, app->sel);
+    } else if (e->type == SDL_EVENT_KEY_DOWN) {
+        close_overlay(app);
+    }
 }
 
 /* ---------------------------------------------------------------- map */
@@ -755,6 +804,7 @@ void overlay_event(App *app, const SDL_Event *e)
             close_overlay(app);
         }
         break;
+    case OV_PARTY: party_event(app, e); break;
     case OV_MAP:
         if (key_is(e, SDLK_TAB) || key_is(e, SDLK_LEFT) || key_is(e, SDLK_RIGHT)) {
             app->map_sheet = (map_sheet(app) + 1) % (app->data->map_count > 0 ? app->data->map_count : 1) + 1;

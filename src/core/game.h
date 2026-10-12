@@ -53,6 +53,7 @@ typedef struct {
     int illness;
     int days;
     int severity;             /* percent: how hard this case hits (60..220) */
+    int doses;                /* doses of medicine given for it */
 } MemberCond;
 
 typedef struct {
@@ -70,6 +71,7 @@ typedef struct {
     bool alive;
     bool with_party;
     bool warned;              /* Easy: already warned that this member is close to death */
+    bool no_medicine;         /* the player keeps the medicine back from this person (party screen) */
 } Member;
 
 typedef struct {
@@ -304,6 +306,9 @@ void game_set_orders(Game *g, Pace pace, Rations rations, NightStance stance, bo
 /* Eat the flock (a sheep whenever the fresh meat runs out, as the trekkers did) or keep it and eat
  * the wagon's stores, slaughtering only when they run low. */
 void game_set_keep_flock(Game *g, bool keep);
+/* Whether a member is given medicine when ill: a dose a day while it lasts (on unless the player
+ * keeps it back). */
+void game_set_medicine(Game *g, int member, bool give);
 /* Pounds of food the party eats a day at the present rations. */
 double game_food_need(const Game *g);
 /* Plays one day on the road. Returns true if the party stopped (event, arrival, warning...). */
