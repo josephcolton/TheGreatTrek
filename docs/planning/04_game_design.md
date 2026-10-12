@@ -782,7 +782,8 @@ typedef struct {
 ### 11.4 Death and graves
 
 - Deaths happen through illness, accidents, crossings and (rarely) events, at the rates in §8.5. On **Easy** deaths are rarer and a warning always comes first.
-- **Grave screen:** name, birth year, date and place of death, a typed epitaph (optional). The grave is stored **in this trip's save only**.
+- **Grave screen:** name, birth year, date and place of death, a typed epitaph (optional). Beside the stone: who they were (place in the family, age), what they died of, and how it came about (`game_grave_story`, `grave.why.<cause>`), so a sudden death is never a mystery. The grave is stored **in this trip's save only**.
+- **Long waits** (weeks of road-making, waiting out the rains) end with a summary on the result page: days passed, illnesses and recoveries, deaths and animals lost, instead of a notice for each.
 - **Only your own party's graves are shown**: as crosses on the map, and as a grave by the trail if the route passes the spot again. Graves from other trips never appear.
 - Violence is never shown; deaths are told in calm text.
 
@@ -814,7 +815,9 @@ The **epilogue** is assembled from three parts (Gemini's "vectors"):
 2. **Standing:** one sentence per group whose relation is notably high or low ("The Barolong at Thaba Nchu remember the Ashworths as fair traders.").
 3. **Choices:** flags from key decisions (council vote, helped a stranded wagon, paid the servants fairly, debts).
 
-A **family score** (people × health + livestock + goods + relations bonus, multiplied by difficulty) gives a reason to replay. A closing "History behind the game" page points to the sources and says plainly what was invented.
+A **family score** gives a reason to replay. It is mostly the people brought through (250 + health each), then the road covered (1 a mile), with a little for herds, money and good relations; settling short of a journey's end counts ¾, a trek that got nowhere ½, and difficulty multiplies it (Easy ½, Hard 1½). The ending shows the three parts. **High scores** (main menu) keep the ten best in `scores.json` in the save folder, so they outlive deleted trips.
+
+The **store** shows, under the food, about how many days each journey's end is from here (`game_days_to`, counting known hold-ups such as the Drakensberg descent), and the storekeeper warns when the food won't reach the nearest one. A **How to play** page opens once on the first trip and is in the pause menu. A closing "History behind the game" page points to the sources and says plainly what was invented.
 
 ---
 
