@@ -52,7 +52,7 @@
   "side.english.about": "Families of the 1820 Settlers going north to trade, hunt or farm. More money and colonial credit, cheaper goods in the Colony, but the trekkers are suspicious of you, and you must earn their trust before they let you into their laager.",
   "side.footer": "1 or 2, or click a family. Esc: back",
   "family.title": "Choose a family",
-  "family.footer": "Choose a family with 1-4 or the mouse. Esc: back",
+  "family.footer": "Choose a family with 1-{n} or the mouse. Esc: back",
   "story.footer": "Enter: name your party   Esc: back",
   "names.title": "Your party",
   "names.row": "{role}, {age}",

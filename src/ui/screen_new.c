@@ -206,7 +206,10 @@ void family_render(App *app)
     family_items(app, items, bufs, fams, n);
     draw_header(app, app_text(app, "family.title"), NULL);
     draw_choices(&app->draw, items, n, FAM_X, FAM_Y, FAM_W, app->mx, app->my, app->sel, true, NULL);
-    draw_footer(app, app_text(app, "family.footer"));
+    LocText footer;
+    loctext_set(&footer, "family.footer");
+    loctext_arg_int(&footer, "n", n);
+    draw_footer(app, app_fmt(app, &footer));
 }
 
 /* ---------------------------------------------------------------- story */

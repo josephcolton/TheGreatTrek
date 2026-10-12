@@ -95,6 +95,44 @@
         { "name": "Kobus", "portrait": "hunter_kobus",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1814, "skills": { "herding": 3, "voorloper": 2 } }
       ],
       "items": { "oxen": 12, "sheep": 30, "horses": 4, "meal": 180, "biltong": 40, "beskuit": 20, "coffee": 10, "sugar": 10,
-                 "water_vat": 2, "water": 40, "gunpowder": 30, "lead": 60, "flints": 36, "spare_wheel": 1, "medicine": 4, "tallow": 10 } }
+                 "water_vat": 2, "water": 40, "gunpowder": 30, "lead": 60, "flints": 36, "spare_wheel": 1, "medicine": 4, "tallow": 10 } },
+    { "id": "weduwee", "side": "dutch", "surname": "Lombard", "wagon": "kakebeenwa", "money": 140,
+      "perks": { "morale": 5 },
+      "members": [
+        { "name": "Magdalena", "portrait": "weduwee_magdalena", "role": "head",    "age": "adult", "pronoun": "she", "born": 1795, "skills": { "herding": 3, "nursing": 2 } },
+        { "name": "Stephanus", "portrait": "weduwee_fanie",     "role": "child",   "age": "adult", "pronoun": "he",  "born": 1818, "skills": { "shooting": 3, "herding": 2 } },
+        { "name": "Hester",    "portrait": "weduwee_hester",    "role": "child",   "age": "child", "pronoun": "she", "born": 1822, "skills": { "nursing": 1 } },
+        { "name": "Andries",   "portrait": "weduwee_andries",   "role": "child",   "age": "child", "pronoun": "he",  "born": 1826, "skills": { "herding": 1 } },
+        { "name": "Christina", "portrait": "weduwee_christina", "role": "child",   "age": "child", "pronoun": "she", "born": 1831, "skills": {} },
+        { "name": "Dirk",      "portrait": "weduwee_dirk",      "role": "servant", "age": "adult", "pronoun": "he",  "born": 1790, "skills": { "voorloper": 4, "herding": 4 } },
+        { "name": "Katrina",   "portrait": "weduwee_katrina",   "role": "servant", "age": "adult", "pronoun": "she", "born": 1808, "skills": { "nursing": 2, "herding": 1 } }
+      ],
+      "items": { "oxen": 16, "cows": 20, "sheep": 160, "horses": 1, "meal": 360, "biltong": 40, "beskuit": 20, "coffee": 15, "sugar": 15,
+                 "water_vat": 3, "water": 60, "gunpowder": 8, "lead": 15, "flints": 12, "spare_wheel": 1, "medicine": 4, "tallow": 10 } },
+    { "id": "mission", "side": "english", "surname": "Whitlock", "wagon": "kakebeenwa", "money": 500,
+      "perks": { "illness": 0.85 },
+      "members": [
+        { "name": "Josiah", "portrait": "mission_josiah", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1804, "skills": { "nursing": 2, "interpreting": 2, "smithing": 1 } },
+        { "name": "Hannah", "portrait": "mission_hannah", "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1807, "skills": { "nursing": 4 } },
+        { "name": "Ruth",   "portrait": "mission_ruth",   "role": "child",   "age": "child", "pronoun": "she", "born": 1830, "skills": {} },
+        { "name": "Caleb",  "portrait": "mission_caleb",  "role": "child",   "age": "child", "pronoun": "he",  "born": 1833, "skills": {} },
+        { "name": "Jacob",  "portrait": "mission_jacob",  "role": "servant", "age": "adult", "pronoun": "he",  "born": 1810, "skills": { "interpreting": 4, "herding": 2 } },
+        { "name": "Piet",   "portrait": "mission_piet",   "role": "servant", "age": "adult", "pronoun": "he",  "born": 1812, "skills": { "voorloper": 3, "herding": 2 } }
+      ],
+      "items": { "oxen": 12, "cows": 4, "sheep": 20, "horses": 1, "meal": 540, "biltong": 20, "beskuit": 40, "coffee": 20, "sugar": 20,
+                 "water_vat": 3, "water": 60, "gunpowder": 3, "lead": 5, "flints": 6, "spare_wheel": 1, "medicine": 16, "tallow": 6,
+                 "beads": 20, "cloth": 2 } },
+    { "id": "soldier", "side": "english", "surname": "Rennie", "wagon": "kakebeenwa", "money": 600,
+      "perks": { "hunt": 1.1 },
+      "members": [
+        { "name": "Duncan", "portrait": "soldier_duncan", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1800, "skills": { "shooting": 4, "tracking": 1, "herding": 1 } },
+        { "name": "Agnes",  "portrait": "soldier_agnes",  "role": "spouse",  "age": "adult", "pronoun": "she", "born": 1808, "skills": { "nursing": 2 } },
+        { "name": "Robert", "portrait": "soldier_robert", "role": "child",   "age": "child", "pronoun": "he",  "born": 1825, "skills": { "shooting": 1 } },
+        { "name": "Jean",   "portrait": "soldier_jean",   "role": "child",   "age": "child", "pronoun": "she", "born": 1829, "skills": {} },
+        { "name": "Willem", "portrait": "soldier_willem", "role": "servant", "age": "adult", "pronoun": "he",  "born": 1806, "skills": { "voorloper": 3, "herding": 2 } },
+        { "name": "Griet",  "portrait": "soldier_griet",  "role": "servant", "age": "adult", "pronoun": "she", "born": 1811, "skills": { "herding": 1, "nursing": 1 } }
+      ],
+      "items": { "oxen": 12, "cows": 2, "sheep": 15, "horses": 1, "meal": 360, "biltong": 30, "beskuit": 30, "coffee": 15, "sugar": 10,
+                 "water_vat": 3, "water": 60, "gunpowder": 25, "lead": 35, "flints": 24, "spare_wheel": 1, "medicine": 4, "tallow": 6 } }
   ]
 }

@@ -54,7 +54,7 @@
   "event.sand_river_laager.body": "By the Sand River the trekker parties have gathered into one great [[laager]]. Leaders are being chosen, and men argue loudly over where the trek should go next: north over the Vaal, or east over the mountains to Natal.",
   "event.sand_river_laager.body@english": "By the Sand River the trekker parties have gathered into one great laager. Heads turn as your wagon comes in. An English family here is something new, and not everyone is pleased.",
   "event.sand_river_laager.join": "Join the laager and take your place in the council",
-  "event.sand_river_laager.join.done": "You draw your wagon into the ring, and that night {head} sits with the other men at the council fire. You are among your own people.",
+  "event.sand_river_laager.join.done": "You draw your wagon into the ring, and that night {head} is welcomed at the council fire. You are among your own people.",
   "event.sand_river_laager.ask": "Ask to bring your wagon into the laager",
   "event.sand_river_laager.ask.done": "Word of how you helped trekker families on the road has gone ahead of you. After some talk, a place is made in the ring for your wagon. You have earned your welcome.",
   "event.sand_river_laager.outside": "Camp a little apart",

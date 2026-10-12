@@ -262,6 +262,14 @@ These are **fictional families** written over the real history above. Names in *
 >
 > *(Harris is a historical figure and may appear as himself; the meeting is invented.)*
 
+**Added 2026-10-12, so each side has five families** (stories in `data/locale/en/families.json`):
+
+**Dutch 5: The Widow. Main character *Magdalena Lombard*.** Widowed in the 1834-35 war, she leads her family north with her son Stephanus and the old voorloper Dirk. Women did lead wagons on the trek: in Tregardt's party the widow Scheepers kept her wagon, stock and nine children, and the men deferred to her (Preller, intro p. LXXVI, `06` section 3). *(Inspired by that role; it does not portray her.)*
+
+**English 4: The Mission Family. Main character *Josiah Whitlock*.** A Methodist settler turned Wesleyan lay missionary, sent to the Thaba Nchu mission (the Wesleyans moved there with Moroka's Barolong in 1833, section 7), with his wife Hannah, a Barolong interpreter, Jacob, and Piet the driver. Good nurses and much medicine; little money and few guns.
+
+**English 5: The Discharged Soldier. Main character *Duncan Rennie*.** A private of a Highland regiment who fought in the 1834-35 war and took his discharge at Graham's Town **[recall, verify: Highland regiments on the frontier in 1835, and discharge at the Cape]**. Well armed and steady on guard; no land, little money, and the trekkers are wary of a former soldier of the Crown.
+
 ### 8.4 Servants and companions
 
 Each family's servants get a short origin too, in their own voice where possible:
