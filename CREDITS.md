@@ -20,7 +20,7 @@ SDL libraries are fetched by CMake at build time and are not stored in this repo
 |---|---|---|
 | `assets/sprites/wagons.txt` (wagons, oxen, the voorloper) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
 | `assets/sprites/scenery.txt` (houses, churches, huts, trees, the camp) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
-| `assets/sprites/animals.txt` (the game animals) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
+| `assets/sprites/animals.txt` (the game animals, and the hyena and wild dog for the night guard) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
 | `assets/sprites/portraits.txt` (portraits of the families, their servants, Moroka and an old trekker) | drawn for this game (Claude, for the project); Moroka's is an impression, not a likeness | GPL-3.0, like the code |
 | `assets/sprites/towns.txt` (Karoo houses, a Karoo church, willows, Griqua houses, mat houses, a kraal) | drawn for this game (Claude, for the project) | GPL-3.0, like the code |
 

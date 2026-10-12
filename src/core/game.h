@@ -113,8 +113,12 @@ typedef struct {
 #define HUNT_FIELD_W 640
 #define HUNT_FIELD_H 210
 #define HUNT_TICKS_PER_SEC 30
+#define HUNT_MAX_TAKES 16
 
-typedef enum { HUNT_A_NONE, HUNT_A_WALK, HUNT_A_GRAZE, HUNT_A_RUN, HUNT_A_CHARGE, HUNT_A_DOWN } HuntAnimalState;
+/* RUSH and FLEE are for guarding the herd: a predator dashes in at the cattle, or makes off. */
+typedef enum {
+    HUNT_A_NONE, HUNT_A_WALK, HUNT_A_GRAZE, HUNT_A_RUN, HUNT_A_CHARGE, HUNT_A_DOWN, HUNT_A_RUSH, HUNT_A_FLEE
+} HuntAnimalState;
 
 typedef struct {
     int kind;                 /* animal index */
@@ -123,6 +127,8 @@ typedef struct {
     float dir;                /* +1 facing right, -1 facing left */
     int timer;                /* ticks left in this state */
     int hp;
+    float tx, ty;             /* guarding the herd: the beast it is after */
+    int prey;                 /* item it carries off, -1 none */
 } HuntAnimal;
 
 typedef struct {
@@ -142,6 +148,13 @@ typedef struct {
     bool shot_misfire;
     LocText log[HUNT_LOG];
     int log_count;
+    /* guarding the herd at night (game_defend_start): the same scene, but predators come for the stock */
+    bool defend;
+    int foe;                  /* animal index */
+    int foes_left;            /* still to come out of the dark */
+    int driven;               /* hit or scared off */
+    int took[HUNT_MAX_TAKES]; /* item index of each beast carried off */
+    int took_count;
 } HuntState;
 
 typedef struct {
@@ -322,7 +335,9 @@ typedef struct {
     bool shot_misfire;
     LocText log[HUNT_LOG];
     int log_count;
-    LocText summary[2];       /* when over: what was shot and what comes back */
+    LocText summary[4];       /* when over: what was shot and what comes back, or what was lost */
+    bool defend;              /* guarding the herd at night */
+    int lost;                 /* beasts carried off so far */
 } HuntView;
 
 /* Whether a hunt can start now (powder, lead, a shooter, and not already hunted out). */
@@ -334,6 +349,8 @@ bool game_hunt_view(const Game *g, HuntView *out);
 void game_hunt_tick(Game *g);
 /* Fires at a point in the field. Returns false if the gun was not ready. */
 bool game_hunt_shoot(Game *g, double x, double y);
+/* Guarding the herd at night against a predator (an event's "defend" effect). */
+void game_defend_start(Game *g, int animal);
 /* Stops hunting and shows the summary. */
 void game_hunt_quit(Game *g);
 /* After the summary: carries the meat back and returns to the road. */

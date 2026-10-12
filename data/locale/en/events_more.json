@@ -66,6 +66,8 @@
   "event.grass_fire.run.done": "You outrun it, but the oxen are exhausted and some sheep are left behind.",
 
   "event.wild_dogs.body": "In the night a pack of wild dogs gets in among the sheep.",
+  "event.wild_dogs.guard": "Take a gun out to the sheep and stand guard",
+  "event.wild_dogs.guard.go": "The dogs are fast and there are many of them. Someone takes a gun out to the sheep.",
   "event.wild_dogs.drive": "Go out with the guns and drive them off",
   "event.wild_dogs.drive.ok": "A shot and a lot of shouting send them off before much harm is done.",
   "event.wild_dogs.drive.bad": "By the time they are driven off, several sheep are dead.",

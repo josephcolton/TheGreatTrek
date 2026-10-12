@@ -118,6 +118,8 @@
       "sources": ["Harris (1839) ch. VI: hyenas 'attracted by the smell of our mutton' came into camp at night (05_research_pass2.md section 10). Outcome weights invented."],
       "text": "event.hyenas_night.body",
       "choices": [
+        { "text": "event.hyenas_night.guard", "requires": [ { "item_gte": ["gunpowder", 1] }, { "item_gte": ["lead", 1] } ], "locked": "lock.need_powder",
+          "outcomes": [ { "text": "event.hyenas_night.guard.go", "effects": [ { "defend": "hyena" } ] } ] },
         { "text": "event.hyenas_night.shot", "requires": [ { "item_gte": ["gunpowder", 1] } ], "locked": "lock.need_powder",
           "outcomes": [ { "text": "event.hyenas_night.shot.done", "effects": [ { "item": "gunpowder", "add": -1 } ] } ] },
         { "text": "event.hyenas_night.fire",
@@ -160,6 +162,8 @@
       "sources": ["invented: Gemini seed 2 (01_gemini_review.md section 2). Lions on the Highveld in the 1830s are described by Harris (1839)."],
       "text": "event.lions_herd.body",
       "choices": [
+        { "text": "event.lions_herd.guard", "requires": [ { "item_gte": ["gunpowder", 1] }, { "item_gte": ["lead", 1] } ], "locked": "lock.need_powder",
+          "outcomes": [ { "text": "event.lions_herd.guard.go", "effects": [ { "defend": "lion" } ] } ] },
         { "text": "event.lions_herd.fire_guns", "requires": [ { "item_gte": ["gunpowder", 2] } ], "locked": "lock.need_powder",
           "outcomes": [
             { "weight": 70, "skill": "shooting", "per_point": 5, "text": "event.lions_herd.fire_guns.ok", "effects": [ { "item": "gunpowder", "add": -2 } ] },

@@ -172,7 +172,7 @@ static void bot_hunt(Game *g, TrekRng *bot_rng)
         if (!game_hunt_view(g, &hv) || hv.over) {
             break;
         }
-        if (hv.meat >= hv.carry) {
+        if (!hv.defend && hv.meat >= hv.carry) {
             game_hunt_quit(g);
             break;
         }
@@ -182,8 +182,12 @@ static void bot_hunt(Game *g, TrekRng *bot_rng)
             if (a->state == HUNT_A_NONE || a->state == HUNT_A_DOWN || a->x < 10 || a->x > HUNT_FIELD_W - 10) {
                 continue;
             }
-            if (!target || (a->state == HUNT_A_CHARGE) > (target->state == HUNT_A_CHARGE) ||
-                ((a->state == HUNT_A_CHARGE) == (target->state == HUNT_A_CHARGE) && a->y > target->y)) {
+            if (hv.defend && a->state == HUNT_A_FLEE && a->prey < 0) {
+                continue; /* let it go */
+            }
+            bool urgent = a->state == HUNT_A_CHARGE || a->state == HUNT_A_RUSH;
+            bool target_urgent = target && (target->state == HUNT_A_CHARGE || target->state == HUNT_A_RUSH);
+            if (!target || urgent > target_urgent || (urgent == target_urgent && a->y > target->y)) {
                 target = a;
             }
         }

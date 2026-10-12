@@ -66,6 +66,12 @@
   "cause.hardship": "hunger and hardship",
   "cause.accident": "an accident",
   "cause.drowned": "drowning",
+  "cause.flux": "dysentery, the bloody flux",
+  "cause.fever": "a fever",
+  "cause.chest": "a chest complaint",
+  "cause.exposure": "cold and exposure",
+  "cause.injury": "an injury",
+  "cause.snakebite": "a snakebite",
 
   "lock.generic": "Not possible now",
   "lock.too_deep": "The river is too deep",

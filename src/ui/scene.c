@@ -186,6 +186,8 @@ static void ground(Draw *d, SDL_FRect r, float horizon, SDL_Color c, bool frost)
     }
 }
 
+static void stars_and_moon(Draw *d, SDL_FRect r, float horizon);
+
 void scene_backdrop(App *app, SDL_FRect r, float horizon, int region, float light)
 {
     Draw *d = &app->draw;
@@ -195,7 +197,11 @@ void scene_backdrop(App *app, SDL_FRect r, float horizon, int region, float ligh
     groundc = shade(groundc, light);
     SDL_FRect sky_r = {r.x, r.y, r.w, horizon - r.y};
     sky(d, sky_r, horizon, skyc, false);
-    clouds(d, sky_r, g, SDL_GetTicks() / 1000.0);
+    if (light < 0.4f) {
+        stars_and_moon(d, sky_r, horizon); /* guarding the herd at night */
+    } else {
+        clouds(d, sky_r, g, SDL_GetTicks() / 1000.0);
+    }
     bool karoo = strcmp(app->data->regions[region].id, "karoo") == 0;
     hills(d, r, horizon + 1, mix(skyc, groundc, 0.45f), karoo ? 18 : 12, 0.017f, 0.7f * region, 0, karoo);
     hills(d, r, horizon + 1, mix(skyc, groundc, 0.75f), karoo ? 9 : 6, 0.029f, 2.1f + region, 0, false);

@@ -693,6 +693,17 @@ Hunting plays like the Oregon Trail hunt: wait, watch game come into sight, aim 
 - Art: W. Cornwallis Harris's 1840 animal plates (public domain) as the basis for pixel animals.
 - Because the hunt is pure core logic, the trekbot can hunt with a simple policy: it waits half a second after taking aim, aims at the body with some error, shoots anything charging first, and goes home when it has all it can carry.
 
+### 9.4 Guarding the herd at night
+
+The night raids (hyenas, lions, wild dogs) offer **"Take a gun out to the herd and stand guard"** next to their other choices. It needs powder and lead, and it opens the hunting screen at night (`game_defend_start`, from an event's `{ "defend": "<animal>" }` effect).
+
+- The camp, the wagons, the fire and the stock are along the bottom of the field. Predators come out of the dark from either side; far off, only their eyes show in the firelight.
+- Each one creeps toward a beast, then rushes in. One that gets through carries a beast off: hyenas usually take sheep, wild dogs sheep, lions oxen. **If it is hit on the way out, it drops it** and the beast is saved.
+- A hit kills or drives it off. **A lion takes two hits, and a wounded lion may turn on the guard** as in the hunt. A shot close by may scare raiders off.
+- How many come is in `animals.json` (`raid`): hyenas 4–7, lions 2–3, wild dogs 6–9 in packs. The night lasts 40 seconds (`defend_seconds`). Going back to the fire (Enter) leaves the herd: about half of those still coming get a beast.
+- A good shot saves most of the stock. In the unit test, a guard who only watches loses about five head a night, and a bot that aims well loses less than one.
+- Sizes and speeds are invented for play [estimate]. Hyenas, lions and wild dogs taking stock at night is in the travellers' accounts in general terms (Harris 1839).
+
 ---
 
 ## 10. Night: rest, laager or guard

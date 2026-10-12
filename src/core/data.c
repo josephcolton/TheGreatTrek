@@ -199,6 +199,7 @@ FIND_BY_ID(data_find_illness, illnesses, illness_count)
 FIND_BY_ID(data_find_shop, shops, shop_count)
 FIND_BY_ID(data_find_wagon, wagons, wagon_count)
 FIND_BY_ID(data_find_event, events, event_count)
+FIND_BY_ID(data_find_animal, animals, animal_count)
 
 static int need_index(Loader *L, int idx, const char *what, const char *id, const char *ctx)
 {
@@ -422,6 +423,7 @@ static void load_illnesses(Loader *L, const char *dir)
         IllnessDef *il = &d->illnesses[d->illness_count++];
         need_str(L, il->id, sizeof il->id, o, "id", "illness");
         make_key(il->name_key, sizeof il->name_key, "illness.", il->id, "");
+        make_key(il->cause_key, sizeof il->cause_key, "cause.", il->id, "");
         il->damage_per_day = jint(o, "damage", 4);
         il->recover_chance = jnum(o, "recover", 0.15);
         il->nursing_bonus = jnum(o, "nursing", 0.03);
@@ -877,6 +879,7 @@ static void load_animals(Loader *L, const char *dir)
     h->shots_per_lb = jint(root, "shots_per_lb", 12);
     h->biltong_yield = jnum(root, "biltong_yield", 0.45);
     h->percussion_misfire_mul = jnum(root, "percussion_misfire_mul", 1.0);
+    h->defend_seconds = jnum(root, "defend_seconds", 40);
     static const char *TIERS[] = {"passive", "big", "predator"};
     const cJSON *o;
     cJSON_ArrayForEach(o, jget(root, "animals"))
@@ -907,6 +910,23 @@ static void load_animals(Loader *L, const char *dir)
             int ri = need_index(L, data_find_region(d, r->string), "region", r->string, a->id);
             if (ri >= 0 && cJSON_IsNumber(r)) {
                 a->region_weight[ri] = r->valuedouble;
+            }
+        }
+        const cJSON *raid = jget(o, "raid");
+        if (raid) {
+            const cJSON *count = jget(raid, "count");
+            const cJSON *c0 = cJSON_GetArrayItem(count, 0), *c1 = cJSON_GetArrayItem(count, 1);
+            a->raid_min = cJSON_IsNumber(c0) ? c0->valueint : 1;
+            a->raid_max = cJSON_IsNumber(c1) ? c1->valueint : a->raid_min;
+            if (a->raid_max > 12) {
+                a->raid_max = 12;
+            }
+            const cJSON *t;
+            cJSON_ArrayForEach(t, jget(raid, "takes"))
+            {
+                if (a->raid_take_count < 4 && cJSON_IsString(t)) {
+                    a->raid_take[a->raid_take_count++] = need_index(L, data_find_item(d, t->valuestring), "item", t->valuestring, a->id);
+                }
             }
         }
     }
@@ -1240,6 +1260,12 @@ static bool parse_effect(Loader *L, const cJSON *o, Effect *e, const char *ctx)
             e->type = EFF_SMITH_QUOTE;
         } else {
             fail(L, "%s: smith must be repair or quote", ctx);
+        }
+    } else if (strcmp(k, "defend") == 0) {
+        e->type = EFF_DEFEND; /* the player guards the herd against this animal (game_hunt.c) */
+        e->a = need_index(L, data_find_animal(d, s), "animal", s, ctx);
+        if (e->a >= 0 && d->animals[e->a].raid_max <= 0) {
+            fail(L, "%s: animal \"%s\" has no raid in animals.json", ctx, s);
         }
     } else if (strcmp(k, "wagon") == 0) {
         e->type = EFF_WAGON; /* trade the wagon in for this one; its parts are new */
@@ -1634,6 +1660,7 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
     }
     for (int i = 0; i < d->illness_count; i++) {
         fn(d->illnesses[i].name_key, d->illnesses[i].id, ctx);
+        fn(d->illnesses[i].cause_key, d->illnesses[i].id, ctx);
     }
     for (int i = 0; i < d->region_count; i++) {
         fn(d->regions[i].name_key, d->regions[i].id, ctx);

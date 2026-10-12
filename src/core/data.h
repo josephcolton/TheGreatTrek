@@ -208,7 +208,8 @@ typedef struct {
 
 typedef struct {
     char id[ID_LEN];
-    char name_key[KEY_LEN];
+    char name_key[KEY_LEN];  /* what the party calls it: "the flux" */
+    char cause_key[KEY_LEN]; /* what it was, on a death and a grave: "dysentery" */
     int damage_per_day;     /* health lost per day while ill */
     double recover_chance;  /* per day */
     double nursing_bonus;   /* added to recover_chance per nursing point in the party */
@@ -246,6 +247,10 @@ typedef struct {
     int herd;                       /* most that come into sight together */
     double body_w, body_h, legs;    /* figure size at scale 1 */
     double region_weight[MAX_REGIONS];
+    /* a night raid on the herd (guarding the herd, game_defend_start) */
+    int raid_min, raid_max;         /* how many come in one night */
+    int raid_take[4];               /* items they carry off; the first is the usual one */
+    int raid_take_count;
 } AnimalDef;
 
 typedef struct {
@@ -262,6 +267,7 @@ typedef struct {
     int shots_per_lb;
     double biltong_yield;           /* lb of biltong from a lb of meat */
     double percussion_misfire_mul;  /* misfire chance times this with a percussion gun and caps */
+    double defend_seconds;          /* the night watch over the herd */
 } HuntRules;
 
 /* ---- barter ---- */
@@ -349,6 +355,7 @@ typedef enum {
     EFF_ITEM, EFF_MONEY, EFF_OX_STAMINA, EFF_WAGON_DAMAGE, EFF_HEALTH, EFF_ILLNESS,
     EFF_MORALE, EFF_LOYALTY, EFF_RELATION, EFF_FLAG, EFF_CLEAR_FLAG, EFF_COUNTER,
     EFF_TIME_DAYS, EFF_DISTANCE, EFF_SCHEDULE, EFF_DEATH, EFF_LEAVE, EFF_JOURNAL, EFF_ENDING, EFF_WAGON, EFF_SMITH_REPAIR, EFF_SMITH_QUOTE,
+    EFF_DEFEND,
     EFF_COUNT
 } EffectType;
 
@@ -488,6 +495,7 @@ int data_find_event(const GameData *d, const char *id);
 int data_find_illness(const GameData *d, const char *id);
 int data_find_shop(const GameData *d, const char *id);
 int data_find_wagon(const GameData *d, const char *id);
+int data_find_animal(const GameData *d, const char *id);
 
 const char *side_id(Side s);
 const char *pace_id(Pace p);

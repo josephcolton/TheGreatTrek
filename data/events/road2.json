@@ -86,6 +86,8 @@
       "sources": ["invented"],
       "text": "event.wild_dogs.body",
       "choices": [
+        { "text": "event.wild_dogs.guard", "requires": [ { "item_gte": ["gunpowder", 1] }, { "item_gte": ["lead", 1] } ], "locked": "lock.need_powder",
+          "outcomes": [ { "text": "event.wild_dogs.guard.go", "effects": [ { "defend": "wild_dog" } ] } ] },
         { "text": "event.wild_dogs.drive",
           "outcomes": [
             { "weight": 60, "skill": "shooting", "per_point": 6, "text": "event.wild_dogs.drive.ok", "effects": [ { "item": "gunpowder", "add": -1 } ] },

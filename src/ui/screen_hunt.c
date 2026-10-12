@@ -1,5 +1,7 @@
 /* The hunting screen: a side view of the veld. Game comes into sight and moves across; the
- * player aims with the mouse and clicks to fire, then waits while the gun is loaded again. */
+ * player aims with the mouse and clicks to fire, then waits while the gun is loaded again.
+ * Guarding the herd uses the same screen at night: the camp and the stock are at the bottom by
+ * the fire, and predators creep in out of the dark. */
 #include "scene.h"
 #include "screens.h"
 #include "sprites.h"
@@ -122,6 +124,45 @@ static void draw_animal(App *app, const AnimalDef *def, const HuntAnimal *a, flo
     sprite_draw_tinted(app->renderer, sp, left, ay - sp->h * s, s, a->dir < 0, tint);
 }
 
+/* The camp at night: wagons, the fire and the stock along the bottom of the field. */
+static void draw_camp(App *app, double t)
+{
+    Draw *d = &app->draw;
+    float base = FIELD_TOP + HUNT_FIELD_H;
+    /* firelight on the ground, warmest near the fire */
+    for (int i = 0; i < 6; i++) {
+        float w = 360.0f - i * 50.0f, h = 70.0f - i * 10.0f;
+        draw_rect(d, (SDL_FRect){430 - w / 2, base - h, w, h}, (SDL_Color){230, 140, 60, 14});
+    }
+    const Sprite *wagon = sprite_find("laager_wagon");
+    if (wagon) {
+        sprite_draw_tinted(app->renderer, wagon, 20, base - wagon->h * 2.0f - 2, 2.0f, false, (SDL_Color){120, 110, 120, 255});
+        sprite_draw_tinted(app->renderer, wagon, 566, base - wagon->h * 2.0f - 2, 2.0f, true, (SDL_Color){120, 110, 120, 255});
+    }
+    static const struct { float x; bool red; bool flip; } OXEN[] = {
+        {150, true, false}, {205, false, true}, {270, true, false}, {330, false, false}, {505, true, true}};
+    for (size_t i = 0; i < sizeof OXEN / sizeof OXEN[0]; i++) {
+        const Sprite *ox = sprite_find(OXEN[i].red ? "ox_red_0" : "ox_black_0");
+        if (ox) {
+            float light = OXEN[i].x > 330 ? 0.75f : 0.55f;
+            SDL_Color c = {(Uint8)(255 * light), (Uint8)(220 * light), (Uint8)(200 * light), 255};
+            sprite_draw_tinted(app->renderer, ox, OXEN[i].x, base - 14 - ox->h * 1.6f, 1.6f, OXEN[i].flip, c);
+        }
+    }
+    /* sheep pressed together: pale woolly backs */
+    for (int i = 0; i < 9; i++) {
+        float x = 215.0f + (float)((i * 37) % 120), y = base - 12.0f - (float)((i * 5) % 9);
+        draw_rect(d, (SDL_FRect){x, y - 5, 9, 5}, (SDL_Color){150, 146, 132, 255});
+        draw_rect(d, (SDL_FRect){x + 8, y - 6, 3, 3}, (SDL_Color){60, 54, 50, 255});
+    }
+    char name[16];
+    snprintf(name, sizeof name, "fire_%d", (int)(t * 8) % 3);
+    const Sprite *fire = sprite_find(name);
+    if (fire) {
+        sprite_draw(app->renderer, fire, 430 - fire->w, base - 4 - fire->h * 2.0f, 2.0f, false);
+    }
+}
+
 typedef struct {
     float x, y;
     bool tree;
@@ -147,12 +188,12 @@ void hunt_screen_render(App *app)
     }
     double t = SDL_GetTicks() / 1000.0;
     char title[160];
-    snprintf(title, sizeof title, "%s  ·  %s", app_text(app, "hunt.title"), app_fmt(app, &v.hunter));
+    snprintf(title, sizeof title, "%s  ·  %s", app_text(app, v.defend ? "defend.title" : "hunt.title"), app_fmt(app, &v.hunter));
     draw_header(app, title, NULL);
 
     /* the sky, the far hills and the veld, which darkens as the sun goes down */
     int region = g->edge >= 0 ? data->edges[g->edge].region : 0;
-    float dusk = (float)(v.daylight < 0.25 ? 0.6 + 1.6 * v.daylight : 1.0);
+    float dusk = v.defend ? 0.28f : (float)(v.daylight < 0.25 ? 0.6 + 1.6 * v.daylight : 1.0);
     SDL_Color ground = scene_ground(app, region);
     ground = (SDL_Color){(Uint8)(ground.r * dusk), (Uint8)(ground.g * dusk), (Uint8)(ground.b * dusk), 255};
     scene_backdrop(app, (SDL_FRect){0, 19, TREK_LOGICAL_W, FIELD_TOP - 19}, FIELD_TOP, region, dusk);
@@ -182,6 +223,9 @@ void hunt_screen_render(App *app)
             order[j] = i;
         }
     }
+    if (v.defend) {
+        draw_camp(app, t);
+    }
     size_t b = 0;
     const size_t nb = sizeof BUSHES / sizeof BUSHES[0];
     for (int k = 0; k <= n; k++) {
@@ -199,7 +243,21 @@ void hunt_screen_render(App *app)
         }
         if (k < n) {
             const HuntAnimal *a = &v.animals[order[k]];
-            draw_animal(app, &data->animals[a->kind], a, a->x, FIELD_TOP + a->y, t, tint);
+            const AnimalDef *def = &data->animals[a->kind];
+            SDL_Color at = tint;
+            if (v.defend) {
+                /* at night only the firelight shows them; far off, just their eyes catch it */
+                float light = 0.22f + 0.78f * (a->y / HUNT_FIELD_H) * (a->y / HUNT_FIELD_H);
+                at = (SDL_Color){(Uint8)(255 * light), (Uint8)(235 * light), (Uint8)(210 * light), 255};
+            }
+            draw_animal(app, def, a, a->x, FIELD_TOP + a->y, t, at);
+            if (v.defend && (a->state == HUNT_A_WALK || a->state == HUNT_A_RUSH) && a->y < HUNT_FIELD_H * 0.6f) {
+                float sc = (float)game_hunt_scale(a->y);
+                float hx = a->x + a->dir * ((float)def->body_w * sc / 2 + 3 * sc);
+                float hy = FIELD_TOP + a->y - ((float)(def->body_h + def->legs) * sc) - 1;
+                draw_rect(d, (SDL_FRect){hx - 1, hy, 1.5f, 1.5f}, (SDL_Color){250, 230, 130, 255});
+                draw_rect(d, (SDL_FRect){hx + 1.5f * a->dir, hy, 1.5f, 1.5f}, (SDL_Color){250, 230, 130, 255});
+            }
         }
     }
 
@@ -248,11 +306,11 @@ void hunt_screen_render(App *app)
 
     /* the summary when the hunt is over */
     if (v.over) {
-        SDL_FRect box = {120, FIELD_TOP + 50, 400, 110};
+        SDL_FRect box = {120, FIELD_TOP + 40, 400, v.defend ? 130.0f : 110.0f};
         draw_rect(d, box, (SDL_Color){COL_BG.r, COL_BG.g, COL_BG.b, 230});
         draw_frame(d, box, COL_BORDER);
         float y = box.y + 10;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 4; i++) {
             if (v.summary[i].key[0]) {
                 y += draw_wrapped(d, d->font, app_fmt(app, &v.summary[i]), box.x + 12, y, box.w - 24, COL_TEXT, false) + 4;
             }
@@ -272,12 +330,17 @@ void hunt_screen_render(App *app)
     }
     draw_text(d, d->font, app_fmt(app, &lt), 12, py, v.loaded ? COL_GOLD : COL_DIM, TEXT_LEFT);
     bar(d, 130, py + 5, 70, v.reload, v.loaded ? COL_GOLD : COL_DIM);
-    loctext_set(&lt, "hunt.status.meat");
-    loctext_arg_int(&lt, "meat", v.meat);
-    loctext_arg_int(&lt, "carry", v.carry);
+    if (v.defend) {
+        loctext_set(&lt, "defend.status.lost");
+        loctext_arg_int(&lt, "n", v.lost);
+    } else {
+        loctext_set(&lt, "hunt.status.meat");
+        loctext_arg_int(&lt, "meat", v.meat);
+        loctext_arg_int(&lt, "carry", v.carry);
+    }
     float meat_y = py + d->line_h;
-    draw_text(d, d->font, app_text(app, "hunt.status.light"), 520, py, COL_DIM, TEXT_RIGHT);
-    bar(d, 526, py + 5, 100, v.daylight, (SDL_Color){230, 180, 80, 255});
+    draw_text(d, d->font, app_text(app, v.defend ? "defend.status.night" : "hunt.status.light"), 520, py, COL_DIM, TEXT_RIGHT);
+    bar(d, 526, py + 5, 100, v.daylight, v.defend ? (SDL_Color){110, 120, 190, 255} : (SDL_Color){230, 180, 80, 255});
     py += d->line_h;
     draw_text(d, d->font, app_fmt(app, &lt), 12, meat_y, COL_TEXT, TEXT_LEFT);
     loctext_set(&lt, "hunt.status.shots");
@@ -288,5 +351,5 @@ void hunt_screen_render(App *app)
         draw_text(d, d->font, app_fmt(app, &v.log[i]), 12, py, i == v.log_count - 1 ? COL_TEXT : COL_DIM, TEXT_LEFT);
         py += d->line_h;
     }
-    draw_footer(app, app_text(app, v.over ? "hunt.footer.over" : "hunt.footer"));
+    draw_footer(app, app_text(app, v.over ? "hunt.footer.over" : v.defend ? "defend.footer" : "hunt.footer"));
 }

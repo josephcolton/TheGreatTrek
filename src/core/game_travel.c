@@ -430,7 +430,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
             m->warned = false;
         }
         if (m->health <= 0) {
-            const char *cause = m->cond_count > 0 ? d->illnesses[m->conds[0].illness].name_key : "cause.hardship";
+            const char *cause = m->cond_count > 0 ? d->illnesses[m->conds[0].illness].cause_key : "cause.hardship";
             g_kill(g, i, cause);
         }
     }

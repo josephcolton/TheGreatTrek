@@ -265,6 +265,15 @@ char *game_save_json(const Game *g)
         cJSON_AddNumberToObject(hj, "shots_max", h->shots_max);
         cJSON_AddNumberToObject(hj, "kills", h->kills);
         cJSON_AddBoolToObject(hj, "over", h->over);
+        if (h->defend) {
+            cJSON_AddStringToObject(hj, "defend", d->animals[h->foe].id);
+            cJSON_AddNumberToObject(hj, "foes_left", h->foes_left);
+            cJSON_AddNumberToObject(hj, "driven", h->driven);
+            cJSON *took = cJSON_AddArrayToObject(hj, "took");
+            for (int i = 0; i < h->took_count; i++) {
+                cJSON_AddItemToArray(took, cJSON_CreateString(d->items[h->took[i]].id));
+            }
+        }
         cJSON *log = cJSON_AddArrayToObject(hj, "log");
         for (int i = 0; i < h->log_count; i++) {
             cJSON_AddItemToArray(log, loctext_json(&h->log[i]));
@@ -685,6 +694,25 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
         h->over = bget(hj, "over") || h->ticks_left <= 0;
         h->spawn_ticks = HUNT_TICKS_PER_SEC;
         h->shot_age = 1000;
+        const cJSON *foe = cJSON_GetObjectItemCaseSensitive(hj, "defend");
+        if (cJSON_IsString(foe)) {
+            /* guarding the herd: the raiders in the field are lost, as in a hunt, but not those still to come */
+            h->defend = true;
+            h->foe = data_find_animal(g->data, foe->valuestring);
+            if (h->foe < 0) {
+                h->foe = 0;
+                h->over = true;
+            }
+            h->foes_left = (int)nget(hj, "foes_left", 0);
+            h->driven = (int)nget(hj, "driven", 0);
+            cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(hj, "took"))
+            {
+                int item = cJSON_IsString(f) ? data_find_item(g->data, f->valuestring) : -1;
+                if (item >= 0 && h->took_count < HUNT_MAX_TAKES) {
+                    h->took[h->took_count++] = item;
+                }
+            }
+        }
         cJSON_ArrayForEach(f, cJSON_GetObjectItemCaseSensitive(hj, "log"))
         {
             if (h->log_count < HUNT_LOG) {

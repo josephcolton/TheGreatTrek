@@ -175,6 +175,94 @@ static void test_hunt(const GameData *d)
     CHECK(meat > 0);
 }
 
+/* Stands guard over the herd against one predator. With `shoot`, fires at whatever is nearest the
+ * herd; without, just watches. Returns the head of stock lost. */
+static int guard_once(Game *g, int animal, bool shoot, bool round_trip)
+{
+    const GameData *d = g->data;
+    int stock0 = g->inv[d->item_sheep] + g->inv[d->item_cows] + g->inv[d->item_oxen];
+    g->dlg.kind = DLG_NONE; /* as if the event's result page has just been read */
+    g->notice_count = 0;
+    game_defend_start(g, animal);
+    g_settle(g);
+    CHECK(game_phase(g) == PHASE_HUNT);
+    HuntView v;
+    for (int t = 0; t < 10000 && game_hunt_view(g, &v) && !v.over; t++) {
+        if (round_trip && t == 200) {
+            /* a save mid-watch keeps the stock already lost and the raiders still to come */
+            char *json = game_save_json(g);
+            char err[128];
+            Game *back = game_load_json(d, json, err, sizeof err);
+            free(json);
+            CHECK(back != NULL);
+            if (back) {
+                CHECK(back->hunt.defend && back->hunt.foe == animal);
+                CHECK(back->hunt.took_count == g->hunt.took_count);
+                CHECK(back->hunt.foes_left == g->hunt.foes_left);
+                game_free(back);
+            }
+        }
+        const HuntAnimal *near = NULL;
+        for (int i = 0; i < HUNT_MAX_ANIMALS; i++) {
+            const HuntAnimal *a = &v.animals[i];
+            bool live = a->state == HUNT_A_WALK || a->state == HUNT_A_RUSH || a->state == HUNT_A_CHARGE ||
+                        (a->state == HUNT_A_FLEE && a->prey >= 0);
+            if (live && a->x > 0 && a->x < HUNT_FIELD_W && (!near || a->y > near->y)) {
+                near = a;
+            }
+        }
+        if (shoot && near && v.loaded) {
+            float b[4];
+            game_hunt_body(g, near, b);
+            game_hunt_shoot(g, b[0] + b[2] / 2, b[1] + b[3] / 2);
+        }
+        game_hunt_tick(g);
+    }
+    CHECK(v.over);
+    int lost = g->hunt.took_count;
+    game_hunt_finish(g);
+    CHECK(game_phase(g) != PHASE_HUNT);
+    int stock1 = g->inv[d->item_sheep] + g->inv[d->item_cows] + g->inv[d->item_oxen];
+    CHECK(stock0 - stock1 == lost);
+    CHECK(g->inv[d->item_sheep] >= 0 && g->inv[d->item_cows] >= 0 && g->inv[d->item_oxen] >= 0);
+    return lost;
+}
+
+static void test_defend(const GameData *d)
+{
+    static const char *FOES[] = {"hyena", "wild_dog", "lion"};
+    int lost_watching = 0, lost_shooting = 0;
+    for (uint64_t seed = 1; seed <= 4; seed++) {
+        for (size_t f = 0; f < 3; f++) {
+            int animal = data_find_animal(d, FOES[f]);
+            CHECK(animal >= 0 && d->animals[animal].raid_max > 0);
+            int lost[2];
+            for (int shoot = 0; shoot < 2; shoot++) {
+                Game *g = play(d, seed, data_find_family(d, "jagter"), 30);
+                g->inv[d->item_sheep] = 40;
+                g->inv[d->item_cows] = 8;
+                g->inv[d->item_oxen] = 14;
+                g->inv[d->item_gunpowder] = 6;
+                g->inv[d->item_lead] = 6;
+                lost[shoot] = guard_once(g, animal, shoot, seed == 1 && shoot);
+                game_free(g);
+            }
+            lost_watching += lost[0];
+            lost_shooting += lost[1];
+        }
+    }
+    CHECK(lost_watching > 0);
+    CHECK(lost_shooting < lost_watching); /* standing guard with the gun saves stock */
+
+    /* the same watch with the same shots comes out the same */
+    int animal = data_find_animal(d, "hyena");
+    Game *a = play(d, 5, data_find_family(d, "jagter"), 30), *b = play(d, 5, data_find_family(d, "jagter"), 30);
+    CHECK(guard_once(a, animal, true, false) == guard_once(b, animal, true, false));
+    CHECK(a->inv[d->item_sheep] == b->inv[d->item_sheep]);
+    game_free(a);
+    game_free(b);
+}
+
 static void test_mend(const GameData *d)
 {
     Game *g = NULL;
@@ -264,6 +352,7 @@ int main(void)
     }
     test_wagon_trade(d);
     test_hunt(d);
+    test_defend(d);
     test_mend(d);
     test_portraits(d);
     for (int f = 0; f < d->family_count; f++) {

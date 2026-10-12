@@ -54,6 +54,8 @@
   "event.dogs_paws.carry.done": "The dogs ride on the load like lords, looking down at everyone walking.",
 
   "event.hyenas_night.body": "In the dark something is moving around the wagons. Hyenas, drawn by the smell of meat, are creeping close to the fire.",
+  "event.hyenas_night.guard": "Take a gun out to the herd and stand guard",
+  "event.hyenas_night.guard.go": "A gun is loaded, and someone goes out past the fire to where the sheep are pressed together in the dark.",
   "event.hyenas_night.shot": "Fire a shot into the dark",
   "event.hyenas_night.shot.done": "The shot echoes across the veld, and the hyenas scatter howling.",
   "event.hyenas_night.fire": "Build up the fire and keep watch",
@@ -74,6 +76,8 @@
   "event.quagga_sunrise.go.done": "The quaggas watch you go.",
 
   "event.lions_herd.body": "A deep roar comes out of the darkness, close by. The oxen bellow and strain at their riems. Lions are prowling around the herd.",
+  "event.lions_herd.guard": "Take a gun out to the herd and stand guard",
+  "event.lions_herd.guard.go": "The fire is built up behind the herd, and a gun is loaded. Whoever goes out will have to shoot straight: a wounded lion is a dangerous thing.",
   "event.lions_herd.fire_guns": "Fire the guns to drive them off",
   "event.lions_herd.fire_guns.ok": "The volley echoes through the night. The roaring moves away.",
   "event.lions_herd.fire_guns.bad": "The lions run, but in the confusion one ox is pulled down in the dark.",

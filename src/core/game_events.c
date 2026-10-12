@@ -473,6 +473,7 @@ static void apply_effect(Game *g, const Effect *e)
     case EFF_ENDING:
         g->ending = (EndingKind)e->amount;
         break;
+    case EFF_DEFEND: game_defend_start(g, e->a); break;
     case EFF_SMITH_QUOTE:
     case EFF_SMITH_REPAIR: {
         int cost = g_smith_cost(g);
