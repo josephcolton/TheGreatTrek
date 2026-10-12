@@ -421,7 +421,6 @@ void scores_render(App *app)
         draw_text(d, d->font, buf, COL_SCORE, y, c, TEXT_RIGHT);
         y += d->line_h + 6;
     }
-    draw_wrapped(d, d->small, app_text(app, "scores.note"), 20, TREK_LOGICAL_H - 46, 600, COL_DIM, false);
     draw_footer(app, app_text(app, "footer.back"));
 }
 
