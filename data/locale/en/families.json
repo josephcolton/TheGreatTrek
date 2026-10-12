@@ -35,7 +35,8 @@
   "family.trader.summary": "English trader. A heavy transport wagon full of trade goods. Good at bargaining, but a tempting target.",
   "story.trader.1": "Samuel Pascoe came out from Cornwall in 1820 as a boy of twelve with his father's settler party. The family's farm failed like so many others, and by 1825 his father had given up farming to work as a carpenter in Graham's Town, where tradesmen were scarce.",
   "story.trader.2": "Samuel grew up at the market, among wagons from the far frontier loaded with ivory, hides and skins. He worked for a merchant and made his first trading journeys beyond the colonial boundary.",
-  "story.trader.3": "Now hundreds of trekker families are heading north, and they will need powder, coffee, cloth and iron. Samuel has loaded a heavy wagon with goods bought on credit, and with Ellen and little Grace he is going with them.",
+  "story.trader.3": "Now hundreds of trekker families are heading north, and they will need powder, coffee, cloth and iron. Samuel has loaded a heavy wagon with goods from Mr Holland, the Graham's Town merchant, on credit: thirty pounds, ten of it due within the month. With Ellen and little Grace he is going north with the trekkers.",
+  "journal.start.trader": "Samuel owes Mr Holland of Graham's Town thirty pounds for the trade goods on the wagon. Ten pounds are due this month.",
 
   "family.hunter": "The Hunter-Traveller (Fenwick)",
   "family.hunter.summary": "English hunter. Money, guns and horses, but a small party and few oxen.",

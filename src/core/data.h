@@ -138,6 +138,7 @@ typedef struct {
     int morale_bonus;
     double barter_mul;
     double illness_mul;
+    char start_note[KEY_LEN];   /* a journal line at the start of the trip, e.g. a debt owed; empty = none */
 } FamilyDef;
 
 /* ---- regions, rivers, route ---- */

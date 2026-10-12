@@ -73,7 +73,7 @@
       "items": { "oxen": 14, "cows": 4, "sheep": 50, "horses": 2, "meal": 360, "biltong": 30, "beskuit": 30, "coffee": 15, "sugar": 20,
                  "water_vat": 3, "water": 60, "gunpowder": 8, "lead": 15, "flints": 12, "spare_wheel": 1, "spare_axle": 1, "medicine": 6, "tallow": 10 } },
 
-    { "id": "trader", "side": "english", "surname": "Pascoe", "wagon": "transport_wagon", "money": 800,
+    { "id": "trader", "side": "english", "surname": "Pascoe", "start_note": "journal.start.trader", "wagon": "transport_wagon", "money": 800,
       "perks": { "barter": 1.2 },
       "members": [
         { "name": "Samuel", "portrait": "trader_samuel", "role": "head",    "age": "adult", "pronoun": "he",  "born": 1808, "skills": { "interpreting": 3, "shooting": 2 } },

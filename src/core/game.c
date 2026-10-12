@@ -165,6 +165,10 @@ Game *game_new(const GameData *data, uint64_t seed, int family, Difficulty diff)
     loctext_set(&t, "journal.start");
     loctext_arg_key(&t, "family", f->name_key);
     game_journal(g, &t);
+    if (f->start_note[0]) {
+        loctext_set(&t, f->start_note);
+        game_journal(g, &t);
+    }
     g_arrive(g, g->node);
     g_settle(g);
     return g;

@@ -3,13 +3,13 @@
   "events": [
     {
       "id": "debt_collector", "sides": ["english"], "regions": ["eastern_frontier", "karoo", "stormberg"], "weight": 7, "once": true,
-      "requires": [ { "days_gte": 4 } ],
+      "requires": [ { "family": "trader" }, { "days_gte": 4 } ],
       "history": "history.debt_collector",
-      "sources": ["Harris (1839): at Graaff-Reinet in 1836 a rider was hired for 4 Rds to chase a debt (05_research_pass2.md section 4.2). English traders worked on merchant credit (03 section 4). The rider and the bill are invented."],
+      "sources": ["Harris (1839): at Graaff-Reinet in 1836 a rider was hired for 4 Rds to chase a debt (05_research_pass2.md section 4.2). English traders worked on merchant credit (03 section 4). The Pascoes' debt to Mr Holland, its size and this rider are invented; the Pascoes' story and their first journal entry say what they owe."],
       "text": "event.debt_collector.body",
       "choices": [
-        { "text": "event.debt_collector.pay", "requires": [ { "money_gte": 15 } ], "locked": "lock.need_money",
-          "outcomes": [ { "text": "event.debt_collector.pay.done", "effects": [ { "money_pence": -180 }, { "relation": "colonial_merchants", "add": 5 } ] } ] },
+        { "text": "event.debt_collector.pay", "requires": [ { "money_gte": 200 } ], "locked": "lock.need_money",
+          "outcomes": [ { "text": "event.debt_collector.pay.done", "effects": [ { "money_pence": -2400 }, { "relation": "colonial_merchants", "add": 5 } ] } ] },
         { "text": "event.debt_collector.promise",
           "outcomes": [
             { "weight": 60, "text": "event.debt_collector.promise.ok", "effects": [ { "relation": "colonial_merchants", "add": -3 } ] },

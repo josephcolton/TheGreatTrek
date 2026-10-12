@@ -1,11 +1,11 @@
 {
-  "event.debt_collector.body": "A rider catches up with the wagons, his horse in a lather. He carries a bill from a Graham's Town merchant: goods taken on credit last year and never paid for. 'My master says he will be paid before you cross the Orange, or he will put it in the hands of the law.'",
-  "event.debt_collector.pay": "Pay the bill",
-  "event.debt_collector.pay.done": "You count out the money. The rider writes a receipt on his saddle and turns for home. Your name in Graham's Town is good again.",
-  "event.debt_collector.promise": "Promise to pay out of the year's trade",
-  "event.debt_collector.promise.ok": "The rider grumbles, but takes your signed promise back to his master.",
-  "event.debt_collector.promise.goods": "The rider will not go back with nothing. He takes some of your coffee as part payment and rides off with your promise for the rest.",
-  "history.debt_collector": "English settler families often traded on credit from the Graham's Town merchants. In 1836 Captain Harris paid a rider four rixdollars to chase a debt from Graaff-Reinet. This rider and his bill are invented.",
+  "event.debt_collector.body": "A rider catches up with the wagons, his horse in a lather. He comes from Mr Holland of Graham's Town, who let Samuel have the trade goods on the wagon on credit: thirty pounds, with ten of it due this month. 'My master will have his ten pounds before you cross the Orange,' he says, 'or he puts the bill in the hands of the law.'",
+  "event.debt_collector.pay": "Pay the ten pounds now",
+  "event.debt_collector.pay.done": "You count out ten pounds. The rider writes a receipt for the first payment on his saddle and turns for home. Twenty pounds are still owed, to be paid out of the year's trade.",
+  "event.debt_collector.promise": "Ask Mr Holland to wait until the year's trade is done",
+  "event.debt_collector.promise.ok": "The rider grumbles, but takes back your signed promise to pay all thirty pounds out of the year's trade.",
+  "event.debt_collector.promise.goods": "The rider will not go back with nothing. He takes coffee from the load as part payment and rides off with your signed promise for the rest.",
+  "history.debt_collector": "This is history in part: traders went north with goods bought on credit from the Graham's Town merchants, and in 1836 Captain Harris paid a rider four rixdollars to chase a debt from Graaff-Reinet. The Pascoes, Mr Holland and this bill are invented.",
 
   "event.write_letters.body": "At the outspan a trekker comes over with his hat in his hands. His brother is still in the Colony, and the magistrate there wants to know what the trekkers mean to do. He asks if someone in your family will write a letter for him in good English, to go back with the next trader.",
   "event.write_letters.write": "Write the letter for him",

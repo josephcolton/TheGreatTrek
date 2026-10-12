@@ -795,6 +795,7 @@ static void load_families(Loader *L, const char *dir)
         make_key(f->name_key, sizeof f->name_key, "family.", f->id, "");
         make_key(f->summary_key, sizeof f->summary_key, "family.", f->id, ".summary");
         make_key(f->story_key, sizeof f->story_key, "story.", f->id, "");
+        copy_str(f->start_note, sizeof f->start_note, jstr(o, "start_note"));
         copy_str(f->surname, sizeof f->surname, jstr(o, "surname"));
         f->money = jint(o, "money", 0);
         f->wagon = need_index(L, data_find_wagon(d, jstr(o, "wagon")), "wagon", jstr(o, "wagon"), f->id);
@@ -1699,6 +1700,11 @@ void data_each_key(const GameData *d, void (*fn)(const char *key, const char *wh
     }
     for (int i = 0; i < d->group_count; i++) {
         fn(d->groups[i].name_key, d->groups[i].id, ctx);
+    }
+    for (int i = 0; i < d->family_count; i++) {
+        if (d->families[i].start_note[0]) {
+            fn(d->families[i].start_note, d->families[i].id, ctx);
+        }
     }
     for (int i = 0; i < d->illness_count; i++) {
         fn(d->illnesses[i].name_key, d->illnesses[i].id, ctx);
