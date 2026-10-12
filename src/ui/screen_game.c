@@ -583,6 +583,12 @@ static void store_event(App *app, const SDL_Event *e)
         app->store_qty = 1;
         return;
     }
+    if (e->type == SDL_EVENT_MOUSE_WHEEL && sv.row_count > 0) {
+        /* the wheel moves down the goods, and the list scrolls with it */
+        app->sel = SDL_clamp(app->sel - (int)e->wheel.y, 0, sv.row_count - 1);
+        app->store_qty = 1;
+        return;
+    }
     if (key_is(e, SDLK_RIGHT)) {
         app->store_qty++;
     } else if (key_is(e, SDLK_LEFT) && app->store_qty > 1) {
@@ -614,6 +620,17 @@ static void store_event(App *app, const SDL_Event *e)
                 app->store_qty = 1;
             }
         }
+    }
+}
+
+#define STORE_ARROW_X 616.0f
+
+/* A small gold arrow at the edge of the goods list, pointing to goods out of sight. */
+static void store_arrow(Draw *d, float cx, float y, bool up)
+{
+    for (int i = 0; i < 7; i++) {
+        float w = 2.0f * i + 1;
+        draw_rect(d, (SDL_FRect){cx - i, up ? y + i : y - i, w, 1}, COL_GOLD);
     }
 }
 
@@ -683,10 +700,22 @@ static void store_render(App *app)
     loctext_arg_int(&t, "cap", sv.capacity_lb);
     int shown = sv.row_count < STORE_ROWS ? sv.row_count : STORE_ROWS;
     float by = STORE_Y + shown * d->line_h + 4;
-    if (sv.row_count > STORE_ROWS) {
-        char more[64];
-        snprintf(more, sizeof more, "%d-%d / %d", app->scroll + 1, app->scroll + shown, sv.row_count);
-        draw_text(d, d->font, more, 620, by, COL_DIM, TEXT_RIGHT);
+    /* more goods than fit: gold arrows at the top and bottom of the list, and how many are hidden */
+    int above = app->scroll, below = sv.row_count - (app->scroll + shown);
+    if (above > 0) {
+        store_arrow(d, STORE_ARROW_X, STORE_Y + 2, true);
+    }
+    if (below > 0) {
+        store_arrow(d, STORE_ARROW_X, STORE_Y + shown * d->line_h - 2, false);
+        LocText more;
+        loctext_set(&more, "store.more_below");
+        loctext_arg_int(&more, "n", below);
+        draw_text(d, d->small, app_fmt(app, &more), 626, STORE_Y + shown * d->line_h + 1, COL_GOLD, TEXT_RIGHT);
+    } else if (above > 0) {
+        LocText more;
+        loctext_set(&more, "store.more_above");
+        loctext_arg_int(&more, "n", above);
+        draw_text(d, d->small, app_fmt(app, &more), 626, STORE_Y + shown * d->line_h + 1, COL_GOLD, TEXT_RIGHT);
     }
     draw_text(d, d->font, app_fmt(app, &t), 20, by, sv.load_lb > sv.capacity_lb ? COL_RED : COL_DIM, TEXT_LEFT);
     loctext_set(&t, "status.food");
