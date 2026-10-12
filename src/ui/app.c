@@ -4,6 +4,7 @@
 #include "sprites.h"
 #include "sound.h"
 #include "util.h"
+#include "version.h"
 
 #include <cJSON.h>
 #include <stdio.h>
@@ -132,7 +133,7 @@ bool app_init(App *app)
 {
     SDL_zerop(app);
     app->edit_member = -1;
-    SDL_SetAppMetadata("The Great Trek", "0.1.0", "org.thegreattrek.game");
+    SDL_SetAppMetadata("The Great Trek", TREK_VERSION_STRING, "org.thegreattrek.game");
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
         SDL_Log("SDL_Init failed: %s", SDL_GetError());
         return false;
