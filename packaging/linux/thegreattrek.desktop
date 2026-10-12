@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=The Great Trek
+GenericName=Wagon trail game
+Comment=Take a family north on the Great Trek of 1837
+Exec=TheGreatTrek
+Icon=thegreattrek
+Terminal=false
+Categories=Game;Simulation;

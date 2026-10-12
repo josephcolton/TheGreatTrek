@@ -7,6 +7,7 @@
 #include "util.h"
 #include "version.h"
 
+#include <SDL3_image/SDL_image.h>
 #include <cJSON.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -176,6 +177,13 @@ bool app_init(App *app)
         SDL_Log("Cannot create window: %s", SDL_GetError());
         return false;
     }
+    char *icon_path = util_path_join(app->base_path, "assets/icon/icon.png");
+    SDL_Surface *icon = IMG_Load(icon_path);
+    if (icon) {
+        SDL_SetWindowIcon(app->window, icon); /* the exe's own icon is set by the Windows resource */
+        SDL_DestroySurface(icon);
+    }
+    free(icon_path);
     SDL_SetRenderVSync(app->renderer, 1);
     SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderLogicalPresentation(app->renderer, TREK_LOGICAL_W, TREK_LOGICAL_H, SDL_LOGICAL_PRESENTATION_LETTERBOX);

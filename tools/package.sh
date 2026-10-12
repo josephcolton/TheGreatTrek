@@ -21,5 +21,8 @@ mkdir -p "$STAGE"
 cp "$BUILD/bin/$EXE" "$STAGE/"
 cp -r data assets "$STAGE/"
 cp LICENSE README.md CREDITS.md "$STAGE/"
+if [ "$OS" = linux ]; then
+    cp packaging/linux/thegreattrek.desktop "$STAGE/"
+fi
 (cd dist && cmake -E tar cf "$NAME.zip" --format=zip "$NAME")
 echo "dist/$NAME.zip"

@@ -21,3 +21,14 @@ if(MINGW)
     # Fold the MinGW runtime into the exe so it runs without extra DLLs.
     target_link_options(TheGreatTrek PRIVATE -static -static-libgcc)
 endif()
+if(WIN32)
+    # The icon and version for Explorer, the taskbar and shortcuts (assets/icon/, drawn by tools/make_icon.py).
+    # Built on its own, without the game's include paths: windres cannot take -I paths with spaces.
+    # The icon is copied next to the .rc for the same reason.
+    enable_language(RC)
+    configure_file("${PROJECT_SOURCE_DIR}/assets/icon/icon.ico" "${CMAKE_CURRENT_BINARY_DIR}/icon.ico" COPYONLY)
+    set(TREK_ICON_ICO "${CMAKE_CURRENT_BINARY_DIR}/icon.ico")
+    configure_file(TheGreatTrek.rc.in "${CMAKE_CURRENT_BINARY_DIR}/TheGreatTrek.rc" @ONLY)
+    add_library(trek_resources_rc OBJECT "${CMAKE_CURRENT_BINARY_DIR}/TheGreatTrek.rc")
+    target_sources(TheGreatTrek PRIVATE $<TARGET_OBJECTS:trek_resources_rc>)
+endif()

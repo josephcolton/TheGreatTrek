@@ -52,4 +52,6 @@ Options: `-DTREK_USE_SYSTEM_SDL=ON` to use SDL3 packages already installed on yo
 
 `tools/package.sh` builds a Release and packs a zip with the game, its data, the licence and the credits into `dist/`.
 
+The icon (an ox wagon on Karoo brown) is drawn by `tools/make_icon.py` into `assets/icon/`: `icon.ico` is built into the Windows exe and can be used by an installer, and `icon.png` is the window icon. On Linux, `packaging/linux/thegreattrek.desktop` is a desktop launcher: set `Exec=` to the full path of `TheGreatTrek`, copy it to `~/.local/share/applications/`, and copy `assets/icon/icon.png` to `~/.local/share/icons/hicolor/256x256/apps/thegreattrek.png`.
+
 Tools: `datacheck` checks the data files and text, and `trekbot` plays hundreds of games to check balance (`trekbot --runs 200`).
