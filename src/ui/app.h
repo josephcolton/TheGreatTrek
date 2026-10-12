@@ -15,7 +15,7 @@
 #define TREK_LOGICAL_H 360
 
 typedef enum {
-    SCR_TITLE, SCR_TRIPS, SCR_SIDE, SCR_FAMILY, SCR_STORY, SCR_NAMES, SCR_SETTINGS, SCR_CREDITS, SCR_SCORES, SCR_GAME
+    SCR_TITLE, SCR_TRIPS, SCR_LEVEL, SCR_SIDE, SCR_FAMILY, SCR_STORY, SCR_NAMES, SCR_SETTINGS, SCR_CREDITS, SCR_SCORES, SCR_GAME
 } ScreenId;
 
 typedef enum {
@@ -23,7 +23,7 @@ typedef enum {
 } Overlay;
 
 typedef struct {
-    Difficulty difficulty;  /* chosen on the main menu before a trip */
+    Difficulty difficulty;  /* the last level chosen for a new trip; offered first next time */
     int text_speed;         /* 0 instant, 1 fast, 2 normal (reserved) */
     bool show_odds;         /* off by default */
     bool fullscreen;

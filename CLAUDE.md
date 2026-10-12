@@ -39,7 +39,7 @@ Read these before designing or writing content:
   - Violence is still told in text and kept non-graphic, and is never something the player does for sport.
 - **Educational realism:** odds are not shown (a "Show odds" setting exists, off by default) but should match history where sources allow. Every rate and price carries a source or is marked invented.
 - **Money:** whole rixdollars (Dutch side) or pounds and shillings (English side), priced as close to 1837 as sources allow. Historical events move prices, and sellers cite them.
-- **Saves are permadeath:** one save per trip, written after every step, listed newest first; no going back to an earlier point. Difficulty (Easy/Normal/Hard) is chosen on the main menu before a trip.
+- **Saves are permadeath:** one save per trip, written after every step, listed newest first; no going back to an earlier point. Difficulty (Easy/Normal/Hard) is the first step of a new trip and is fixed for that trip (decided 2026-10-12; it was on the main menu).
 - **Graves:** only the current party's graves are shown, never graves from other trips.
 - **English side earns the group laager** through events; it is never offered at the start.
 

@@ -73,6 +73,7 @@ static void dispatch_screen_event(App *app, const SDL_Event *e)
     switch (app->screen) {
     case SCR_TITLE: title_event(app, e); break;
     case SCR_TRIPS: trips_event(app, e); break;
+    case SCR_LEVEL: level_event(app, e); break;
     case SCR_SIDE: side_event(app, e); break;
     case SCR_FAMILY: family_event(app, e); break;
     case SCR_STORY: story_event(app, e); break;
@@ -114,6 +115,7 @@ static void render(App *app)
     switch (app->screen) {
     case SCR_TITLE: title_render(app); break;
     case SCR_TRIPS: trips_render(app); break;
+    case SCR_LEVEL: level_render(app); break;
     case SCR_SIDE: side_render(app); break;
     case SCR_FAMILY: family_render(app); break;
     case SCR_STORY: story_render(app); break;

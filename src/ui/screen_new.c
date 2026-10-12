@@ -23,6 +23,67 @@ static int side_families(const App *app, Side side, int *out)
 #define SIDE_Y 40.0f
 #define SIDE_W 290.0f
 
+/* ---------------------------------------------------------------- level */
+
+/* The first step of a new trip: how hard. It is fixed for the trip; the last choice is offered first. */
+#define LEVEL_X 140.0f
+#define LEVEL_Y 60.0f
+#define LEVEL_W 360
+
+static void level_items(App *app, ChoiceItem *items)
+{
+    for (int i = 0; i < DIFF_COUNT; i++) {
+        char key[48];
+        snprintf(key, sizeof key, "difficulty.%s", difficulty_id((Difficulty)i));
+        items[i] = (ChoiceItem){app_text(app, key), NULL};
+    }
+}
+
+static void choose_level(App *app, int level)
+{
+    app->settings.difficulty = (Difficulty)level;
+    app_save_settings(app);
+    app_switch(app, SCR_SIDE);
+}
+
+void level_event(App *app, const SDL_Event *e)
+{
+    ChoiceItem items[DIFF_COUNT];
+    level_items(app, items);
+    nav_updown(app, e, DIFF_COUNT);
+    int digit = key_digit(e);
+    if (digit >= 0 && digit < DIFF_COUNT) {
+        choose_level(app, digit);
+    } else if (is_confirm(e)) {
+        choose_level(app, app->sel);
+    } else if (is_back(e)) {
+        app_switch(app, SCR_TITLE);
+    } else if (is_click(e)) {
+        int hit = choices_hit(&app->draw, items, DIFF_COUNT, LEVEL_X, LEVEL_Y, LEVEL_W, app->mx, app->my, true);
+        if (hit >= 0) {
+            choose_level(app, hit);
+        }
+    }
+}
+
+void level_render(App *app)
+{
+    Draw *d = &app->draw;
+    draw_header(app, app_text(app, "level.title"), NULL);
+    ChoiceItem items[DIFF_COUNT];
+    level_items(app, items);
+    float bottom = 0;
+    draw_choices(d, items, DIFF_COUNT, LEVEL_X, LEVEL_Y, LEVEL_W, app->mx, app->my, app->sel, true, &bottom);
+    /* what the highlighted level means */
+    int shown = app->sel >= 0 && app->sel < DIFF_COUNT ? app->sel : 0;
+    char key[48];
+    snprintf(key, sizeof key, "difficulty.%s.about", difficulty_id((Difficulty)shown));
+    draw_wrapped(d, d->font, app_text(app, key), LEVEL_X, bottom + 16, LEVEL_W, COL_DIM, false);
+    draw_footer(app, app_text(app, "level.footer"));
+}
+
+/* ---------------------------------------------------------------- side */
+
 static SDL_FRect side_rect(int s)
 {
     return (SDL_FRect){20.0f + s * (SIDE_W + 20.0f), SIDE_Y, SIDE_W, 280};
@@ -45,7 +106,8 @@ void side_event(App *app, const SDL_Event *e)
     } else if (is_confirm(e)) {
         choose_side(app, (Side)app->sel);
     } else if (is_back(e)) {
-        app_switch(app, SCR_TITLE);
+        app_switch(app, SCR_LEVEL);
+        app->sel = app->settings.difficulty;
     } else if (is_click(e)) {
         for (int s = 0; s < SIDE_COUNT; s++) {
             SDL_FRect r = side_rect(s);

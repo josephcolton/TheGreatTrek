@@ -830,13 +830,13 @@ THE GREAT TREK
 
   1 Continue               (only if there are saved trips)
   2 New trip
-  3 Difficulty: Normal     (Easy / Normal / Hard)
+  3 High scores
   4 Settings
   5 Credits
   6 Quit
 ```
 
-- **Difficulty is set here, before a trip starts**, and is named plainly: **Easy, Normal, Hard**, with a one-line description of each (§8.5). The new trip takes the menu's current difficulty and keeps it for the whole trip; it can't be changed mid-trip. The menu remembers the last choice (`settings.json`).
+- **Difficulty is the first step of a new trip** ("How hard a trek?"), named plainly **Easy, Normal, Hard**, with a description of the highlighted one (§8.5). It is fixed for the whole trip. The last choice is remembered (`settings.json`) and offered first. (Decided 2026-10-12; it used to be a line on the main menu.) Then come the side, the family, the story and the names.
 - **Continue** goes straight into the trip if there is only one; otherwise it opens **Your trips**.
 
 ### 13.2 One save per trip, newest first

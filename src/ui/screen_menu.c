@@ -93,7 +93,7 @@ void draw_footer(App *app, const char *text)
 
 /* ---------------------------------------------------------------- title */
 
-typedef enum { TM_CONTINUE, TM_NEW, TM_DIFFICULTY, TM_SCORES, TM_SETTINGS, TM_CREDITS, TM_QUIT, TM_COUNT } TitleItem;
+typedef enum { TM_CONTINUE, TM_NEW, TM_SCORES, TM_SETTINGS, TM_CREDITS, TM_QUIT, TM_COUNT } TitleItem;
 
 static int unfinished_trips(const App *app)
 {
@@ -106,14 +106,10 @@ static int unfinished_trips(const App *app)
     return n;
 }
 
-static void title_items(App *app, ChoiceItem *items, char *diff_buf, size_t cap)
+static void title_items(App *app, ChoiceItem *items)
 {
-    char key[48];
-    snprintf(key, sizeof key, "difficulty.%s", difficulty_id(app->settings.difficulty));
-    snprintf(diff_buf, cap, "%s %s", app_text(app, "menu.difficulty"), app_text(app, key));
     items[TM_CONTINUE] = (ChoiceItem){app_text(app, "menu.continue"), app->trips.count == 0 ? app_text(app, "menu.no_trips") : NULL};
     items[TM_NEW] = (ChoiceItem){app_text(app, "menu.new"), NULL};
-    items[TM_DIFFICULTY] = (ChoiceItem){diff_buf, NULL};
     items[TM_SCORES] = (ChoiceItem){app_text(app, "menu.scores"), NULL};
     items[TM_SETTINGS] = (ChoiceItem){app_text(app, "menu.settings"), NULL};
     items[TM_CREDITS] = (ChoiceItem){app_text(app, "menu.credits"), NULL};
@@ -121,7 +117,7 @@ static void title_items(App *app, ChoiceItem *items, char *diff_buf, size_t cap)
 }
 
 #define TITLE_MENU_X 220.0f
-#define TITLE_MENU_Y 142.0f
+#define TITLE_MENU_Y 150.0f
 #define TITLE_MENU_W 200
 
 /* the high scores, read once when the screen opens */
@@ -146,10 +142,9 @@ static void title_activate(App *app, int item)
             app_switch(app, SCR_TRIPS);
         }
         break;
-    case TM_NEW: app_switch(app, SCR_SIDE); break;
-    case TM_DIFFICULTY:
-        app->settings.difficulty = (Difficulty)((app->settings.difficulty + 1) % DIFF_COUNT);
-        app_save_settings(app);
+    case TM_NEW:
+        app_switch(app, SCR_LEVEL);
+        app->sel = app->settings.difficulty; /* the last level chosen */
         break;
     case TM_SCORES: load_scores(app); app_switch(app, SCR_SCORES); break;
     case TM_SETTINGS: app_switch(app, SCR_SETTINGS); break;
@@ -162,8 +157,7 @@ static void title_activate(App *app, int item)
 void title_event(App *app, const SDL_Event *e)
 {
     ChoiceItem items[TM_COUNT];
-    char diff[96];
-    title_items(app, items, diff, sizeof diff);
+    title_items(app, items);
     nav_updown(app, e, TM_COUNT);
     int digit = key_digit(e);
     if (digit >= 0 && digit < TM_COUNT) {
@@ -192,15 +186,8 @@ void title_render(App *app)
     draw_text(d, d->big, app_text(app, "app.title"), cx, 30, COL_TEXT, TEXT_CENTER);
     draw_text(d, d->font, app_text(app, "app.subtitle"), cx, 66, COL_GOLD, TEXT_CENTER);
     ChoiceItem items[TM_COUNT];
-    char diff[96];
-    title_items(app, items, diff, sizeof diff);
-    float menu_bottom = 0;
-    draw_choices(d, items, TM_COUNT, TITLE_MENU_X, TITLE_MENU_Y, TITLE_MENU_W, app->mx, app->my, app->sel, true, &menu_bottom);
-    char key[48];
-    snprintf(key, sizeof key, "difficulty.%s.about", difficulty_id(app->settings.difficulty));
-    /* below the menu, which is a line taller when there are no saved trips */
-    float about_y = menu_bottom + 10 > 300 ? menu_bottom + 10 : 300;
-    draw_wrapped(d, d->font, app_text(app, key), 70, about_y, 500, COL_DIM, false);
+    title_items(app, items);
+    draw_choices(d, items, TM_COUNT, TITLE_MENU_X, TITLE_MENU_Y, TITLE_MENU_W, app->mx, app->my, app->sel, true, NULL);
     if (app->message_timer > 0) {
         draw_text(d, d->font, app->message, cx, 128, COL_RED, TEXT_CENTER);
     }
