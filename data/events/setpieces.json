@@ -47,6 +47,7 @@
     },
     {
       "id": "stormberg_pass", "setpiece": true,
+      "speaker": { "pick": "skill", "skill": "voorloper" },
       "history": "history.place.stormberg",
       "sources": ["invented: a mountain crossing on the eastern road. Cold and snow on the Stormberg in winter is [recall, verify]."],
       "text": "event.stormberg_pass.body",

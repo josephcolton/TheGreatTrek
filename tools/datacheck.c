@@ -197,6 +197,32 @@ int main(int argc, char **argv)
                 }
             }
         }
+        /* {speaker} is a party member the event picks; an event that picks no one leaves it unfilled */
+        for (int e = 0; e < d->event_count; e++) {
+            const EventDef *ev = &d->events[e];
+            if (ev->speaker_pick != SPEAKER_NONE) {
+                continue;
+            }
+            for (int k = 0; k < ev->node_count; k++) {
+                const EventNode *nd = &ev->nodes[k];
+                const char *keys[1 + MAX_EVENT_CHOICES * 9];
+                int nk = 0;
+                keys[nk++] = nd->text_key;
+                for (int c = 0; c < nd->choice_count; c++) {
+                    keys[nk++] = nd->choices[c].text_key;
+                    for (int o = 0; o < nd->choices[c].outcome_count && o < 8; o++) {
+                        keys[nk++] = nd->choices[c].outcomes[o].text_key;
+                    }
+                }
+                for (int i = 0; i < nk; i++) {
+                    const char *text = keys[i][0] ? locale_find(loc, keys[i]) : NULL;
+                    if (text && strstr(text, "{speaker")) {
+                        fprintf(stderr, "event %s: %s says {speaker} but the event picks no speaker\n", ev->id, keys[i]);
+                        errors++;
+                    }
+                }
+            }
+        }
         printf("locale: %lu keys, %d missing\n", (unsigned long)locale_count(loc), kc.missing);
         locale_free(loc);
     }

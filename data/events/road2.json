@@ -28,6 +28,7 @@
     },
     {
       "id": "stormberg_snow", "regions": ["stormberg"], "months": [5, 6, 7, 8], "weight": 10, "once": true, "harmful": true,
+      "speaker": { "pick": "skill", "skill": "voorloper" },
       "history": "history.stormberg_snow",
       "sources": ["invented; snow on the high ground of the eastern road in winter is [recall, verify]. Backhouse (1844) records snow lying till midday in Griqua country in June 1839."],
       "text": "event.stormberg_snow.body",
