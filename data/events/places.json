@@ -11,14 +11,14 @@
         { "text": "event.wagonmaker.repair", "requires": [ { "wagon_worn": true } ], "locked": "lock.smith_sound",
           "outcomes": [ { "text": "event.wagonmaker.repair.done", "next": "price", "effects": [ { "smith": "quote" } ] } ] },
         { "text": "event.wagonmaker.transport",
-          "requires": [ { "side": "english" }, { "not": { "wagon": "transport_wagon" } }, { "afford_wagon": "transport_wagon" } ], "locked": "lock.wagonmaker",
-          "outcomes": [ { "text": "event.wagonmaker.transport.done", "effects": [ { "wagon": "transport_wagon" } ] } ] },
+          "requires": [ { "side": "english" }, { "not": { "wagon": "transport_wagon" } } ], "locked": "lock.wagonmaker",
+          "outcomes": [ { "text": "", "next": "buy_transport" } ] },
         { "text": "event.wagonmaker.kakebeenwa",
-          "requires": [ { "side": "english" }, { "not": { "wagon": "kakebeenwa" } }, { "afford_wagon": "kakebeenwa" } ], "locked": "lock.wagonmaker",
-          "outcomes": [ { "text": "event.wagonmaker.kakebeenwa.done", "effects": [ { "wagon": "kakebeenwa" } ] } ] },
+          "requires": [ { "side": "english" }, { "not": { "wagon": "kakebeenwa" } } ], "locked": "lock.wagonmaker",
+          "outcomes": [ { "text": "", "next": "buy_kakebeenwa" } ] },
         { "text": "event.wagonmaker.cart",
-          "requires": [ { "side": "english" }, { "not": { "wagon": "scotch_cart" } }, { "afford_wagon": "scotch_cart" } ], "locked": "lock.wagonmaker",
-          "outcomes": [ { "text": "event.wagonmaker.cart.done", "effects": [ { "wagon": "scotch_cart" } ] } ] },
+          "requires": [ { "side": "english" }, { "not": { "wagon": "scotch_cart" } } ], "locked": "lock.wagonmaker",
+          "outcomes": [ { "text": "", "next": "buy_cart" } ] },
         { "text": "event.wagonmaker.look",
           "outcomes": [ { "text": "event.wagonmaker.look.done" } ] },
         { "text": "event.talk.leave", "outcomes": [ { "text": "" } ] }
@@ -28,6 +28,24 @@
             { "text": "event.smith.repair", "requires": [ { "afford_repair": true } ], "locked": "lock.smith_money",
               "outcomes": [ { "text": "event.smith.repair.done", "effects": [ { "smith": "repair" }, { "time_days": 0.5 } ] } ] },
             { "text": "event.smith.no", "outcomes": [ { "text": "event.smith.no.done" } ] }
+          ] },
+        { "id": "buy_transport", "text": "event.wagonmaker.about.transport", "quote_wagon": "transport_wagon",
+          "choices": [
+            { "text": "event.wagonmaker.buy", "requires": [ { "afford_wagon": "transport_wagon" } ], "locked": "lock.smith_money",
+              "outcomes": [ { "text": "event.wagonmaker.transport.done", "effects": [ { "wagon": "transport_wagon" } ] } ] },
+            { "text": "event.wagonmaker.keep", "outcomes": [ { "text": "", "next": "start" } ] }
+          ] },
+        { "id": "buy_kakebeenwa", "text": "event.wagonmaker.about.kakebeenwa", "quote_wagon": "kakebeenwa",
+          "choices": [
+            { "text": "event.wagonmaker.buy", "requires": [ { "afford_wagon": "kakebeenwa" } ], "locked": "lock.smith_money",
+              "outcomes": [ { "text": "event.wagonmaker.kakebeenwa.done", "effects": [ { "wagon": "kakebeenwa" } ] } ] },
+            { "text": "event.wagonmaker.keep", "outcomes": [ { "text": "", "next": "start" } ] }
+          ] },
+        { "id": "buy_cart", "text": "event.wagonmaker.about.cart", "quote_wagon": "scotch_cart",
+          "choices": [
+            { "text": "event.wagonmaker.buy", "requires": [ { "afford_wagon": "scotch_cart" } ], "locked": "lock.smith_money",
+              "outcomes": [ { "text": "event.wagonmaker.cart.done", "effects": [ { "wagon": "scotch_cart" } ] } ] },
+            { "text": "event.wagonmaker.keep", "outcomes": [ { "text": "", "next": "start" } ] }
           ] }
       ]
     },

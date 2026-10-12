@@ -209,9 +209,22 @@ static void add_std_args(const Game *g, LocText *t)
         loctext_arg_person(t, "head", &g->party[head]);
     }
     loctext_arg_str(t, "family", g->data->families[g->family].surname);
+    loctext_arg_key(t, "wagon", g->data->wagons[g->wagon].name_key);
     if (g->dlg.subject >= 0) {
         loctext_arg_person(t, "who", &g->party[g->dlg.subject]);
     }
+}
+
+/* What trading the present wagon for another would cost, as the wagonmaker says it. */
+static void wagon_quote(const Game *g, int wagon, LocText *t)
+{
+    const GameData *d = g->data;
+    int cost = g_wagon_trade_cost(g, wagon);
+    loctext_set(t, cost > 0 ? "notice.wagon_quote_pay" : cost < 0 ? "notice.wagon_quote_get" : "notice.wagon_quote_even");
+    loctext_arg_key(t, "new", d->wagons[wagon].name_key);
+    loctext_arg_key(t, "old", d->wagons[g->wagon].name_key);
+    loctext_arg_money(t, "money", game_pence_to_unit(g, cost > 0 ? cost : -cost));
+    loctext_arg_money(t, "have", g->money);
 }
 
 static void speaker_text(const Game *g, LocText *t, const EventNode *node)
@@ -255,6 +268,9 @@ void g_event_view(const Game *g, DialogView *v)
     loctext_set(&v->body[0], node->text_key);
     add_std_args(g, &v->body[0]);
     v->body_count = 1;
+    if (node->quote_wagon >= 0) {
+        wagon_quote(g, node->quote_wagon, &v->body[v->body_count++]); /* the price, beside the choice */
+    }
     for (int c = 0; c < node->choice_count; c++) {
         const Choice *ch = &node->choices[c];
         ChoiceView *cv = &v->choices[v->choice_count++];

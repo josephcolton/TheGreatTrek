@@ -1387,6 +1387,7 @@ static void parse_node(Loader *L, const cJSON *o, EventNode *n, const cJSON *nod
     need_str(L, n->text_key, sizeof n->text_key, o, "text", ctx);
     copy_str(n->image, sizeof n->image, jstr(o, "image"));
     copy_str(n->portrait, sizeof n->portrait, jstr(o, "portrait"));
+    n->quote_wagon = jstr(o, "quote_wagon") ? need_index(L, data_find_wagon(L->d, jstr(o, "quote_wagon")), "wagon", jstr(o, "quote_wagon"), n->id) : -1;
     const cJSON *ch;
     cJSON_ArrayForEach(ch, jget(o, "choices"))
     {

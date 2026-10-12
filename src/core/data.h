@@ -402,6 +402,7 @@ typedef struct {
     char text_key[KEY_LEN];
     char image[ID_LEN];
     char portrait[ID_LEN];      /* someone met on the road (e.g. moroka); empty = the speaker's own */
+    int quote_wagon;            /* a wagonmaker's page: says what trading for this wagon costs; -1 none */
     Choice choices[MAX_EVENT_CHOICES];
     int choice_count;
 } EventNode;

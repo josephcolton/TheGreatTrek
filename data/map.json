@@ -1,5 +1,5 @@
 {
-  "_about": "The route maps (Map screen). Two sheets show the same rivers, coast, mountains and peoples, each projected for its own country: 'south' (the Colony to the Vaal, stretched east-west about 2.5 times so that places close together stay readable) and 'north' (Natal and the Far North, stretched about 1.6 times). Places are drawn at their real lat/lon from route.json. River courses, the coast and the mountains are simplified from a modern map by eye [approximate]. 'label_at' is the point a river's name is written beside (-1: no name). Each sheet's 'places' says on which side of its mark each place's name goes, and its 'sea' points close the coast into the sea. Peoples are written softly over their country, with no borders: in 1837 there were no fixed lines.",
+  "_about": "The route maps (Map screen). Two sheets show the same rivers, coast, mountains and peoples, each projected for its own country: 'south' (the Colony to the Vaal, stretched east-west about 2.5 times so that places close together stay readable; tributaries start on a point of the river they join, so lines meet rather than cross) and 'north' (Natal and the Far North, stretched about 1.6 times). Places are drawn at their real lat/lon from route.json. River courses, the coast and the mountains are simplified from a modern map by eye [approximate]. 'label_at' is the point a river's name is written beside (-1: no name). Each sheet's 'places' says on which side of its mark each place's name goes, and its 'sea' points close the coast into the sea. Peoples are written softly over their country, with no borders: in 1837 there were no fixed lines.",
   "sheets": [
     {
       "id": "south",
@@ -89,7 +89,7 @@
     {
       "key": "map.river.vet",
       "label_at": 1,
-      "points": [[25.1, -27.95], [25.6, -28.05], [26.1, -28.2], [26.5, -28.32], [27.01, -28.52], [27.6, -28.45]]
+      "points": [[25.6, -27.65], [26.0, -27.95], [26.5, -28.32], [27.01, -28.52], [27.6, -28.45]]
     },
     {
       "key": "map.river.sand",
