@@ -39,7 +39,7 @@ Read these before designing or writing content:
   - Violence is still told in text and kept non-graphic, and is never something the player does for sport.
 - **Educational realism:** odds are not shown (a "Show odds" setting exists, off by default) but should match history where sources allow. Every rate and price carries a source or is marked invented.
 - **Money:** whole rixdollars (Dutch side) or pounds and shillings (English side), priced as close to 1837 as sources allow. Historical events move prices, and sellers cite them.
-- **Saves are permadeath:** one save per trip, written after every step, listed newest first; no going back to an earlier point. Difficulty (Easy/Normal/Hard) is the first step of a new trip and is fixed for that trip (decided 2026-10-12; it was on the main menu).
+- **Saves are permadeath:** one save per trip, written after every step, listed newest first; no going back to an earlier point. A finished trip is scored into the high scores and its save deleted (decided 2026-10-12), so the trip list holds only trips that can go on; the high scores can all be deleted after a Y/N confirm. Difficulty (Easy/Normal/Hard) is the first step of a new trip and is fixed for that trip (decided 2026-10-12; it was on the main menu).
 - **Graves:** only the current party's graves are shown, never graves from other trips.
 - **English side earns the group laager** through events; it is never offered at the start.
 
@@ -92,7 +92,7 @@ ctest --test-dir "$B" --output-on-failure
 "$B/bin/TheGreatTrek.exe" --pref "$TEMP/p" --seed 7 --keys "2 1 1 enter up enter" --screenshot shot.png
 ```
 
-Testing the front end without a person: `--keys` replays key presses (1-9, a-z, enter, esc, arrows, `text:Word`, `wait:N`, and the mouse with `move:X,Y` / `click:X,Y` in 640×360 pixels), `--seed` fixes the new trip's seed, `--pref` keeps saves, settings and scores out of the real user folder, and `--screenshot` saves a PNG you can look at. `trekbot --dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark|landmark:ID|night|speaker` writes a save at that moment; copy it into `<pref>/trips/` to open it in the game. `tools/screenshots.sh <build>` retakes the README screenshots in `docs/screenshots/` this way.
+Testing the front end without a person: `--keys` replays key presses (1-9, a-z, enter, esc, arrows, `text:Word`, `wait:N`, and the mouse with `move:X,Y` / `click:X,Y` in 640×360 pixels), `--seed` fixes the new trip's seed, `--pref` keeps saves, settings and scores out of the real user folder, and `--screenshot` saves a PNG you can look at. `trekbot --dump FILE --stop-at grave|river|store|route|ending|barter|hunt|landmark|landmark:ID|night|speaker` writes a save at that moment; copy it into `<pref>/trips/` to open it in the game. (An `ending` save is scored and deleted as soon as the game reads the trips, so it cannot be opened that way.) `tools/screenshots.sh <build>` retakes the README screenshots in `docs/screenshots/` this way.
 
 ### This machine (Windows 11), checked 2026-10-11
 - **Toolchain in use:** `gcc` 13.2 (MinGW-w64 UCRT), `cmake` 3.29 and `ninja` from **Strawberry Perl** (`C:/Strawberry/c/bin`), first on PATH. Chosen because it works with no setup; the CMake files are portable to MSVC and other platforms.

@@ -56,7 +56,6 @@ static int read_all(const char *pref_path, ScoreEntry *out, int max)
         if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "ending"))) {
             e->ending = (EndingKind)v->valueint;
         }
-        e->cleared = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "cleared"));
 #undef STR
 #undef NUM
     }
@@ -81,9 +80,6 @@ static void write_all(const char *pref_path, const ScoreEntry *in, int n)
         cJSON_AddNumberToObject(o, "party", e->party);
         cJSON_AddNumberToObject(o, "miles", e->miles);
         cJSON_AddNumberToObject(o, "score", e->score);
-        if (e->cleared) {
-            cJSON_AddBoolToObject(o, "cleared", true);
-        }
         cJSON_AddItemToArray(root, o);
     }
     char *text = cJSON_Print(root);
@@ -111,7 +107,8 @@ static void entry_from_game(ScoreEntry *e, const char *trip_id, const Game *g)
     e->score = game_score(g);
 }
 
-/* Adds or replaces the entry for its trip; returns the new count. */
+/* Adds or replaces the entry for its trip; when the list is full, the new score replaces the
+ * lowest if it is higher. Returns the new count. */
 static int put(ScoreEntry *all, int n, int max, const ScoreEntry *e)
 {
     for (int i = 0; i < n; i++) {
@@ -122,6 +119,16 @@ static int put(ScoreEntry *all, int n, int max, const ScoreEntry *e)
     }
     if (n < max) {
         all[n++] = *e;
+        return n;
+    }
+    int low = 0;
+    for (int i = 1; i < n; i++) {
+        if (all[i].score < all[low].score) {
+            low = i;
+        }
+    }
+    if (e->score > all[low].score) {
+        all[low] = *e;
     }
     return n;
 }
@@ -150,65 +157,47 @@ static int by_score(const void *a, const void *b)
     return (y->score > x->score) - (y->score < x->score);
 }
 
-/* Adds any finished trip in `trips` that is not in the list yet; true if any was added. */
-static bool add_finished(const char *pref_path, const TripList *trips, const GameData *data, ScoreEntry *all, int *n,
-                         int max)
-{
-    bool added = false;
-    for (int t = 0; trips && t < trips->count; t++) {
-        const TripInfo *ti = &trips->trips[t];
-        bool known = false;
-        for (int i = 0; i < *n; i++) {
-            known = known || strcmp(all[i].trip_id, ti->id) == 0;
-        }
-        if (known || ti->ending == ENDING_NONE) {
-            continue;
-        }
-        char err[128];
-        Game *g = trips_read(pref_path, ti->id, data, err, sizeof err);
-        if (g) {
-            ScoreEntry e;
-            entry_from_game(&e, ti->id, g);
-            *n = put(all, *n, max, &e);
-            added = true;
-            game_free(g);
-        }
-    }
-    return added;
-}
-
-int scores_load(const char *pref_path, const TripList *trips, const GameData *data, ScoreEntry *out, int max)
-{
-    int n = read_all(pref_path, out, max);
-    if (add_finished(pref_path, trips, data, out, &n, max)) {
-        write_all(pref_path, out, n);
-    }
-    int shown = 0;
-    for (int i = 0; i < n; i++) {
-        if (!out[i].cleared) {
-            out[shown++] = out[i];
-        }
-    }
-    qsort(out, (size_t)shown, sizeof out[0], by_score);
-    return shown;
-}
-
-void scores_clear(const char *pref_path, const TripList *trips, const GameData *data)
+int scores_take_finished(const char *pref_path, const TripList *trips, const GameData *data)
 {
     static ScoreEntry all[MAX_SCORES];
     int n = read_all(pref_path, all, MAX_SCORES);
-    add_finished(pref_path, trips, data, all, &n, MAX_SCORES);
-    int kept = 0;
-    for (int i = 0; i < n; i++) {
-        /* a trip whose save is gone can never come back, so its score is simply dropped */
-        bool saved = false;
-        for (int t = 0; trips && t < trips->count; t++) {
-            saved = saved || strcmp(trips->trips[t].id, all[i].trip_id) == 0;
+    int taken = 0;
+    for (int t = 0; trips && t < trips->count; t++) {
+        const TripInfo *ti = &trips->trips[t];
+        if (ti->ending == ENDING_NONE) {
+            continue;
         }
-        if (saved) {
-            all[i].cleared = true;
-            all[kept++] = all[i];
+        bool known = false;
+        for (int i = 0; i < n; i++) {
+            known = known || strcmp(all[i].trip_id, ti->id) == 0;
+        }
+        if (!known) {
+            char err[128];
+            Game *g = trips_read(pref_path, ti->id, data, err, sizeof err);
+            if (!g) {
+                continue; /* keep a save that cannot be read rather than lose its score */
+            }
+            ScoreEntry e;
+            entry_from_game(&e, ti->id, g);
+            n = put(all, n, MAX_SCORES, &e);
+            game_free(g);
+            write_all(pref_path, all, n); /* the score is safe before the save goes */
+        }
+        if (trips_delete(pref_path, ti->id)) {
+            taken++;
         }
     }
-    write_all(pref_path, all, kept);
+    return taken;
+}
+
+int scores_load(const char *pref_path, ScoreEntry *out, int max)
+{
+    int n = read_all(pref_path, out, max);
+    qsort(out, (size_t)n, sizeof out[0], by_score);
+    return n;
+}
+
+void scores_clear(const char *pref_path)
+{
+    write_all(pref_path, NULL, 0);
 }

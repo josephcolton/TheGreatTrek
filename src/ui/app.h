@@ -99,6 +99,8 @@ const char *app_fmt(App *app, const LocText *t);
 /* Formats into a caller buffer. */
 void app_fmt_to(App *app, const LocText *t, char *out, size_t cap);
 /* Saves the trip after every step that changes it. */
+/* Reads the saved trips; finished ones are scored and their saves deleted. */
+void app_scan_trips(App *app);
 void app_commit(App *app);
 void app_save_settings(App *app);
 void app_set_message(App *app, const char *text);

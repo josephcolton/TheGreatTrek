@@ -24,9 +24,7 @@
   "trips.title": "Your trips",
   "trips.about": "Newest first. Each trip has one save, and it always holds the latest moment.",
   "trips.row": "{family} · {difficulty} · {date} · near {place} · {alive} of {party} with the party",
-  "trips.row_finished": "Finished: {family} · {difficulty} · {date} · {place} · {alive} of {party} reached the end",
   "trips.footer": "Enter: open   D: delete a trip   Esc: back",
-  "trips.confirm_delete": "Delete this finished trip for good? Y / N",
   "trips.empty": "No trips saved. Press Esc and start a new trip.",
   "trips.confirm_abandon": "This trip is not finished. Abandon it and delete it for good? Y / N",
 
@@ -127,7 +125,7 @@
   "store.col.stock": "In stock",
   "store.load": "Wagon load: {load} of {cap} lb",
   "scores.title": "High scores",
-  "scores.empty": "No trek has ended yet. Finish one, wherever it ends, and its score will be kept here.",
+  "scores.empty": "No high scores yet. Finish a trek, wherever it ends, and its score will be kept here.",
   "scores.col.family": "Family",
   "scores.col.end": "Where the trek ended",
   "scores.col.people": "People",

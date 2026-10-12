@@ -830,7 +830,7 @@ static void ending_event(App *app, const SDL_Event *e)
             return;
         }
         app_close_game(app);
-        trips_scan(app->pref_path, &app->trips);
+        app_scan_trips(app);
         app_switch(app, SCR_TITLE);
     }
 }

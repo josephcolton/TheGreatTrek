@@ -1,6 +1,5 @@
-/* High scores: <pref>/scores.json keeps every finished trip's score, so a score stays after its
- * trip is deleted. A trip is recorded when it ends; trips finished before there was a score file
- * are added the first time the list is read. */
+/* High scores: <pref>/scores.json keeps every finished trip's score. A trip is scored when it
+ * ends, and once it is scored its save is deleted: a finished trip cannot be played on. */
 #ifndef TREK_SCORES_H
 #define TREK_SCORES_H
 
@@ -20,15 +19,17 @@ typedef struct {
     int alive, party;
     int miles;
     int score;
-    bool cleared;           /* deleted by the player: kept only so the trip is not added again */
 } ScoreEntry;
 
 /* Records (or updates) a finished trip's score. */
 void scores_record(const char *pref_path, const char *trip_id, const Game *g);
-/* Reads the scores, best first, after adding any finished trip in `trips` not yet recorded. */
-int scores_load(const char *pref_path, const TripList *trips, const GameData *data, ScoreEntry *out, int max);
-/* Deletes every high score. Saved trips are kept, and are not scored again; trips finished
- * afterwards are. */
-void scores_clear(const char *pref_path, const TripList *trips, const GameData *data);
+/* Scores every finished trip in `trips` and deletes its save (trips that ended before the
+ * game did this, or whose ending screen was never closed). Returns how many were deleted;
+ * scan the trips again afterwards. */
+int scores_take_finished(const char *pref_path, const TripList *trips, const GameData *data);
+/* Reads the scores, best first. */
+int scores_load(const char *pref_path, ScoreEntry *out, int max);
+/* Deletes every high score. */
+void scores_clear(const char *pref_path);
 
 #endif

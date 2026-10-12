@@ -116,7 +116,7 @@ static int score_count;
 
 static void load_scores(App *app)
 {
-    score_count = scores_load(app->pref_path, &app->trips, app->data, scores, MAX_SCORES);
+    score_count = scores_load(app->pref_path, scores, MAX_SCORES);
 }
 
 static void title_activate(App *app, int item)
@@ -192,7 +192,7 @@ static void trip_line(App *app, const TripInfo *t, char *out, size_t cap)
     snprintf(place_key, sizeof place_key, "place.%s", t->node);
     fmt_date(app->loc, t->day, date, sizeof date);
     LocText lt;
-    loctext_set(&lt, t->ending ? "trips.row_finished" : "trips.row");
+    loctext_set(&lt, "trips.row");
     loctext_arg_key(&lt, "family", fam_key);
     loctext_arg_key(&lt, "difficulty", diff_key);
     loctext_arg_key(&lt, "place", place_key);
@@ -212,7 +212,7 @@ void trips_event(App *app, const SDL_Event *e)
     if (app->overlay == OV_CONFIRM_DELETE) {
         if (key_is(e, SDLK_Y)) {
             trips_delete(app->pref_path, app->trips.trips[app->sel].id);
-            trips_scan(app->pref_path, &app->trips);
+            app_scan_trips(app);
             if (app->sel >= app->trips.count) {
                 app->sel = app->trips.count > 0 ? app->trips.count - 1 : 0;
             }
@@ -228,7 +228,7 @@ void trips_event(App *app, const SDL_Event *e)
         return;
     }
     if (n > 0 && (key_is(e, SDLK_DELETE) || key_is(e, SDLK_D))) {
-        /* any trip may be deleted: abandoning one goes back on nothing (the confirm says which) */
+        /* a trip may be abandoned: the confirm says it cannot be taken back */
         app->overlay = OV_CONFIRM_DELETE;
         return;
     }
@@ -262,12 +262,12 @@ void trips_render(App *app)
         if (hot) {
             draw_rect(d, (SDL_FRect){TRIPS_X - 4, y, TRIPS_W + 8, (float)d->line_h * 2 - 2}, COL_HILITE_BG);
         }
-        draw_wrapped(d, d->font, line, TRIPS_X, y, TRIPS_W, t->ending ? COL_DIM : (hot ? COL_GOLD : COL_TEXT), false);
+        draw_wrapped(d, d->font, line, TRIPS_X, y, TRIPS_W, hot ? COL_GOLD : COL_TEXT, false);
         y += d->line_h * 2;
     }
     const char *footer = "trips.footer";
     if (app->overlay == OV_CONFIRM_DELETE && app->sel < app->trips.count) {
-        footer = app->trips.trips[app->sel].ending != 0 ? "trips.confirm_delete" : "trips.confirm_abandon";
+        footer = "trips.confirm_abandon";
     }
     draw_footer(app, app_text(app, footer));
 }
@@ -358,7 +358,7 @@ void scores_event(App *app, const SDL_Event *e)
 {
     if (app->overlay == OV_CONFIRM_DELETE) {
         if (key_is(e, SDLK_Y)) {
-            scores_clear(app->pref_path, &app->trips, app->data);
+            scores_clear(app->pref_path);
             load_scores(app);
             app->overlay = OV_NONE;
         } else if (key_is(e, SDLK_N) || is_back(e)) {

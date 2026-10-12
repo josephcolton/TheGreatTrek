@@ -44,7 +44,7 @@ static void pause_activate(App *app, int item)
     case PA_SAVE_QUIT:
         app_commit(app);
         app_close_game(app);
-        trips_scan(app->pref_path, &app->trips);
+        app_scan_trips(app);
         app_switch(app, SCR_TITLE);
         break;
     case PA_HELP: app->overlay = OV_HELP; break;

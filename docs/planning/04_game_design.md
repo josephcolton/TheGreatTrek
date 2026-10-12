@@ -845,7 +845,7 @@ THE GREAT TREK
 - **Your trips** lists saved trips **newest first** (by last played). Each row shows: family name and side, difficulty, the date in the trip, where they are, how many are still with the party, and when it was last played.
 - **Save and quit** (pause menu) writes the save and returns to the main menu. Picking the trip later carries on exactly where it stopped, even in the middle of a store visit or a conversation.
 - Several trips can exist at once (e.g. one per family member playing), each with its own single save.
-- **Finished trips** (arrived, settled, turned back, or lost) can't be continued. They stay in a separate "Finished" list where the journal, graves and epilogue can be read, and can be deleted.
+- **Finished trips** (arrived, settled, turned back, or lost) can't be continued. When the ending and epilogue are closed, the trip's score goes into the high scores and its save is deleted (decided 2026-10-12; the earlier plan kept a read-only "Finished" list). A finished save left over (an older version, or the game closed on the ending screen) is scored and deleted the next time the trips are read.
 
 ### 13.3 Permadeath: the save always moves forward
 
@@ -975,7 +975,7 @@ Validates JSON schemas, every locale key (in code-referenced lists and data), ev
 - **Difficulty:** Easy / Normal / Hard, set from the main menu before a trip (§13.1).
 - **Saves:** one save per trip, newest first, always moving forward; permadeath (§13).
 - **Distance:** ~650 game miles, calibrated on the Uys party's 1837 timeline (§5.2).
-- **Finished trips:** kept read-only in a "Finished" list (journal, graves, epilogue); they can be deleted but never continued.
+- **Finished trips:** scored, then their saves deleted; only the high scores keep them (see above).
 
 ## 18. Open questions
 

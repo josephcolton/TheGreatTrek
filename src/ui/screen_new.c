@@ -280,7 +280,7 @@ static void start_trip(App *app)
     app->game = g;
     trips_new_id(app->trip_id, sizeof app->trip_id, seed);
     app_commit(app);
-    trips_scan(app->pref_path, &app->trips);
+    app_scan_trips(app);
     app_switch(app, SCR_GAME);
     if (!app->settings.help_seen) {
         /* the first trip opens with how to play; it is in the pause menu after that */

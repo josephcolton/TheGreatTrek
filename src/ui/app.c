@@ -214,7 +214,7 @@ bool app_init(App *app, const char *pref_override)
         SDL_Log("No sprites loaded from %s; scenes will be missing pictures", sprite_dir);
     }
     free(sprite_dir);
-    trips_scan(app->pref_path, &app->trips);
+    app_scan_trips(app);
     app->screen = SCR_TITLE;
     app->running = true;
     return true;
@@ -288,6 +288,15 @@ const char *app_fmt(App *app, const LocText *t)
     next = (next + 1) % 8;
     app_fmt_to(app, t, b, sizeof bufs[0]);
     return b;
+}
+
+void app_scan_trips(App *app)
+{
+    trips_scan(app->pref_path, &app->trips);
+    /* a finished trip is only its score now: keep the score, drop the save */
+    if (scores_take_finished(app->pref_path, &app->trips, app->data) > 0) {
+        trips_scan(app->pref_path, &app->trips);
+    }
 }
 
 void app_commit(App *app)
