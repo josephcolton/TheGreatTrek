@@ -704,17 +704,16 @@ static void store_render(App *app)
     int above = app->scroll, below = sv.row_count - (app->scroll + shown);
     if (above > 0) {
         store_arrow(d, STORE_ARROW_X, STORE_Y + 2, true);
+        LocText more;
+        loctext_set(&more, "store.more_above");
+        loctext_arg_int(&more, "n", above);
+        draw_text(d, d->small, app_fmt(app, &more), 626, STORE_Y - d->line_h + 2, COL_GOLD, TEXT_RIGHT);
     }
     if (below > 0) {
         store_arrow(d, STORE_ARROW_X, STORE_Y + shown * d->line_h - 2, false);
         LocText more;
         loctext_set(&more, "store.more_below");
         loctext_arg_int(&more, "n", below);
-        draw_text(d, d->small, app_fmt(app, &more), 626, STORE_Y + shown * d->line_h + 1, COL_GOLD, TEXT_RIGHT);
-    } else if (above > 0) {
-        LocText more;
-        loctext_set(&more, "store.more_above");
-        loctext_arg_int(&more, "n", above);
         draw_text(d, d->small, app_fmt(app, &more), 626, STORE_Y + shown * d->line_h + 1, COL_GOLD, TEXT_RIGHT);
     }
     draw_text(d, d->font, app_fmt(app, &t), 20, by, sv.load_lb > sv.capacity_lb ? COL_RED : COL_DIM, TEXT_LEFT);
