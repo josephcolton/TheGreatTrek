@@ -759,6 +759,21 @@ void game_hunt_quit(Game *g)
     hunt_log(g, "hunt.give_up", NULL, h->meat);
 }
 
+/* What comes back from a hunt: what can be carried, kept fresh up to what keeps, and the rest
+ * cut into strips and dried, which loses about half its weight. */
+static void meat_split(const Game *g, int *fresh, int *dried)
+{
+    const GameData *d = g->data;
+    const HuntState *h = &g->hunt;
+    int brought = h->meat < h->carry ? h->meat : h->carry;
+    int fresh_room = MEAT_KEEP_LB - g->inv[d->item_meat];
+    if (fresh_room < 0) {
+        fresh_room = 0;
+    }
+    *fresh = brought < fresh_room ? brought : fresh_room;
+    *dried = (int)lround((brought - *fresh) * d->hunt.biltong_yield);
+}
+
 bool game_hunt_view(const Game *g, HuntView *out)
 {
     memset(out, 0, sizeof *out);
@@ -805,6 +820,12 @@ bool game_hunt_view(const Game *g, HuntView *out)
             loctext_arg_int(&out->summary[0], "meat", h->meat);
             loctext_set(&out->summary[1], h->meat > h->carry ? "hunt.summary.too_much" : "hunt.summary.all");
             loctext_arg_int(&out->summary[1], "carry", h->carry);
+            int fresh, dried;
+            meat_split(g, &fresh, &dried);
+            loctext_set(&out->summary[2], dried > 0 ? "hunt.summary.dried" : "hunt.summary.fresh");
+            loctext_arg_int(&out->summary[2], "fresh", fresh);
+            loctext_arg_int(&out->summary[2], "dried", dried);
+            loctext_arg_int(&out->summary[2], "keep", MEAT_KEEP_LB);
         }
     }
     return true;
@@ -822,12 +843,8 @@ void game_hunt_finish(Game *g)
         return;
     }
     int brought = h->meat < h->carry ? h->meat : h->carry;
-    int fresh_room = MEAT_KEEP_LB - g->inv[d->item_meat];
-    if (fresh_room < 0) {
-        fresh_room = 0;
-    }
-    int fresh = brought < fresh_room ? brought : fresh_room;
-    int dried = (int)lround((brought - fresh) * d->hunt.biltong_yield);
+    int fresh, dried;
+    meat_split(g, &fresh, &dried);
     g->inv[d->item_meat] += fresh;
     g->inv[d->item_biltong] += dried;
     int per = d->hunt.shots_per_lb > 0 ? d->hunt.shots_per_lb : 12;

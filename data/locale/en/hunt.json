@@ -43,6 +43,8 @@
   "hunt.sundown": "The sun is going down. Time to go back.",
   "hunt.summary.shot": "{who} shot {meat} lb of meat.",
   "hunt.summary.all": "All of it can be carried back to the wagons.",
+  "hunt.summary.dried": "Fresh meat soon spoils, so the wagon keeps no more than {keep} lb fresh: {fresh} lb. The rest is cut into strips and dried, which loses more than half its weight: {dried} lb of biltong.",
+  "hunt.summary.fresh": "All {fresh} lb is kept as fresh meat.",
   "hunt.summary.too_much": "Only {carry} lb can be carried back to the wagons. The rest is left for the jackals and vultures.",
   "hunt.summary.none": "{who} comes back to the wagons with nothing.",
   "hunt.summary.go": "Click or press Enter to go on",

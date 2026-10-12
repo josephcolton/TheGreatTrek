@@ -306,7 +306,7 @@ void hunt_screen_render(App *app)
 
     /* the summary when the hunt is over */
     if (v.over) {
-        SDL_FRect box = {120, FIELD_TOP + 40, 400, v.defend ? 130.0f : 110.0f};
+        SDL_FRect box = {110, FIELD_TOP + 30, 420, 150};
         draw_rect(d, box, (SDL_Color){COL_BG.r, COL_BG.g, COL_BG.b, 230});
         draw_frame(d, box, COL_BORDER);
         float y = box.y + 10;
