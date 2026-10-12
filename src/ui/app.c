@@ -186,6 +186,9 @@ bool app_init(App *app)
         return false;
     }
     draw_init(&app->draw, app->renderer, app->font, app->big, app->small, FONT_BODY_PT, FONT_BIG_PT, FONT_SMALL_PT);
+    app->draw.sel = &app->sel;
+    app->draw.mx = &app->mx;
+    app->draw.my = &app->my;
     char *sprite_dir = util_path_join(app->base_path, "assets/sprites");
     if (sprites_load(app->renderer, sprite_dir) == 0) {
         SDL_Log("No sprites loaded from %s; scenes will be missing pictures", sprite_dir);

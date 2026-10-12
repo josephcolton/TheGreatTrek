@@ -20,6 +20,13 @@ typedef struct {
     float font_pt, big_pt, small_pt;
     int scale;           /* window pixels per logical pixel; text is rendered at this resolution */
     int line_h;          /* body line height, logical pixels */
+    /* One highlight at a time in a list: the mouse and the keys share the app's selection. */
+    int *sel;            /* the app's highlighted item */
+    float *mx, *my;      /* the app's mouse, logical pixels */
+    bool mouse_last;     /* the mouse moved since the last key: the item under it is the selection */
+    bool follow;         /* a key just moved the selection: bring the mouse to it if it is over the list */
+    bool warped;         /* the mouse was moved there by us: its motion event is not the player's */
+    float warp_x, warp_y;
 } Draw;
 
 void draw_init(Draw *d, SDL_Renderer *r, TTF_Font *font, TTF_Font *big, TTF_Font *small, float font_pt, float big_pt,
@@ -48,6 +55,9 @@ typedef struct {
 
 int  draw_choices(Draw *d, const ChoiceItem *items, int n, float x, float y, int w, float mouse_x, float mouse_y,
                   int selected, bool numbered, float *out_bottom);
+/* Keeps one highlight between the mouse and the keys for a list drawn by hand: item `hover` is
+ * under the mouse (-1 none) and `target` is where the selected item is. Called while rendering. */
+void draw_sync_hover(Draw *d, int hover, int selected, SDL_FRect target, bool horizontal);
 /* Hit test for draw_choices' layout without drawing. */
 int  choices_hit(Draw *d, const ChoiceItem *items, int n, float x, float y, int w, float mx, float my, bool numbered);
 

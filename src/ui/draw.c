@@ -258,16 +258,50 @@ int choices_hit(Draw *d, const ChoiceItem *items, int n, float x, float y, int w
     return -1;
 }
 
+void draw_sync_hover(Draw *d, int hover, int selected, SDL_FRect target, bool horizontal)
+{
+    if (!d->sel || hover < 0 || selected != *d->sel) {
+        return; /* the mouse is off the list, or this list isn't the one the keys move */
+    }
+    if (d->follow && hover != selected) {
+        /* a key moved the highlight away from the item under the mouse: the mouse goes with it */
+        float lx = horizontal ? target.x + target.w / 2 : *d->mx;
+        float ly = horizontal ? *d->my : target.y + target.h / 2;
+        float wx, wy;
+        SDL_RenderCoordinatesToWindow(d->r, lx, ly, &wx, &wy);
+        SDL_WarpMouseInWindow(SDL_GetRenderWindow(d->r), wx, wy);
+        *d->mx = lx;
+        *d->my = ly;
+        d->follow = false;
+        d->warped = true;
+        d->warp_x = lx;
+        d->warp_y = ly;
+    } else if (d->mouse_last) {
+        *d->sel = hover; /* the mouse moved onto an item: the keys carry on from there */
+    }
+}
+
 int draw_choices(Draw *d, const ChoiceItem *items, int n, float x, float y, int w, float mouse_x, float mouse_y,
                  int selected, bool numbered, float *out_bottom)
 {
     int hover = choices_hit(d, items, n, x, y, w, mouse_x, mouse_y, numbered);
+    /* the list the keys move shows one highlight: the selection, which follows the mouse */
+    bool keyed = d->sel && selected == *d->sel && selected >= 0 && selected < n;
+    if (keyed) {
+        float ty = y;
+        for (int i = 0; i < selected; i++) {
+            ty += choice_height(d, &items[i], w, numbered);
+        }
+        draw_sync_hover(d, hover, selected, (SDL_FRect){x, ty, (float)w, (float)choice_height(d, &items[selected], w, numbered)},
+                        false);
+        selected = *d->sel;
+    }
     float cy = y;
     int indent = numbered ? 22 : 8;
     for (int i = 0; i < n; i++) {
         const ChoiceItem *it = &items[i];
         int h = choice_height(d, it, w, numbered);
-        bool hot = (i == hover || i == selected);
+        bool hot = (i == hover && !keyed) || i == selected;
         if (hot && !it->locked) {
             draw_rect(d, (SDL_FRect){x, cy, (float)w, (float)h - 2}, COL_HILITE_BG);
         }

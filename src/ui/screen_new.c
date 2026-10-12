@@ -60,9 +60,17 @@ void side_render(App *app)
 {
     Draw *d = &app->draw;
     draw_header(app, app_text(app, "side.title"), NULL);
+    int hover = -1;
     for (int s = 0; s < SIDE_COUNT; s++) {
         SDL_FRect r = side_rect(s);
-        bool hot = s == app->sel || (app->mx >= r.x && app->mx < r.x + r.w && app->my >= r.y && app->my < r.y + r.h);
+        if (app->mx >= r.x && app->mx < r.x + r.w && app->my >= r.y && app->my < r.y + r.h) {
+            hover = s;
+        }
+    }
+    draw_sync_hover(d, hover, app->sel, side_rect(app->sel), true);
+    for (int s = 0; s < SIDE_COUNT; s++) {
+        SDL_FRect r = side_rect(s);
+        bool hot = s == app->sel;
         draw_panel(d, r);
         if (hot) {
             draw_frame(d, (SDL_FRect){r.x + 2, r.y + 2, r.w - 4, r.h - 4}, COL_GOLD);

@@ -15,6 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void dispatch_screen_event(App *app, const SDL_Event *e);
+
 static void dispatch_event(App *app, SDL_Event *e)
 {
     if (e->type == SDL_EVENT_QUIT) {
@@ -30,6 +32,12 @@ static void dispatch_event(App *app, SDL_Event *e)
         if (e->type == SDL_EVENT_MOUSE_MOTION) {
             app->mx = e->motion.x;
             app->my = e->motion.y;
+            bool ours = app->draw.warped && SDL_fabsf(app->mx - app->draw.warp_x) < 1 && SDL_fabsf(app->my - app->draw.warp_y) < 1;
+            app->draw.warped = false;
+            if (!ours) {
+                app->draw.mouse_last = true;
+                app->draw.follow = false;
+            }
             return;
         }
         if (e->type != SDL_EVENT_MOUSE_WHEEL) {
@@ -43,6 +51,20 @@ static void dispatch_event(App *app, SDL_Event *e)
         app_save_settings(app);
         return;
     }
+    if (e->type == SDL_EVENT_KEY_DOWN) {
+        /* after a key, the selection is the keys' until the mouse moves; if the key moved it, the
+         * next frame brings the mouse onto it (draw_sync_hover) */
+        int before = app->sel;
+        app->draw.mouse_last = false;
+        dispatch_screen_event(app, e);
+        app->draw.follow = app->sel != before;
+        return;
+    }
+    dispatch_screen_event(app, e);
+}
+
+static void dispatch_screen_event(App *app, const SDL_Event *e)
+{
     if (app->overlay != OV_NONE && app->screen == SCR_GAME) {
         overlay_event(app, e);
         return;
@@ -136,6 +158,7 @@ static void run_keys(App *app, const char *keys)
             int frames = atoi(tok + 5);
             for (int i = 0; i < frames; i++) {
                 update(app, 0.1);
+                render(app); /* as the real loop does: some screens settle while drawing */
             }
             continue;
         }
