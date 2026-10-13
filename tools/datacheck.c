@@ -79,6 +79,7 @@ static const char *CODE_KEYS[] = {
     "scores.col.score", "scores.family", "scores.unknown", "scores.end.arrived", "scores.end.settled",
     "scores.end.turned_back", "scores.end.stranded", "scores.end.lost", "scores.footer", "scores.confirm_clear",
     "scores.confirm_footer",
+    "pause.about_over", "ending.final.title", "ending.final.score", "ending.final.menu", "ending.final.credits", "ending.final.quit",
     "help.title", "help.1", "help.2", "help.3", "help.4", "help.5", "help.6", "help.7",
     "store.plan", "store.plan.first", "store.plan.next",
     "summary.days", "summary.ill", "summary.died", "summary.lost",

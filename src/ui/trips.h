@@ -22,6 +22,7 @@ typedef struct {
     int alive;
     int party;
     int ending;
+    int phase;              /* GamePhase: an ending is only over once it is PHASE_ENDED */
     SDL_Time modified;
 } TripInfo;
 

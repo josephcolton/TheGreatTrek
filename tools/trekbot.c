@@ -193,6 +193,21 @@ static bool maybe_dump(Game *g)
     }
     bool hit = false;
     DialogView v;
+    if (strcmp(stop_at, "pre_ending") == 0) {
+        /* the step before the trip ends, so the ending can be played in the game (a save that
+         * has already ended is scored and deleted when the game reads the trips) */
+        static char *prev;
+        if (game_phase(g) == PHASE_ENDED && prev) {
+            util_write_file(dump_path, prev, strlen(prev));
+            free(prev);
+            prev = NULL;
+            dump_path = NULL;
+            return true;
+        }
+        free(prev);
+        prev = game_save_json(g);
+        return false;
+    }
     if (strcmp(stop_at, "grave") == 0) {
         hit = game_phase(g) == PHASE_GRAVE;
     } else if (strcmp(stop_at, "ending") == 0) {

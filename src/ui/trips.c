@@ -123,6 +123,10 @@ static void read_info(const char *pref, const char *id, TripInfo *t)
     if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "ending"))) {
         t->ending = v->valueint;
     }
+    t->phase = PHASE_TRAVEL;
+    if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "phase"))) {
+        t->phase = v->valueint;
+    }
     const cJSON *m;
     cJSON_ArrayForEach(m, cJSON_GetObjectItemCaseSensitive(o, "party"))
     {

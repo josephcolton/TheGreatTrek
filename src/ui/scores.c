@@ -164,8 +164,8 @@ int scores_take_finished(const char *pref_path, const TripList *trips, const Gam
     int taken = 0;
     for (int t = 0; trips && t < trips->count; t++) {
         const TripInfo *ti = &trips->trips[t];
-        if (ti->ending == ENDING_NONE) {
-            continue;
+        if (ti->ending == ENDING_NONE || ti->phase != PHASE_ENDED) {
+            continue; /* still on the road, or the last dialog before the ending screen */
         }
         bool known = false;
         for (int i = 0; i < n; i++) {

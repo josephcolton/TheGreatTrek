@@ -75,7 +75,7 @@ typedef struct App {
     Game *game;
     char trip_id[64];
     bool travelling;
-    int ending_page;   /* the ending screen: 0 the family's story, 1 the place's history */
+    int ending_page;   /* the ending screen: 0 the family's story, 1 the place's history, 2 the way out */
     int map_sheet;     /* the map sheet chosen with Tab, plus one; 0 = the one with the wagon on it */
     bool rest_menu;      /* the travel menu is showing rest / mend the wagon / back */
     double travel_timer;

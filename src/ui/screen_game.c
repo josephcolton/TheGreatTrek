@@ -816,23 +816,86 @@ static void grave_render(App *app)
 
 /* ---------------------------------------------------------------- ending */
 
+/* The last page of the ending: the trip is over and cannot be saved or continued, so the only
+ * ways on are the main menu, the credits, or quitting. */
+typedef enum { EF_MENU, EF_CREDITS, EF_QUIT, EF_COUNT } EndingFinal;
+#define ENDING_FINAL_X 200.0f
+#define ENDING_FINAL_Y 150.0f
+#define ENDING_FINAL_W 240
+
+static void ending_final_items(App *app, ChoiceItem *items)
+{
+    items[EF_MENU] = (ChoiceItem){app_text(app, "ending.final.menu"), NULL};
+    items[EF_CREDITS] = (ChoiceItem){app_text(app, "ending.final.credits"), NULL};
+    items[EF_QUIT] = (ChoiceItem){app_text(app, "ending.final.quit"), NULL};
+}
+
+static void ending_final_activate(App *app, int item)
+{
+    /* closing the trip scores it and deletes its save (app_scan_trips) */
+    app_close_game(app);
+    app_scan_trips(app);
+    switch (item) {
+    case EF_CREDITS: app_switch(app, SCR_CREDITS); break;
+    case EF_QUIT: app->running = false; break;
+    default: app_switch(app, SCR_TITLE); break;
+    }
+}
+
 static void ending_event(App *app, const SDL_Event *e)
 {
+    if (app->ending_page == 2) {
+        ChoiceItem items[EF_COUNT];
+        ending_final_items(app, items);
+        nav_updown(app, e, EF_COUNT);
+        int digit = key_digit(e);
+        if (digit >= 0 && digit < EF_COUNT) {
+            app->sel = digit;
+            ending_final_activate(app, digit);
+        } else if (is_confirm(e)) {
+            ending_final_activate(app, app->sel);
+        } else if (is_click(e)) {
+            int hit = choices_hit(&app->draw, items, EF_COUNT, ENDING_FINAL_X, ENDING_FINAL_Y, ENDING_FINAL_W, app->mx, app->my, true);
+            if (hit >= 0) {
+                app->sel = hit;
+                ending_final_activate(app, hit);
+            }
+        }
+        return;
+    }
     if (key_is(e, SDLK_M)) {
         app->overlay = OV_MAP; /* the whole road, once more */
         return;
     }
     if (is_confirm(e) || is_back(e) || is_click(e)) {
-        /* page 0 is the family's story; page 1, if there is one, what happened at that place afterwards */
+        /* page 0 is the family's story; page 1, if there is one, what happened at that place
+         * afterwards; page 2 the way out. Esc goes straight to the way out. */
         LocText lines[MAX_EPILOGUE];
         if (app->ending_page == 0 && !is_back(e) && game_history_epilogue(app->game, lines, MAX_EPILOGUE) > 0) {
             app->ending_page = 1;
-            return;
+        } else {
+            app->ending_page = 2;
+            app->sel = EF_MENU;
         }
-        app_close_game(app);
-        app_scan_trips(app);
-        app_switch(app, SCR_TITLE);
     }
+}
+
+static void ending_final_render(App *app)
+{
+    Draw *d = &app->draw;
+    scene_title(app, (SDL_FRect){0, 0, TREK_LOGICAL_W, TREK_LOGICAL_H});
+    SDL_FRect box = {ENDING_FINAL_X - 30, 60, ENDING_FINAL_W + 60, 170};
+    draw_rect(d, box, (SDL_Color){COL_BG.r, COL_BG.g, COL_BG.b, 230});
+    draw_frame(d, box, COL_BORDER);
+    float cx = TREK_LOGICAL_W / 2.0f;
+    draw_text(d, d->big, app_text(app, "ending.final.title"), cx, 68, COL_TEXT, TEXT_CENTER);
+    LocText t;
+    loctext_set(&t, "ending.final.score");
+    loctext_arg_int(&t, "n", game_score(app->game));
+    draw_text(d, d->font, app_fmt(app, &t), cx, 112, COL_GOLD, TEXT_CENTER);
+    ChoiceItem items[EF_COUNT];
+    ending_final_items(app, items);
+    draw_choices(d, items, EF_COUNT, ENDING_FINAL_X, ENDING_FINAL_Y, ENDING_FINAL_W, app->mx, app->my, app->sel, true, NULL);
 }
 
 static void ending_render(App *app)
@@ -843,6 +906,10 @@ static void ending_render(App *app)
     LocText lines[40];
     LocText history[MAX_EPILOGUE];
     int nh = game_history_epilogue(g, history, MAX_EPILOGUE);
+    if (app->ending_page == 2) {
+        ending_final_render(app);
+        return;
+    }
     if (app->ending_page == 1 && nh > 0) {
         float y = 28;
         y += draw_wrapped(d, d->font, app_text(app, "ending.history.title"), 24, y, 592, COL_GOLD, false) + 6;

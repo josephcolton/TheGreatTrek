@@ -222,6 +222,7 @@
   "pause.resume": "Back to the trek",
   "pause.save_quit": "Save and quit to the main menu",
   "pause.settings": "Settings",
+  "pause.about_over": "The trek is over, so there is nothing more to save. Go on to see how it ended.",
   "pause.about": "The trip is saved after every step. There is only one save for each trip, so what happens on the road stays happened.",
 
   "grave.years": "{born} - {died}",
@@ -261,5 +262,10 @@
   "ending.flag.heard_mosega": "You heard what Mosega meant for the people who lived there.",
   "ending.flag.saw_bible_gift": "You were at Grahamstown when the settlers gave the trekkers their Bible.",
   "ending.score": "Family score: {n} ({people} for the people brought through, {road} for the road, {goods} for herds, money and friends).",
-  "ending.footer": "M: the map of your road.  Enter: back to the main menu. This trip is kept in Finished trips."
+  "ending.footer": "Enter: go on.  M: the map of your road.",
+  "ending.final.title": "The trek is over",
+  "ending.final.score": "Family score: {n}",
+  "ending.final.menu": "Back to the main menu",
+  "ending.final.credits": "Credits and sources",
+  "ending.final.quit": "Quit the game"
 }

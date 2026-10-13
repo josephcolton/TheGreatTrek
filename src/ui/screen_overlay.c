@@ -28,13 +28,26 @@ static void overlay_panel(App *app, const char *title)
 
 typedef enum { PA_RESUME, PA_SAVE_QUIT, PA_HELP, PA_GLOSSARY, PA_SETTINGS, PA_COUNT } PauseItem;
 
-static void pause_items(App *app, ChoiceItem *items)
+/* Once the trek has ended there is nothing to save and come back to: the only way out is on
+ * through the ending, so "Save and quit" is left out. */
+static bool trek_over(const App *app)
 {
-    items[PA_RESUME] = (ChoiceItem){app_text(app, "pause.resume"), NULL};
-    items[PA_SAVE_QUIT] = (ChoiceItem){app_text(app, "pause.save_quit"), NULL};
-    items[PA_HELP] = (ChoiceItem){app_text(app, "help.title"), NULL};
-    items[PA_GLOSSARY] = (ChoiceItem){app_text(app, "glossary.title"), NULL};
-    items[PA_SETTINGS] = (ChoiceItem){app_text(app, "pause.settings"), NULL};
+    return app->game && app->game->ending != ENDING_NONE;
+}
+
+/* Fills the menu and which PauseItem each line is; returns how many lines. */
+static int pause_items(App *app, ChoiceItem *items, PauseItem *ids)
+{
+    static const char *KEYS[PA_COUNT] = {"pause.resume", "pause.save_quit", "help.title", "glossary.title", "pause.settings"};
+    int n = 0;
+    for (int i = 0; i < PA_COUNT; i++) {
+        if (i == PA_SAVE_QUIT && trek_over(app)) {
+            continue;
+        }
+        ids[n] = (PauseItem)i;
+        items[n++] = (ChoiceItem){app_text(app, KEYS[i]), NULL};
+    }
+    return n;
 }
 
 static void pause_activate(App *app, int item)
@@ -735,19 +748,20 @@ void overlay_event(App *app, const SDL_Event *e)
     switch (app->overlay) {
     case OV_PAUSE: {
         ChoiceItem items[PA_COUNT];
-        pause_items(app, items);
-        nav_updown(app, e, PA_COUNT);
+        PauseItem ids[PA_COUNT];
+        int n = pause_items(app, items, ids);
+        nav_updown(app, e, n);
         int digit = key_digit(e);
-        if (digit >= 0 && digit < PA_COUNT) {
-            pause_activate(app, digit);
-        } else if (is_confirm(e)) {
-            pause_activate(app, app->sel);
+        if (digit >= 0 && digit < n) {
+            pause_activate(app, ids[digit]);
+        } else if (is_confirm(e) && app->sel >= 0 && app->sel < n) {
+            pause_activate(app, ids[app->sel]);
         } else if (is_back(e)) {
             close_overlay(app);
         } else if (is_click(e)) {
-            int hit = choices_hit(&app->draw, items, PA_COUNT, 190, 110, 260, app->mx, app->my, true);
+            int hit = choices_hit(&app->draw, items, n, 190, 110, 260, app->mx, app->my, true);
             if (hit >= 0) {
-                pause_activate(app, hit);
+                pause_activate(app, ids[hit]);
             }
         }
         break;
@@ -830,9 +844,11 @@ void overlay_render(App *app)
     case OV_PAUSE: {
         overlay_panel(app, app_text(app, "pause.title"));
         ChoiceItem items[PA_COUNT];
-        pause_items(app, items);
-        draw_choices(&app->draw, items, PA_COUNT, 190, 110, 260, app->mx, app->my, app->sel, true, NULL);
-        draw_wrapped(&app->draw, app->font, app_text(app, "pause.about"), 120, 240, 400, COL_DIM, false);
+        PauseItem ids[PA_COUNT];
+        int n = pause_items(app, items, ids);
+        draw_choices(&app->draw, items, n, 190, 110, 260, app->mx, app->my, app->sel, true, NULL);
+        draw_wrapped(&app->draw, app->font, app_text(app, trek_over(app) ? "pause.about_over" : "pause.about"), 120, 240, 400,
+                     COL_DIM, false);
         break;
     }
     case OV_ORDERS: orders_render(app); break;
