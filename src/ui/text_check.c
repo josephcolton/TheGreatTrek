@@ -2,6 +2,7 @@
  * that would run off the screen: each event page and result, each landmark, each fork, each
  * history note and each history page after an ending, and any {placeholder} left unfilled. It plays nothing; it sets up a game in the
  * state that shows each page and measures it, for both sides. */
+#include "gamepad.h"
 #include "screens.h"
 
 #include <stdio.h>
@@ -137,10 +138,41 @@ static int check_side(App *app, int family)
     return bad;
 }
 
+/* The one-line hints along the bottom of the screen, for the keyboard and for each kind of gamepad
+ * (their button names differ in length). */
+static int check_footers(App *app)
+{
+    static const char *STYLES[] = {"xbox", "ps", "switch"};
+    int bad = 0;
+    for (size_t i = 0; i < locale_count(app->loc); i++) {
+        const char *key = locale_key_at(app->loc, i);
+        size_t len = strlen(key);
+        bool pad = len > 4 && strcmp(key + len - 4, ".pad") == 0;
+        if (!strstr(key, ".footer") && strncmp(key, "overlay.close", 13) != 0) {
+            continue;
+        }
+        char base[KEY_LEN];
+        snprintf(base, sizeof base, "%.*s", (int)(pad ? len - 4 : len), key);
+        for (size_t s = 0; s < (pad ? 3 : 1); s++) {
+            gamepad_test_style(pad ? STYLES[s] : NULL);
+            app->pad_last = pad;
+            int w = text_width(app->font, app_text(app, base));
+            if (w > TREK_LOGICAL_W - 16) {
+                printf("too long: footer %s%s%s (%d wide, room for %d)\n", key, pad ? " on a pad: " : "",
+                       pad ? STYLES[s] : "", w, TREK_LOGICAL_W - 16);
+                bad++;
+            }
+        }
+    }
+    gamepad_test_style(NULL);
+    app->pad_last = false;
+    return bad;
+}
+
 int text_check(App *app)
 {
     draw_update_scale(&app->draw);
-    int bad = 0;
+    int bad = check_footers(app);
     bool side_done[SIDE_COUNT] = {false};
     for (int f = 0; f < app->data->family_count; f++) {
         Side s = app->data->families[f].side;

@@ -209,7 +209,7 @@ void family_render(App *app)
     LocText footer;
     loctext_set(&footer, "family.footer");
     loctext_arg_int(&footer, "n", n);
-    draw_footer(app, app_fmt(app, &footer));
+    draw_footer(app, app->pad_last ? app_text(app, "family.footer") : app_fmt(app, &footer));
 }
 
 /* ---------------------------------------------------------------- story */

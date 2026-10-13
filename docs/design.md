@@ -113,7 +113,26 @@ Title ─▶ How hard a trek? ─▶ Side ─▶ Family ─▶ Story ─▶ Name
 
 **Which screen shows is decided by the core, not the UI.** After every command the UI asks `game_phase()` and draws the matching screen. Loading a save is just reading the state and showing its phase.
 
-**Layout.** Everything is drawn on a 640×360 logical canvas scaled to the window (`SDL_SetRenderLogicalPresentation`). A status bar shows the date, weather and place; a scene picture fills the top; text and choices sit below. Choices take the number keys 1–9, the arrow keys and Enter, or the mouse; both are full paths through the game.
+**Layout.** Everything is drawn on a 640×360 logical canvas scaled to the window (`SDL_SetRenderLogicalPresentation`). A status bar shows the date, weather and place; a scene picture fills the top; text and choices sit below. Choices take the number keys 1–9, the arrow keys and Enter, the mouse, or a gamepad; each is a full path through the game.
+
+**Gamepad.** `src/ui/gamepad.c` turns the pad's buttons into the key presses each screen already understands, chosen by what is on screen, so the screens have no gamepad code of their own:
+
+| Button | Does |
+|---|---|
+| D-pad, left stick | the arrow keys, repeating while held |
+| A | Enter: choose, go on; Y to a yes/no question; fire in a hunt |
+| B | Esc: back, close, leave; N to a question |
+| X | supplies; sell in a store; less in barter; delete a trip or the high scores |
+| Y | party; a new name; propose in barter; back to the wagons from a hunt |
+| LB / RB | journal / glossary; page up and down in the journal; the other map sheet; ask in barter (LB) |
+| LT | the history behind an event |
+| RT | fire in a hunt |
+| Back / View | the map |
+| Start / Menu | the pause menu |
+
+- **Hunting with a stick:** the left stick moves the sight on a curve (slow and fine near the middle, across the field in about a second at full tilt), and the sight slows to 40% over an animal still on its feet, so a pad can hold on a moving target. It never snaps on. The shot itself (its scatter, loading, misfires) is the same however the sight got there, so the odds and the balance bot are unchanged. A shot gives a short rumble.
+- **Hints follow the device.** Every footer and help text that names keys has a `.pad` twin in the locale (`"store.footer.pad": "... [A]: buy  [X]: sell  [B]: leave"`); `[A]`, `[LB]`, `[START]` ... are filled with the names printed on the pad in use (A/B/X/Y, Cross/Circle/Square/Triangle, or the Nintendo layout; LB or L1 or L). The hints switch as soon as the pad is used, and back when a key or the mouse is.
+- **Typing** (a new name, an epitaph) still needs a keyboard; a pad player can keep the names, re-roll them with Y, and leave the epitaph blank.
 
 ---
 
@@ -125,7 +144,7 @@ Title ─▶ How hard a trek? ─▶ Side ─▶ Family ─▶ Story ─▶ Name
 - **Lookup order,** so text can differ by side or family without code: `key@<side>.<family>` → `key@<side>` → `key`.
 - **Placeholders:** `{name}` style, filled from arguments the core supplies. People: `{who}` gives a name, and `{who.he}`, `{who.him}`, `{who.his}`, `{who.hers}`, `{who.himself}` give the person's pronoun; a capital (`{who.He}`) capitalises it. The pronoun words come from `pronoun.*` keys, so a translation supplies its own. Plurals: `{n:ox|oxen}`. Money is formatted by side.
 - `datacheck` checks that every key the code and data use exists, and rejects unknown placeholder forms.
-- `--check-text` lays out every text the game can show and lists any that run off the screen.
+- `--check-text` lays out every text the game can show and lists any that run off the screen, including each footer hint with the button names of each kind of pad.
 
 ### 7.2 The dialog model
 
@@ -622,10 +641,10 @@ Game *game_load_json(const GameData *data, const char *json, char *err, size_t e
 
 ### 21.6 Tools and testing
 
-- **datacheck** validates every data file: every locale key, every event link and condition, `sources` on every event (the loader refuses an event without them), the music, and reports how many prices come from a period source and how many are estimates.
+- **datacheck** validates every data file: every locale key, every gamepad hint (a keyboard twin, known buttons, a name for each button on each kind of pad), every event link and condition, `sources` on every event (the loader refuses an event without them), the music, and reports how many prices come from a period source and how many are estimates.
 - **trekbot** plays N trips per family headless with simple policies and prints arrivals, days, deaths by cause, events seen and never seen, money and relations (`--goal` picks a road; `--dump` saves a trip at a chosen moment, such as a river or the ending, to open in the game).
 - **Unit tests** (CTest) cover the RNG, locale lookup and the game rules.
-- **The game itself is testable without a person:** `--keys` replays key presses and mouse clicks, `--seed` fixes a new trip's seed, `--pref` keeps saves and settings out of the user's folder, `--screenshot` saves a PNG and exits, `--quit` exits after the keys, `--check-text` checks every text fits, and `--music-wav` writes a tune to a WAV.
+- **The game itself is testable without a person:** `--keys` replays key presses, mouse clicks and gamepad buttons and stick (`pad:a`, `stick:0.6,0`), `--seed` fixes a new trip's seed, `--pref` keeps saves and settings out of the user's folder, `--screenshot` saves a PNG and exits, `--quit` exits after the keys, `--check-text` checks every text fits, and `--music-wav` writes a tune to a WAV.
 - **Packaging:** `tools/package.sh` builds a zip and, with Inno Setup, a Windows installer into Program Files.
 
 ---

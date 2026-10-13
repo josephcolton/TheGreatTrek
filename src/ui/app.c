@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include "format.h"
+#include "gamepad.h"
 #include "scores.h"
 #include "sprites.h"
 #include "music.h"
@@ -288,8 +289,45 @@ void app_shutdown(App *app)
 
 /* ---------------------------------------------------------------- text */
 
+/* A hint for the gamepad: "[A]: choose" with [A], [LB], [START] ... replaced by the names of the
+ * buttons on the pad in use. Kept in a few rotating buffers, so several can be on screen at once. */
+static const char *pad_text(const App *app, const char *text)
+{
+    static char bufs[4][600];
+    static int next;
+    char *out = bufs[next];
+    next = (next + 1) % 4;
+    size_t n = 0, cap = sizeof bufs[0];
+    for (const char *p = text; *p && n + 1 < cap;) {
+        const char *close = *p == '[' ? strchr(p, ']') : NULL;
+        if (close && close - p < 12) {
+            char token[12];
+            size_t len = (size_t)(close - p - 1);
+            for (size_t i = 0; i < len; i++) {
+                token[i] = (char)SDL_tolower((unsigned char)p[i + 1]);
+            }
+            token[len] = '\0';
+            n += (size_t)snprintf(out + n, cap - n, "%s", gamepad_label(app, token));
+            n = n < cap ? n : cap - 1;
+            p = close + 1;
+        } else {
+            out[n++] = *p++;
+        }
+    }
+    out[n] = '\0';
+    return out;
+}
+
 const char *app_text(const App *app, const char *key)
 {
+    if (app->pad_last) {
+        char pad_key[KEY_LEN + 8];
+        snprintf(pad_key, sizeof pad_key, "%s.pad", key);
+        const char *t = locale_find(app->loc, pad_key);
+        if (t) {
+            return pad_text(app, t);
+        }
+    }
     if (app->game) {
         return locale_get_variant(app->loc, key, side_id(app->game->side), app->data->families[app->game->family].id);
     }

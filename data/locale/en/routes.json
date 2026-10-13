@@ -219,6 +219,7 @@
   "map.sheet.south": "The Colony to the Vaal",
   "map.sheet.north": "Natal and the Far North",
   "map.other_sheet": "Tab or the arrow keys: the other map.",
+  "map.other_sheet.pad": "[LB]/[RB] or left/right: the other map.",
   "map.river.limpopo": "Limpopo",
   "map.river.olifants": "Olifants",
   "map.river.komati": "Komati",
@@ -232,6 +233,7 @@
 
   "ending.history.title": "What happened next",
   "ending.footer.more": "Enter: what happened next.  M: the map of your road.",
+  "ending.footer.more.pad": "[A]: what happened next.  [BACK]: the map of your road.",
 
   "epilogue.mooi.1": "Your family stopped where Potgieter's people settled. In November 1837 a trekker commando drove the Ndebele north over the Limpopo, and the trekkers took the country between the Vaal and the Limpopo for themselves.",
   "epilogue.mooi.2": "Potchefstroom was founded on the Mooi River in 1838 or 1839 (the sources disagree). It became the first capital of the trekker republic north of the Vaal.",

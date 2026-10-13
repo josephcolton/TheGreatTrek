@@ -5,10 +5,13 @@
  *   --check-text        lay out every text the game can show; list any that run off the screen
  *   --keys "a b c"      feed key presses first: 1-9, a-z, enter, esc, up, down, left, right,
  *                       space, bksp, "text:Word", "wait:N" (N frames of 1/10 s),
- *                       "move:X,Y" and "click:X,Y" (mouse, in logical 640x360 pixels)
+ *                       "move:X,Y" and "click:X,Y" (mouse, in logical 640x360 pixels),
+ *                       "pad:B" (a gamepad button: a b x y lb rb lt rt start back up down left
+ *                       right) and "stick:X,Y" (hold the left stick, -1..1; "stick:0,0" lets go)
  *   --pref DIR          keep saves and settings in DIR instead of the user folder
  *   --seed N            use seed N for new trips */
 #include "app.h"
+#include "gamepad.h"
 #include "music.h"
 #include "screens.h"
 #include "util.h"
@@ -22,6 +25,12 @@ static void dispatch_screen_event(App *app, const SDL_Event *e);
 
 static void dispatch_event(App *app, SDL_Event *e)
 {
+    if (gamepad_event(app, e)) {
+        return;
+    }
+    if ((e->type == SDL_EVENT_KEY_DOWN && !app->pad_event) || e->type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+        app->pad_last = false; /* hints name the keys again */
+    }
     if (e->type == SDL_EVENT_QUIT) {
         if (app->game) {
             app_commit(app);
@@ -40,6 +49,7 @@ static void dispatch_event(App *app, SDL_Event *e)
             if (!ours) {
                 app->draw.mouse_last = true;
                 app->draw.follow = false;
+                app->pad_last = false;
             }
             return;
         }
@@ -124,6 +134,7 @@ static const char *music_scene(const App *app)
 
 static void update(App *app, double dt)
 {
+    gamepad_update(app, dt);
     music_want(music_scene(app));
     music_update(dt);
     if (app->message_timer > 0) {
@@ -132,9 +143,10 @@ static void update(App *app, double dt)
     if (app->screen == SCR_GAME) {
         game_screen_update(app, dt);
     }
-    /* Over the hunting field the gun sight stands in for the mouse pointer. */
+    /* Over the hunting field the gun sight stands in for the mouse pointer, and a gamepad player
+     * has no use for the pointer at all. */
     static bool sight;
-    bool want = app->screen == SCR_GAME && app->overlay == OV_NONE && hunt_sight_active(app);
+    bool want = app->pad_last || (app->screen == SCR_GAME && app->overlay == OV_NONE && hunt_sight_active(app));
     if (want != sight) {
         sight = want;
         if (want) {
@@ -242,6 +254,19 @@ static void run_keys(App *app, const char *keys)
             update(app, 0.016);
             continue;
         }
+        if (strncmp(tok, "pad:", 4) == 0) {
+            if (!gamepad_test_press(app, tok + 4)) {
+                SDL_Log("--keys: no gamepad button %s", tok + 4);
+            }
+            update(app, 0.016);
+            continue;
+        }
+        if (strncmp(tok, "stick:", 6) == 0) {
+            const char *comma = strchr(tok + 6, ',');
+            gamepad_test_stick((float)atof(tok + 6), comma ? (float)atof(comma + 1) : 0);
+            app->pad_last = true;
+            continue;
+        }
         if (strncmp(tok, "text:", 5) == 0) {
             e.type = SDL_EVENT_TEXT_INPUT;
             e.text.text = tok + 5;
@@ -302,12 +327,15 @@ int main(int argc, char **argv)
 
     App app;
     if (!app_init(&app, pref)) { /* --pref: a folder for saves and settings instead of the user's own */
+        gamepad_shutdown();
         app_shutdown(&app);
         return 1;
     }
     app.test_seed = seed;
+    gamepad_init(dispatch_event);
     if (check_text) {
         int bad = text_check(&app);
+        gamepad_shutdown();
         app_shutdown(&app);
         return bad ? 1 : 0;
     }
@@ -316,6 +344,7 @@ int main(int argc, char **argv)
     }
     if (screenshot) {
         bool ok = save_screenshot(&app, screenshot);
+        gamepad_shutdown();
         app_shutdown(&app);
         return ok ? 0 : 1;
     }
@@ -323,6 +352,7 @@ int main(int argc, char **argv)
         if (app.game) {
             app_commit(&app);
         }
+        gamepad_shutdown();
         app_shutdown(&app);
         return 0;
     }
@@ -340,6 +370,7 @@ int main(int argc, char **argv)
         render(&app);
         SDL_RenderPresent(app.renderer);
     }
+    gamepad_shutdown();
     app_shutdown(&app);
     return 0;
 }

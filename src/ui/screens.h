@@ -60,6 +60,8 @@ void hunt_screen_render(App *app);
 void hunt_screen_update(App *app, double dt);
 /* Whether the mouse is over the hunting field, where a gun sight replaces the pointer. */
 bool hunt_sight_active(const App *app);
+/* Moves the sight with a gamepad's stick (sx, sy in -1..1), slowing over an animal. */
+void hunt_pad_aim(App *app, float sx, float sy, double dt);
 
 /* barter (screen_barter.c) */
 void barter_screen_event(App *app, const SDL_Event *e);

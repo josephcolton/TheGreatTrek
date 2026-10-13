@@ -2,6 +2,7 @@
  * player aims with the mouse and clicks to fire, then waits while the gun is loaded again.
  * Guarding the herd uses the same screen at night: the camp and the stock are at the bottom by
  * the fire, and predators creep in out of the dark. */
+#include "gamepad.h"
 #include "scene.h"
 #include "screens.h"
 #include "sprites.h"
@@ -50,8 +51,63 @@ static void shoot(App *app, float x, float y)
         return;
     }
     if (game_hunt_shoot(app->game, x, y - FIELD_TOP)) {
+        if (app->pad_last) {
+            /* the kick of the gun; a misfire is only the flash in the pan */
+            bool misfire = app->game->hunt.shot_misfire;
+            gamepad_rumble(misfire ? 0.25f : 0.8f, misfire ? 60 : 160);
+        }
         app_commit(app);
     }
+}
+
+/* Aiming with a gamepad. These are input feel, not game numbers: the shot itself (its scatter,
+ * the loading, misfires) is the same however the sight was moved. */
+#define AIM_DEADZONE 0.18f
+#define AIM_MAX_SPEED 560.0f  /* field units a second at full tilt: across the field in about a second */
+#define AIM_FRICTION 0.4f     /* the sight slows to this over an animal, so a pad can hold on it */
+
+/* Whether the sight is on (or just beside) an animal still on its feet. */
+static bool sight_on_animal(const App *app)
+{
+    HuntView v;
+    if (!game_hunt_view(app->game, &v)) {
+        return false;
+    }
+    float fy = app->my - FIELD_TOP;
+    for (int i = 0; i < HUNT_MAX_ANIMALS; i++) {
+        const HuntAnimal *a = &v.animals[i];
+        if (a->state == HUNT_A_NONE || a->state == HUNT_A_DOWN) {
+            continue;
+        }
+        float b[4];
+        game_hunt_body(app->game, a, b);
+        if (app->mx >= b[0] - 3 && app->mx <= b[0] + b[2] + 3 && fy >= b[1] - 3 && fy <= b[1] + b[3] + 3) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void hunt_pad_aim(App *app, float sx, float sy, double dt)
+{
+    if (!in_field(app->mx, app->my)) {
+        app->mx = HUNT_FIELD_W / 2.0f;
+        app->my = FIELD_TOP + HUNT_FIELD_H / 2.0f;
+    }
+    float mag = sqrtf(sx * sx + sy * sy);
+    if (mag < AIM_DEADZONE) {
+        return;
+    }
+    /* a curve: slow and fine near the middle of the stick, fast at full tilt */
+    float m = SDL_min(1.0f, (mag - AIM_DEADZONE) / (1.0f - AIM_DEADZONE));
+    float speed = AIM_MAX_SPEED * m * m;
+    if (sight_on_animal(app)) {
+        speed *= AIM_FRICTION;
+    }
+    app->mx += sx / mag * speed * (float)dt;
+    app->my += sy / mag * speed * (float)dt;
+    app->mx = SDL_clamp(app->mx, 1.0f, HUNT_FIELD_W - 2.0f);
+    app->my = SDL_clamp(app->my, FIELD_TOP + 1, FIELD_TOP + HUNT_FIELD_H - 2);
 }
 
 void hunt_screen_event(App *app, const SDL_Event *e)

@@ -67,6 +67,8 @@ typedef struct App {
     int sel;           /* highlighted item on the current screen */
     int scroll;
     float mx, my;      /* mouse in logical coordinates */
+    bool pad_last;     /* the gamepad was used last: hints name its buttons */
+    bool pad_event;    /* the key press being handled came from the gamepad */
 
     /* new trip */
     Side new_side;

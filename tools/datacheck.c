@@ -9,6 +9,7 @@
 #include "util.h"
 
 #include <cJSON.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +26,68 @@ static void check_key(const char *key, const char *where, void *ctx)
         fprintf(stderr, "missing locale key \"%s\" (used by %s)\n", key, where);
         kc->missing++;
     }
+}
+
+/* Gamepad hints (src/ui/gamepad.c): every "key.pad" text has a keyboard text "key" beside it, its
+ * [A], [LB] ... are buttons the game knows, and every button has a name on each kind of pad. */
+static int check_pad_hints(const Locale *loc)
+{
+    static const char *FACE[] = {"a", "b", "x", "y", "cross", "circle", "square", "triangle"};
+    static const char *OTHER[] = {"lb", "rb", "lt", "rt", "start", "back", "stick"};
+    static const char *STYLES[] = {"xbox", "ps", "switch"};
+    int errors = 0;
+    char key[KEY_LEN + 16];
+    for (size_t i = 0; i < sizeof FACE / sizeof FACE[0]; i++) {
+        snprintf(key, sizeof key, "pad.button.%s", FACE[i]);
+        if (!locale_find(loc, key)) {
+            fprintf(stderr, "locale: missing %s\n", key);
+            errors++;
+        }
+    }
+    for (size_t i = 0; i < sizeof OTHER / sizeof OTHER[0]; i++) {
+        /* "stick" is named once, for every kind of pad (gamepad.c falls back to the xbox name) */
+        for (size_t s = 0; s < (strcmp(OTHER[i], "stick") == 0 ? 1 : sizeof STYLES / sizeof STYLES[0]); s++) {
+            snprintf(key, sizeof key, "pad.%s.%s", STYLES[s], OTHER[i]);
+            if (!locale_find(loc, key)) {
+                fprintf(stderr, "locale: missing %s\n", key);
+                errors++;
+            }
+        }
+    }
+    for (size_t i = 0; i < locale_count(loc); i++) {
+        const char *k = locale_key_at(loc, i);
+        size_t len = strlen(k);
+        if (len < 5 || strcmp(k + len - 4, ".pad") != 0) {
+            continue;
+        }
+        snprintf(key, sizeof key, "%.*s", (int)(len - 4), k);
+        if (!locale_find(loc, key)) {
+            fprintf(stderr, "locale: %s has no keyboard text %s\n", k, key);
+            errors++;
+        }
+        for (const char *p = strchr(locale_find(loc, k), '['); p; p = strchr(p + 1, '[')) {
+            const char *close = strchr(p, ']');
+            char token[16] = "";
+            if (close && close - p < (int)sizeof token) {
+                for (int j = 0; j < close - p - 1; j++) {
+                    token[j] = (char)tolower((unsigned char)p[j + 1]);
+                }
+                token[close - p - 1] = '\0';
+            }
+            bool known = false;
+            for (size_t j = 0; j < 4; j++) {
+                known = known || strcmp(token, FACE[j]) == 0;
+            }
+            for (size_t j = 0; j < sizeof OTHER / sizeof OTHER[0]; j++) {
+                known = known || strcmp(token, OTHER[j]) == 0;
+            }
+            if (!known) {
+                fprintf(stderr, "locale: %s names an unknown button [%s]\n", k, token);
+                errors++;
+            }
+        }
+    }
+    return errors;
 }
 
 /* Keys the C code asks for directly. Keep in step with the sources (grep for loctext_set). */
@@ -296,6 +359,7 @@ int main(int argc, char **argv)
                 }
             }
         }
+        errors += check_pad_hints(loc);
         printf("locale: %lu keys, %d missing\n", (unsigned long)locale_count(loc), kc.missing);
         locale_free(loc);
     }

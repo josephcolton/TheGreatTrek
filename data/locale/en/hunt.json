@@ -23,7 +23,9 @@
   "hunt.status.shots": "Powder and lead for {n} more shots",
   "hunt.status.light": "Daylight",
   "hunt.footer": "Click on an animal to shoot.  Enter: back to the wagons.  Esc: pause.",
+  "hunt.footer.pad": "[STICK]: aim  [RT] or [A]: fire  [Y]: back to the wagons  [START]: pause",
   "hunt.footer.over": "Click or press Enter to go back to the wagons.",
+  "hunt.footer.over.pad": "Press [A] to go back to the wagons.",
 
   "hunt.start": "{who} takes the gun and goes out on foot, and waits quietly for game.",
   "hunt.appears": "A {animal} comes into sight.",
@@ -48,6 +50,7 @@
   "hunt.summary.too_much": "Only {carry} lb can be carried back to the wagons. The rest is left for the jackals and vultures.",
   "hunt.summary.none": "{who} comes back to the wagons with nothing.",
   "hunt.summary.go": "Click or press Enter to go on",
+  "hunt.summary.go.pad": "Press [A] to go on",
 
   "journal.hunt": "{who} went hunting and brought back meat: {fresh} lb fresh and {dried} lb dried as biltong.",
   "journal.hunt_empty": "{who} went hunting and came back with nothing.",
@@ -56,6 +59,7 @@
   "defend.status.lost": "Stock lost: {n}",
   "defend.status.night": "Night",
   "defend.footer": "Click on an animal to shoot.  Enter: go back to the fire.  Esc: pause.",
+  "defend.footer.pad": "[STICK]: aim  [RT] or [A]: fire  [Y]: go back to the fire  [START]: pause",
   "defend.start": "{who} takes the gun out to the herd. Somewhere in the dark there are {animal}s.",
   "defend.appears": "Eyes in the dark: a {animal} is creeping up on the herd.",
   "defend.appears_pack": "Eyes in the dark: {n} {animal}s, creeping up on the herd.",

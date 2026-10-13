@@ -199,6 +199,10 @@ static void travel_event(App *app, const SDL_Event *e)
     } else if (key_is(e, SDLK_G)) {
         app->overlay = OV_GLOSSARY;
         app->scroll = 0;
+    } else if (key_is(e, SDLK_P)) {
+        app->overlay = OV_PARTY;
+    } else if (key_is(e, SDLK_S)) {
+        app->overlay = OV_SUPPLIES;
     } else if (is_click(e)) {
         int hit = choices_hit(&app->draw, items, n, MENU_X, MENU_Y, MENU_W, app->mx, app->my, true);
         if (hit >= 0) {

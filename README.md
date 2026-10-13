@@ -30,8 +30,22 @@ Pick a side and one of ten fictional families, read how they came to be in Graha
 | Esc | the menu (save and quit) |
 | M / J / G | map / journal / glossary of period words |
 | H | the history behind an event |
-| P / S | party / supplies (in an event) |
+| P / S | party / supplies |
 | F11 | full screen |
+
+It also plays with a gamepad (Xbox, PlayStation, Nintendo or any pad SDL knows). The hints at the bottom of the screen switch to the pad's own button names as soon as it is used.
+
+| Button | What it does |
+|---|---|
+| D-pad or left stick | move through menus; in a hunt, aim (the sight slows a little over an animal) |
+| A | choose, confirm, go on; fire in a hunt |
+| B | back, close, leave |
+| X / Y | supplies / party; in a store, sell; for a name, a new one |
+| LB / RB | journal / glossary; pages of the journal; the other map sheet |
+| LT | the history behind an event |
+| RT | fire in a hunt |
+| View (Back) | map |
+| Menu (Start) | the menu (save and quit) |
 
 ### Trying the beta (Windows)
 
