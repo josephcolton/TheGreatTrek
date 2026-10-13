@@ -1,6 +1,6 @@
 /* Trip files: one save per trip in <pref>/trips/<id>.json, always the latest state.
  * Writes go to a .tmp file first and are then renamed over the save, so a crash
- * leaves the previous save intact (04_game_design.md section 13). */
+ * leaves the previous save intact (design.md section 19.2). */
 #ifndef TREK_TRIPS_H
 #define TREK_TRIPS_H
 

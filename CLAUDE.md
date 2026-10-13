@@ -7,12 +7,8 @@ Guidance for Claude Code when working in this repository.
 **The Great Trek / Die Groot Trek** is an Oregon-Trail-style survival game about the 1830s Great Trek in South Africa, written in **C17 + SDL3**. It is a personal project meant for **family to play**, released on GitHub under **GPL-3.0** (`LICENSE`).
 
 Read these before designing or writing content:
-- `docs/planning/03_development_plan.md`: decisions, the two sides, route, systems, architecture, milestones. **This is the source of truth.**
-- `docs/planning/02_research_resources.md`: sourced historical facts with links.
-- `docs/planning/01_gemini_review.md`: early Gemini design ideas worth keeping, and the factual errors in them.
-- `docs/planning/04_game_design.md`: how the game works: screens, dialog, map, timing, stores and barter, events format, hunting, saves, core API.
-- `docs/planning/05_research_pass2.md`: distances, 1837 calendar, period prices and wages, checked facts, family origin stories, name lists, glossary.
-- `docs/planning/06_research_routes.md`: the Natal and Far North routes: Tregardt, Kerkenberg, malaria and the fly, warnings, epilogues.
+- `docs/design.md`: how the game works, as built: the settled decisions, the two sides, families, route, every system, data files, architecture, and how to make a game like it. **This is the source of truth.** Keep it describing what is built; don't add plans that aren't.
+- `docs/research.md`: the sourced history with links: overview, period sources, distances, the 1837 calendar, prices and wages, checked facts, peoples, family backgrounds, names, the Natal and Far North roads, malaria and the fly, glossary, common errors, open questions. Data files and history notes cite it by section ("research.md section 7.2"); if its sections are renumbered, update those citations.
 
 ## Settled decisions (don't re-open without the user)
 
@@ -30,7 +26,7 @@ Read these before designing or writing content:
   - prices (`base × side_modifier[seller_group] × distance × relationship`)
   - welcome at trekker laagers, missionaries and others
   - some events
-- **Everyone starts at the same place.** Each playable family has a **backstory** explaining how they got there; backstories replace Gemini's "classes".
+- **Everyone starts at the same place.** Each playable family has a **backstory** explaining how they got there.
 - **All playable families and named characters are fictional** (e.g. the English settler family is the fictional *Ashworth* family). Do not base characters on, or name, real private families. Historical public figures (Retief, Uys, Potgieter, Moroka, Mzilikazi, Harris, etc.) may appear as themselves.
 - **The interface is in English**, with period Dutch words (laager, smous, voorloper, kakebeenwa, drift, sanna).
 - All player-facing text lives in locale files, so a Dutch or Afrikaans translation can be added later.
@@ -45,9 +41,9 @@ Read these before designing or writing content:
 
 ## Content rules
 
-- **Every event has a `sources` field.** Cite something from `02_research_resources.md` or a new source, or mark it `"invented"`. Don't present invented numbers or people as history. When a fact is uncertain, say so in the docs rather than guessing.
+- **Every event has a `sources` field.** Cite a section of `docs/research.md` or a new source (and add the new source to `research.md`), or mark it `"invented"`. Don't present invented numbers or people as history. When a fact is uncertain, say so in the docs rather than guessing.
 - **People, not obstacles.** African polities and people are named actors with their own motives, never generic "tribe" encounters. This includes the Barolong (Moroka), Griqua, Basotho (Moshoeshoe), Ndebele (Mzilikazi), and Khoikhoi and other servants/herders travelling with the families. Servants are named party members with skills (voorloper, herder, interpreter).
-- **Known Gemini errors to avoid:**
+- **Known errors to avoid** (more in `docs/research.md` section 22):
   - "baviansboud": use *sanna*/*roer*
   - inconsistent currency: from 1825, 1 rixdollar = 1s 6d, so £1 ≈ 13⅓ Rds
   - Kuruman as a stop on the route
@@ -55,7 +51,7 @@ Read these before designing or writing content:
   - a Griqua guide in Zululand
   - vertical-cliff wagon dismantling
 
-## Architecture (planned; see plan §6)
+## Architecture (see `docs/design.md` section 21)
 
 ```
 src/core/   pure C simulation — MUST NOT include SDL headers. Deterministic given a seed.
@@ -64,8 +60,9 @@ src/ui/main.c SDL init + main loop.
 tools/      trekbot (headless balance runs), datacheck (validate JSON + locale keys) — link core only.
 tests/      CTest unit tests for core.
 third_party/ vendored cJSON (MIT).
-data/       events/*.json, items/wagons/route/families/prices.json, locale/en.json
-assets/     fonts (SIL OFL only), images, sounds — every asset listed in CREDITS.md.
+data/       events/*.json, route/items/wagons/families/rules.json and the rest, locale/en/*.json
+assets/     fonts (SIL OFL only), sprites (text files), the icon — every asset listed in CREDITS.md.
+docs/       design.md (how the game works), research.md (the sourced history), screenshots/
 ```
 
 Conventions:
@@ -74,7 +71,7 @@ Conventions:
 - No player-facing string literals in C. Look text up by locale key.
 - Game numbers (prices, probabilities, yields) go in `data/`, not hard-coded.
 - Saves are JSON in `SDL_GetPrefPath("TheGreatTrek", "TheGreatTrek")`.
-- Rendering: low-resolution logical canvas (e.g. 640×360) via `SDL_SetRenderLogicalPresentation`. Mostly text screens; choices with keys 1–4 or the mouse.
+- Rendering: a 640×360 logical canvas via `SDL_SetRenderLogicalPresentation`. Choices with the number keys, the arrows and Enter, or the mouse.
 
 ## Build
 

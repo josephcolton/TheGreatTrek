@@ -1,11 +1,11 @@
 {
-  "_about": "Game tuning values. Unless a 'basis' says otherwise these are invented starting values for balancing (see docs/planning/04_game_design.md section 8.5).",
+  "_about": "Game tuning values. Unless a 'basis' says otherwise these are invented starting values for balancing (see docs/design.md section 13).",
   "start": { "date": "1837-04-03", "node": "grahamstown" },
   "pace": {
     "easy":   { "miles": 7,  "ox_cost": 1, "health_cost": 0 },
     "normal": { "miles": 10, "ox_cost": 3, "health_cost": 0 },
     "hard":   { "miles": 13, "ox_cost": 7, "health_cost": 1 },
-    "basis": "Pace calibrated so normal averages about 6.2 mi/day with rests: Uys party, Grahamstown to Sand River, Apr-29 Jun 1837 (05_research_pass2.md section 2); about 10 km/day with herds (02 section 3)."
+    "basis": "Pace calibrated so normal averages about 6.2 mi/day with rests: Uys party, Grahamstown to Sand River, Apr-29 Jun 1837 (research.md section 5); about 10 km/day with herds (research.md section 4)."
   },
   "rations": {
     "full":     { "food_lb": 2.0, "health": 1,  "morale": 0 },
@@ -34,7 +34,7 @@
             "basis": "invented. A day's mending on the road: each worn part gains gain + gain_per_smith x the best smith's skill (more for the smith family), using iron_lb of bar iron (half without), up to cap; a part below spare_below is replaced by a spare if one is carried; tallow greases wheels and axle; the tent is patched up to tent_cap, or new canvas makes it whole. Trekkers tightened tyres, greased axles and patched tents at outspans [recall, verify]." },
   "smith_pence_per_point": 1.5,
   "smith_basis": "estimate: a town smith charges this many pence per point of wear put right, times the town's price_mul; putting a broken wheel right costs a little under a new spare wheel (240d).",
-  "illness_per_day": { "summer": 0.0042, "autumn": 0.0034, "winter": 0.0040, "spring": 0.0034, "basis": "invented; tuned with trekbot so a careful Normal run loses about one person in five trips, near the child mortality of the period (about 160-200 per 1,000 births a year, Mamre 1837-46; 05 section 6)" },
+  "illness_per_day": { "summer": 0.0042, "autumn": 0.0034, "winter": 0.0040, "spring": 0.0034, "basis": "invented; tuned with trekbot so a careful Normal run loses about one person in five trips, near the child mortality of the period (about 160-200 per 1,000 births a year, Mamre 1837-46; research.md section 9)" },
   "accident_per_day": 0.0008,
   "difficulty": {
     "easy":   { "harm": 0.5, "start_money": 1.25 },

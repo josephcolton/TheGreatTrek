@@ -1,5 +1,5 @@
 {
-  "_about": "price_pence is the base price of one pack before side, distance, relation, scarcity and history modifiers. 'source' says where it comes from; 'estimate' means no period price has been found yet (05_research_pass2.md section 4).",
+  "_about": "price_pence is the base price of one pack before side, distance, relation, scarcity and history modifiers. 'source' says where it comes from; 'estimate' means no period price has been found yet (research.md section 7).",
   "items": [
     { "id": "oxen", "category": "animals", "pack": 1, "pack_key": "unit.each", "weight_lb": 0, "price_pence": 810,
       "source": "45 Rds each, 'considered high', near Grahamstown Dec 1838 (Backhouse); GT market 1832 GBP1 5s x3 for the war (Harris)" },
@@ -31,7 +31,7 @@
       "source": "estimate" },
 
     { "id": "gunpowder", "category": "guns", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 24,
-      "source": "estimate for the shop price; in barter on the frontier half a pound bought a 12s leopard skin (Pringle; Steedman), 05 section 14.1" },
+      "source": "estimate for the shop price; in barter on the frontier half a pound bought a 12s leopard skin (Pringle; Steedman), research.md section 7.5" },
     { "id": "lead", "category": "guns", "pack": 1, "pack_key": "unit.lb", "weight_lb": 1, "price_pence": 6,
       "source": "estimate" },
     { "id": "flints", "category": "guns", "pack": 12, "pack_key": "unit.dozen", "weight_lb": 0.05, "price_pence": 6,
@@ -62,6 +62,6 @@
       "source": "estimate" },
 
     { "id": "medicine", "category": "medicine", "pack": 1, "pack_key": "unit.dose", "weight_lb": 0.2, "price_pence": 12,
-      "source": "estimate; wagons carried medicine chests (02 section 3)" }
+      "source": "estimate; wagons carried medicine chests (research.md section 4)" }
   ]
 }

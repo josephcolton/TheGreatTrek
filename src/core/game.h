@@ -109,7 +109,7 @@ typedef struct {
     int part;                 /* DLG_BREAKDOWN */
 } DialogState;
 
-/* Hunting is a real-time shooting scene (04_game_design.md section 9), stepped in fixed ticks so a
+/* Hunting is a real-time shooting scene (design.md section 14), stepped in fixed ticks so a
  * hunt still replays exactly from the seed and the shots. The field is a side view of the veld:
  * x runs 0..HUNT_FIELD_W, y from 0 at the horizon to HUNT_FIELD_H at the hunter's feet. */
 #define HUNT_LOG 4

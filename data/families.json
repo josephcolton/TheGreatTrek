@@ -1,5 +1,5 @@
 {
-  "_about": "All families and their members are fictional (CLAUDE.md). Flocks are large because trekkers lived largely off their sheep (Backhouse 1839: \"we had always been able to procure sheep\"; Potgieter alone lost 5,000 sheep at Vegkop). Exact numbers are invented. Stories are in the locale file (story.<id>.1-3), drafted in 05_research_pass2.md section 8.3. Money is in the side's unit: rixdollars (Dutch) or shillings (English). Skills 0-5: shooting, herding, voorloper, interpreting, nursing, smithing, tracking. portrait names the sprite portrait_<id> in assets/sprites/portraits.txt.",
+  "_about": "All families and their members are fictional (CLAUDE.md). Flocks are large because trekkers lived largely off their sheep (Backhouse 1839: \"we had always been able to procure sheep\"; Potgieter alone lost 5,000 sheep at Vegkop). Exact numbers are invented. Stories are in the locale file (story.<id>.1-3), drafted in research.md section 12.3. Money is in the side's unit: rixdollars (Dutch) or shillings (English). Skills 0-5: shooting, herding, voorloper, interpreting, nursing, smithing, tracking. portrait names the sprite portrait_<id> in assets/sprites/portraits.txt.",
   "families": [
     { "id": "grensboer", "side": "dutch", "surname": "Badenhorst", "wagon": "kakebeenwa", "money": 150,
       "perks": { "illness": 1.0 },

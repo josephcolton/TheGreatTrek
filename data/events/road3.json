@@ -1,11 +1,11 @@
 {
-  "_about": "More road events: side-only scenes from the design (04_game_design.md section 8.4) and daily life from the Tregardt diary.",
+  "_about": "More road events: side-only scenes from the design (design.md section 12.4) and daily life from the Tregardt diary.",
   "events": [
     {
       "id": "debt_collector", "sides": ["english"], "regions": ["eastern_frontier", "karoo", "stormberg"], "weight": 7, "once": true,
       "requires": [ { "family": "trader" }, { "days_gte": 4 } ],
       "history": "history.debt_collector",
-      "sources": ["Harris (1839): at Graaff-Reinet in 1836 a rider was hired for 4 Rds to chase a debt (05_research_pass2.md section 4.2). English traders worked on merchant credit (03 section 4). The Pascoes' debt to Mr Holland, its size and this rider are invented; the Pascoes' story and their first journal entry say what they owe."],
+      "sources": ["Harris (1839): at Graaff-Reinet in 1836 a rider was hired for 4 Rds to chase a debt (research.md section 7.2). English traders worked on merchant credit [recall, verify]. The Pascoes' debt to Mr Holland, its size and this rider are invented; the Pascoes' story and their first journal entry say what they owe."],
       "text": "event.debt_collector.body",
       "choices": [
         { "text": "event.debt_collector.pay", "requires": [ { "money_gte": 200 } ], "locked": "lock.need_money",
@@ -20,7 +20,7 @@
       "id": "write_letters", "sides": ["english"], "regions": ["transorangia", "highveld"], "weight": 7, "once": true,
       "requires": [ { "relation_gte": ["trekkers", 20] } ],
       "history": "history.write_letters",
-      "sources": ["Trekker leaders wrote to the Colony and to the Graham's Town Journal, for example Retief's manifesto of early 1837 (02 section 1); letters went back with travellers and traders. That trekkers asked English families to write for them is invented."],
+      "sources": ["Trekker leaders wrote to the Colony and to the Graham's Town Journal, for example Retief's manifesto of early 1837 (research.md section 2); letters went back with travellers and traders. That trekkers asked English families to write for them is invented."],
       "text": "event.write_letters.body",
       "choices": [
         { "text": "event.write_letters.write",

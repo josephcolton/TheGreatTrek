@@ -464,7 +464,7 @@ static void health_day(Game *g, bool travelling, bool had_water)
             m->health = 100;
         }
         if (m->health <= 0 && g->difficulty == DIFF_EASY && !m->warned) {
-            /* Easy promises a warning before a death (04_game_design.md section 8.5). */
+            /* Easy promises a warning before a death (design.md section 13). */
             m->warned = true;
             m->health = 10;
             g_notice_member(g, "notice.near_death", i);
@@ -535,7 +535,7 @@ static void warnings(Game *g)
 {
     const Rules *r = &g->data->rules;
     if (g->difficulty == DIFF_HARD) {
-        return; /* Hard gives no supply warnings (04_game_design.md section 8.5) */
+        return; /* Hard gives no supply warnings (design.md section 13) */
     }
     double days = game_food_days(g);
     if (days < r->warn_food_days && !g->warned_food) {

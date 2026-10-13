@@ -71,7 +71,7 @@
     {
       "id": "talk_grahamstown", "setpiece": true, "once": false,
       "history": "history.place.grahamstown",
-      "sources": ["invented conversation; prices and the war's effect from Harris (1839) and Backhouse (1844), 05_research_pass2.md section 4"],
+      "sources": ["invented conversation; prices and the war's effect from Harris (1839) and Backhouse (1844), research.md section 7"],
       "text": "event.talk_grahamstown.body",
       "choices": [
         { "text": "event.talk_grahamstown.road", "outcomes": [ { "text": "event.talk_grahamstown.road.done", "effects": [ { "flag": "asked_about_road" } ] } ] },
@@ -82,7 +82,7 @@
     {
       "id": "talk_thaba_nchu", "setpiece": true, "once": false,
       "history": "history.place.thaba_nchu",
-      "sources": ["Vegkop and Moroka's help (02 section 1); the choice of north or Natal (02 section 1: 'two main directions'). The conversation is invented."],
+      "sources": ["Vegkop and Moroka's help (research.md section 2); the choice of north or Natal (research.md section 2: 'two main directions'). The conversation is invented."],
       "text": "event.talk_thaba_nchu.body",
       "choices": [
         { "text": "event.talk_thaba_nchu.north", "outcomes": [ { "text": "event.talk_thaba_nchu.north.done" } ] },
@@ -93,7 +93,7 @@
     {
       "id": "settle_thaba_nchu", "setpiece": true, "once": false,
       "history": "history.settle_early",
-      "sources": ["Some trekker families stayed for long periods near Thaba Nchu in 1836-37 (02 section 1). Ending the game here is a game choice."],
+      "sources": ["Some trekker families stayed for long periods near Thaba Nchu in 1836-37 (research.md section 2). Ending the game here is a game choice."],
       "text": "event.settle_thaba_nchu.body",
       "choices": [
         { "text": "event.settle.yes", "outcomes": [ { "text": "event.settle_thaba_nchu.yes.done", "effects": [ { "ending": "settled" } ] } ] },
@@ -113,7 +113,7 @@
     {
       "id": "church_town", "setpiece": true, "once": false,
       "history": "history.church_town",
-      "sources": ["Graham's Town: the Wesleyan chapel of 1822 and Wesley Chapel of 1832 (SAHRIS); St George's (Anglican) opened for worship in 1830, consecrated 1850 (Wikipedia, St Michael and St George Cathedral). Cradock: Dutch Reformed congregation 1818, first church built 1821-24 (Wikipedia, Dutch Reformed Church, Cradock; SAHRIS). Colesberg: congregation 1826, church foundation stone laid 29 Nov 1830 (Wikipedia, Dutch Reformed Church, Colesberg; List of heritage sites in Colesberg); the date it was finished was not found [conflict: a tourism site says 1860, which may be a rebuilding]. Sunday rest was kept as a matter of conscience (Tregardt's diary, 05_research_pass2.md section 7). The day at church and its effects are invented."],
+      "sources": ["Graham's Town: the Wesleyan chapel of 1822 and Wesley Chapel of 1832 (SAHRIS); St George's (Anglican) opened for worship in 1830, consecrated 1850 (Wikipedia, St Michael and St George Cathedral). Cradock: Dutch Reformed congregation 1818, first church built 1821-24 (Wikipedia, Dutch Reformed Church, Cradock; SAHRIS). Colesberg: congregation 1826, church foundation stone laid 29 Nov 1830 (Wikipedia, Dutch Reformed Church, Colesberg; List of heritage sites in Colesberg); the date it was finished was not found [conflict: a tourism site says 1860, which may be a rebuilding]. Sunday rest was kept as a matter of conscience (Tregardt's diary, research.md section 10.1). The day at church and its effects are invented."],
       "text": "event.church_town.body",
       "choices": [
         { "text": "event.church.attend",
@@ -124,7 +124,7 @@
     {
       "id": "church_mission", "setpiece": true, "once": false,
       "history": "history.church_mission",
-      "sources": ["The Wesleyan missionaries moved to Thaba Nchu with Moroka's Barolong from Platberg in 1833 (05_research_pass2.md section 7); services were held for the Barolong congregation [recall, verify the languages used]. The day at the mission and its effects are invented."],
+      "sources": ["The Wesleyan missionaries moved to Thaba Nchu with Moroka's Barolong from Platberg in 1833 (research.md section 10.1); services were held for the Barolong congregation [recall, verify the languages used]. The day at the mission and its effects are invented."],
       "text": "event.church_mission.body",
       "choices": [
         { "text": "event.church.attend",
@@ -135,7 +135,7 @@
     {
       "id": "church_laager", "setpiece": true, "once": false,
       "history": "history.church_laager",
-      "sources": ["Erasmus Smit was ordained as minister to the trekkers on 21 May 1837 (LitNet, the nine Vet River articles of 1837; 06_research_routes.md section 2); the trekkers held services in their laagers. The service here and its effects are invented."],
+      "sources": ["Erasmus Smit was ordained as minister to the trekkers on 21 May 1837 (LitNet, the nine Vet River articles of 1837; research.md section 15.1); the trekkers held services in their laagers. The service here and its effects are invented."],
       "text": "event.church_laager.body",
       "choices": [
         { "text": "event.church.attend",

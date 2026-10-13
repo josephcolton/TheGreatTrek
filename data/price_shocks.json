@@ -1,5 +1,5 @@
 {
-  "_about": "History-driven price changes (04_game_design.md section 7.1, 05_research_pass2.md section 5). The multiplier fades linearly from mul_start to mul_end across the dates.",
+  "_about": "History-driven price changes (design.md section 11.3, research.md section 8). The multiplier fades linearly from mul_start to mul_end across the dates.",
   "shocks": [
     { "id": "frontier_war_livestock", "from": "1837-01-01", "to": "1838-12-31",
       "nodes": ["grahamstown", "cradock"], "category": "animals",

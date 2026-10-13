@@ -31,4 +31,4 @@ SDL libraries are fetched by CMake at build time and are not stored in this repo
 The sprites are text files (one character per pixel), so they can be edited in any text editor. Skies, hills, rivers and the map are drawn in code (`src/ui/scene.c`, `src/ui/screen_overlay.c`), and the sound effects are synthesised in `src/ui/sound.c`. Every image or sound file added later must be listed here with its author, source and licence.
 
 ## Historical sources
-See `docs/planning/02_research_resources.md` and `docs/planning/05_research_pass2.md`.
+See `docs/research.md`, which lists every source with a link. How the game is built is in `docs/design.md`.

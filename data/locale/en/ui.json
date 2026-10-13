@@ -46,7 +46,7 @@
 
   "credits.title": "Credits and sources",
   "credits.made_by": "Made by Joseph Colton <josephcolton@gmail.com>: the idea, the design and the testing. The code, pictures and research were written with Claude (Anthropic).",
-  "credits.body": "The Great Trek is a family game about the 1837 trek north from Grahamstown. The families in it are invented. The places, prices and most events come from period sources: Captain W. Cornwallis Harris's Wild Sports of Southern Africa (1839), James Backhouse's Narrative (1844), Andrew Steedman's Wanderings (1835) and many modern histories. Press H in an event to read the history behind it.\n\nCode: C17 with SDL3, SDL3_ttf and SDL3_image (zlib licence) and cJSON (MIT). Font: VT323 (SIL Open Font Licence). The game is free software under the GNU GPL v3. See CREDITS.md and docs/planning for every source.",
+  "credits.body": "The Great Trek is a family game about the 1837 trek north from Grahamstown. The families in it are invented. The places, prices and most events come from period sources: Captain W. Cornwallis Harris's Wild Sports of Southern Africa (1839), James Backhouse's Narrative (1844), Andrew Steedman's Wanderings (1835) and many modern histories. Press H in an event to read the history behind it.\n\nCode: C17 with SDL3, SDL3_ttf and SDL3_image (zlib licence) and cJSON (MIT). Font: VT323 (SIL Open Font Licence). The game is free software under the GNU GPL v3. See CREDITS.md and docs/research.md for every source.",
 
   "side.title": "Which family will you play?",
   "side.dutch": "A Dutch trekker family",

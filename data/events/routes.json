@@ -1,10 +1,10 @@
 {
-  "_about": "The Natal and Far North roads (06_research_routes.md): set pieces at each new place, the goals a party may stop at, and road events. The families' own doings are invented; the places, dates, people and dangers are sourced as each event says.",
+  "_about": "The Natal and Far North roads (research.md sections 15-19): set pieces at each new place, the goals a party may stop at, and road events. The families' own doings are invented; the places, dates, people and dangers are sourced as each event says.",
   "events": [
     {
       "id": "vet_river_council", "setpiece": true,
       "history": "history.vet_river_council",
-      "sources": ["The nine Vet River articles were adopted at the Little Vet River on 6 June 1837 by a meeting of 140 men, which chose Port Natal and Natal as the trekkers' goal (LitNet, 'We the Reformed members ... in the nine Vet River articles of 1837'). Potgieter opposed going to Natal and stayed on the Highveld (Wikipedia: Hendrik Potgieter). 06_research_routes.md section 2. The family's part is invented."],
+      "sources": ["The nine Vet River articles were adopted at the Little Vet River on 6 June 1837 by a meeting of 140 men, which chose Port Natal and Natal as the trekkers' goal (LitNet, 'We the Reformed members ... in the nine Vet River articles of 1837'). Potgieter opposed going to Natal and stayed on the Highveld (Wikipedia: Hendrik Potgieter). research.md section 15.1. The family's part is invented."],
       "text": "event.vet_river_council.body",
       "choices": [
         { "text": "event.vet_river_council.natal",
@@ -18,7 +18,7 @@
     {
       "id": "kerkenberg_camp", "setpiece": true,
       "history": "history.place.kerkenberg",
-      "sources": ["Retief camped with 54 wagons at Kerkenberg on 5 Oct 1837; the trekkers stayed from mid-October to mid-November and sent parties to find ways down the escarpment (Wikipedia: Piet Retief; Wikipedia: Kerkenberg). Bantjes brought word on 2 Nov 1837 that they could come down into Natal (Wikipedia: Piet Retief). On the descent the hind wheels were removed and heavy branches tied underneath as a brake (SAHO, 'Great Trek 1835-1846', general account, no party or pass named; the same method as Tregardt's, Preller p. LXXXVIII) - 06_research_routes.md section 4.1. The outcomes and odds here are invented."],
+      "sources": ["Retief camped with 54 wagons at Kerkenberg on 5 Oct 1837; the trekkers stayed from mid-October to mid-November and sent parties to find ways down the escarpment (Wikipedia: Piet Retief; Wikipedia: Kerkenberg). Bantjes brought word on 2 Nov 1837 that they could come down into Natal (Wikipedia: Piet Retief). On the descent the hind wheels were removed and heavy branches tied underneath as a brake (SAHO, 'Great Trek 1835-1846', general account, no party or pass named; the same method as Tregardt's, Preller p. LXXXVIII) - research.md section 17.1. The outcomes and odds here are invented."],
       "text": "event.kerkenberg_camp.body",
       "choices": [
         { "text": "event.kerkenberg_camp.wait",
@@ -34,7 +34,7 @@
     {
       "id": "bloukrans_camps", "setpiece": true,
       "history": "history.place.bloukrans",
-      "sources": ["The main body came down into Natal in November 1837 and spread out in small camps along the Bloukrans and Bushman's (Mtshezi) rivers, waiting while Retief went to see Dingane (Wikipedia: Weenen massacre; Wikipedia: Piet Retief; 06_research_routes.md section 4.1). Stopping here is the game's goal 1 for the Natal road."],
+      "sources": ["The main body came down into Natal in November 1837 and spread out in small camps along the Bloukrans and Bushman's (Mtshezi) rivers, waiting while Retief went to see Dingane (Wikipedia: Weenen massacre; Wikipedia: Piet Retief; research.md section 17.1). Stopping here is the game's goal 1 for the Natal road."],
       "text": "event.bloukrans_camps.body",
       "choices": [
         { "text": "event.bloukrans_camps.stay",
@@ -46,7 +46,7 @@
     {
       "id": "port_natal_arrival", "setpiece": true,
       "history": "history.place.port_natal",
-      "sources": ["Port Natal: about 50 English settlers and traders in 1835; Allen Gardiner's mission on the hill above the bay; the American Board mission (Adams, Grout, Champion) from 1836; the traders welcomed Retief's party on 19 Oct 1837 (Wikipedia: Colony of Natal; SAHO Durban timeline) - 06_research_routes.md section 4.1. The family's arrival is invented."],
+      "sources": ["Port Natal: about 50 English settlers and traders in 1835; Allen Gardiner's mission on the hill above the bay; the American Board mission (Adams, Grout, Champion) from 1836; the traders welcomed Retief's party on 19 Oct 1837 (Wikipedia: Colony of Natal; SAHO Durban timeline) - research.md section 17.1. The family's arrival is invented."],
       "text": "event.port_natal_arrival.body",
       "choices": [
         { "text": "event.port_natal_arrival.outspan",
@@ -56,7 +56,7 @@
     {
       "id": "magaliesberg_ndebele", "setpiece": true,
       "history": "history.place.magaliesberg",
-      "sources": ["Mzilikazi's Ndebele held the country north of the Vaal in 1837; after Mosega (17 Jan 1837) they were in the Marico until the trekker commando of Nov 1837 drove them north (05_research_pass2.md section 3; Britannica, Marico). Harris (1839) visited Mzilikazi in 1836 and hunted in the Cashan Mountains, an old name for the Magaliesberg (Wikipedia, Magaliesberg; Wikipedia, William Cornwallis Harris: his first sable antelope was shot there). The meeting is invented."],
+      "sources": ["Mzilikazi's Ndebele held the country north of the Vaal in 1837; after Mosega (17 Jan 1837) they were in the Marico until the trekker commando of Nov 1837 drove them north (research.md section 6; Britannica, Marico). Harris (1839) visited Mzilikazi in 1836 and hunted in the Cashan Mountains, an old name for the Magaliesberg (Wikipedia, Magaliesberg; Wikipedia, William Cornwallis Harris: his first sable antelope was shot there). The meeting is invented."],
       "text": "event.magaliesberg_ndebele.body",
       "choices": [
         { "text": "event.magaliesberg_ndebele.gift", "requires": [ { "item_gte": ["beads", 4] } ], "locked": "lock.need_beads",
@@ -68,7 +68,7 @@
     {
       "id": "strydpoort_sekwati", "setpiece": true,
       "history": "history.place.strydpoort",
-      "sources": ["Tregardt's diary calls the Strydpoort 'the poort of Sekwati' (Preller, Dagboek van Louis Trichardt, intro p. LXXXV); Sekwati led the Pedi in these years (06_research_routes.md section 3.4). The family's visit is invented."],
+      "sources": ["Tregardt's diary calls the Strydpoort 'the poort of Sekwati' (Preller, Dagboek van Louis Trichardt, intro p. LXXXV); Sekwati led the Pedi in these years (research.md section 16.4). The family's visit is invented."],
       "text": "event.strydpoort_sekwati.body",
       "choices": [
         { "text": "event.strydpoort_sekwati.gift", "requires": [ { "item_gte": ["beads", 3] } ], "locked": "lock.need_beads",
@@ -82,7 +82,7 @@
     {
       "id": "soutpansberg_camp", "setpiece": true,
       "history": "history.place.soutpansberg",
-      "sources": ["Tregardt waited at the Soutpansberg for more than a year, with houses, a smithy, gardens and a school of 21 children under Daniel Pfeffer; Portuguese soldiers came to guide him in August 1837 and he left for Delagoa Bay on 23 Aug 1837 (Preller, intro pp. LXXVII-LXXXV; Wikipedia: Louis Tregardt). Tsonga traders came up from the coast in the winter (Preller p. LXXXII). Ramabulana of the Venda gave Tregardt land (Wikipedia: Soutpansberg; dates conflict). 06_research_routes.md section 3. Stopping here is the game's goal 1 for the Far North; waiting for the dry season follows the traders' practice."],
+      "sources": ["Tregardt waited at the Soutpansberg for more than a year, with houses, a smithy, gardens and a school of 21 children under Daniel Pfeffer; Portuguese soldiers came to guide him in August 1837 and he left for Delagoa Bay on 23 Aug 1837 (Preller, intro pp. LXXVII-LXXXV; Wikipedia: Louis Tregardt). Tsonga traders came up from the coast in the winter (Preller p. LXXXII). Ramabulana of the Venda gave Tregardt land (Wikipedia: Soutpansberg; dates conflict). research.md section 16. Stopping here is the game's goal 1 for the Far North; waiting for the dry season follows the traders' practice."],
       "nodes": [
         { "id": "start", "text": "event.soutpansberg_camp.body",
           "choices": [
@@ -105,7 +105,7 @@
     {
       "id": "talk_soutpansberg", "setpiece": true, "once": false,
       "history": "history.place.soutpansberg",
-      "sources": ["Tsonga ('Magwamba') traders crossed the lowveld to Delagoa Bay in the winter; Tregardt warned the Pretorius party not to go down into the low country, and fever and the fly nearly destroyed them; Gert Scheepers died of the fever (Preller, intro pp. LXXXI-LXXXII); the Van Rensburg party was killed on the way to the coast in mid-1836 (Wikipedia: Louis Tregardt; details conflict). 06_research_routes.md sections 3.1-3.3. The conversations are invented."],
+      "sources": ["Tsonga ('Magwamba') traders crossed the lowveld to Delagoa Bay in the winter; Tregardt warned the Pretorius party not to go down into the low country, and fever and the fly nearly destroyed them; Gert Scheepers died of the fever (Preller, intro pp. LXXXI-LXXXII); the Van Rensburg party was killed on the way to the coast in mid-1836 (Wikipedia: Louis Tregardt; details conflict). research.md sections 16.1-16.3. The conversations are invented."],
       "text": "event.talk_soutpansberg.body",
       "choices": [
         { "text": "event.talk_soutpansberg.traders",
@@ -120,7 +120,7 @@
     {
       "id": "olifants_warning", "setpiece": true,
       "history": "history.olifants_warning",
-      "sources": ["Sekwati warned Tregardt that the mountains were impassable for wagons; Tregardt did not believe him and went down the Olifants River, crossing it again and again, reaching it on 2 Oct 1837 (Preller, intro pp. LXXXV-LXXXVI). 06_research_routes.md section 3.2. The messenger scene is invented."],
+      "sources": ["Sekwati warned Tregardt that the mountains were impassable for wagons; Tregardt did not believe him and went down the Olifants River, crossing it again and again, reaching it on 2 Oct 1837 (Preller, intro pp. LXXXV-LXXXVI). research.md section 16.2. The messenger scene is invented."],
       "text": "event.olifants_warning.body",
       "choices": [
         { "text": "event.olifants_warning.thank", "requires": [ { "item_gte": ["tobacco", 2] } ], "locked": "lock.need_tobacco",
@@ -132,7 +132,7 @@
     {
       "id": "escarpment_descent", "setpiece": true,
       "history": "history.escarpment_descent",
-      "sources": ["Tregardt's party made a road down the Drakensberg escarpment from 8 Nov 1837 to 25 Jan 1838, two months and eighteen days, in heavy rain and mist; the men nearly gave up and talked of leaving the wagons, and the women objected; on steep slopes the back wheels were taken off and tied on a sledge, and the rear oxen were tied to the front axle; going up took 18 oxen to a wagon; Jan Pretorius took his wagons apart and carried them down piece by piece (Preller, intro pp. LXXXVI-LXXXVIII, from the diary and Carolus Trichardt). 06_research_routes.md section 3.2. The times and losses here are estimates scaled from that."],
+      "sources": ["Tregardt's party made a road down the Drakensberg escarpment from 8 Nov 1837 to 25 Jan 1838, two months and eighteen days, in heavy rain and mist; the men nearly gave up and talked of leaving the wagons, and the women objected; on steep slopes the back wheels were taken off and tied on a sledge, and the rear oxen were tied to the front axle; going up took 18 oxen to a wagon; Jan Pretorius took his wagons apart and carried them down piece by piece (Preller, intro pp. LXXXVI-LXXXVIII, from the diary and Carolus Trichardt). research.md section 16.2. The times and losses here are estimates scaled from that."],
       "nodes": [
         { "id": "start", "text": "event.escarpment_descent.body",
           "choices": [
@@ -153,7 +153,7 @@
     {
       "id": "lowveld_fly", "setpiece": true,
       "history": "history.lowveld_fly",
-      "sources": ["In the lowveld in Feb-Mar 1838, 'the unhealthiest months of the year', Tregardt's cattle died of the 'bos-siekte' (the fly); friendly local people helped them through; their oxen were weak from the cold of the mountains (Preller, intro pp. LXXXVIII-LXXXIX). 'Fly-disease' struck the pioneers' herds in the north in 1836, the first record of tsetse there (Kappmeier et al. 1998). 06_research_routes.md sections 3.2 and 6. The choices are invented."],
+      "sources": ["In the lowveld in Feb-Mar 1838, 'the unhealthiest months of the year', Tregardt's cattle died of the 'bos-siekte' (the fly); friendly local people helped them through; their oxen were weak from the cold of the mountains (Preller, intro pp. LXXXVIII-LXXXIX). 'Fly-disease' struck the pioneers' herds in the north in 1836, the first record of tsetse there (Kappmeier et al. 1998). research.md sections 16.2 and 19. The choices are invented."],
       "text": "event.lowveld_fly.body",
       "choices": [
         { "text": "event.lowveld_fly.guide", "requires": [ { "item_gte": ["beads", 2] } ], "locked": "lock.need_beads",
@@ -167,7 +167,7 @@
     {
       "id": "komati_portuguese", "setpiece": true,
       "history": "history.komati_portuguese",
-      "sources": ["At the Komati a Portuguese officer from the fort came to meet Tregardt's party; their ivory and heavy goods went down the river by boat while the wagons struggled on with weak oxen (Preller, intro p. LXXXIX). 06_research_routes.md section 3.2. The family's choice is invented."],
+      "sources": ["At the Komati a Portuguese officer from the fort came to meet Tregardt's party; their ivory and heavy goods went down the river by boat while the wagons struggled on with weak oxen (Preller, intro p. LXXXIX). research.md section 16.2. The family's choice is invented."],
       "text": "event.komati_portuguese.body",
       "choices": [
         { "text": "event.komati_portuguese.boat",
@@ -179,7 +179,7 @@
     {
       "id": "delagoa_arrival", "setpiece": true,
       "history": "history.place.delagoa_bay",
-      "sources": ["Tregardt's party reached Lourenco Marques at 3 pm on 13 Apr 1838 with seven wagons: a small earth fort on a sand ridge by a swamp; their salute was not answered; the commandant who had sent for them had died, and Capt. Antonio Gamitto received them kindly but had their guns kept in the fort (Preller, intro pp. LXXXIX-XC). 06_research_routes.md section 3.2. The family's arrival is invented."],
+      "sources": ["Tregardt's party reached Lourenco Marques at 3 pm on 13 Apr 1838 with seven wagons: a small earth fort on a sand ridge by a swamp; their salute was not answered; the commandant who had sent for them had died, and Capt. Antonio Gamitto received them kindly but had their guns kept in the fort (Preller, intro pp. LXXXIX-XC). research.md section 16.2. The family's arrival is invented."],
       "text": "event.delagoa_arrival.body",
       "choices": [
         { "text": "event.delagoa_arrival.guns",
@@ -229,7 +229,7 @@
     {
       "id": "natal_green", "regions": ["natal"], "weight": 6, "once": true,
       "history": "history.natal_green",
-      "sources": ["The 1834 Kommissietrek under Piet Uys came back with favourable reports of Natal that helped start the Trek (Wikipedia: Piet Uys); Retief called Natal a land worth settling (06_research_routes.md section 4.2). The scene is invented."],
+      "sources": ["The 1834 Kommissietrek under Piet Uys came back with favourable reports of Natal that helped start the Trek (Wikipedia: Piet Uys); Retief called Natal a land worth settling (research.md section 17.2). The scene is invented."],
       "text": "event.natal_green.body",
       "choices": [
         { "text": "event.natal_green.rest",
@@ -241,7 +241,7 @@
     {
       "id": "natal_messengers", "regions": ["natal"], "weight": 5, "once": true,
       "history": "history.natal_messengers",
-      "sources": ["Retief negotiated with the Zulu king Dingane for land in Natal from November 1837 (Wikipedia: Piet Retief); the trekker families waited in the camps below the mountains for the outcome (06_research_routes.md section 4.1). The passing messengers are invented."],
+      "sources": ["Retief negotiated with the Zulu king Dingane for land in Natal from November 1837 (Wikipedia: Piet Retief); the trekker families waited in the camps below the mountains for the outcome (research.md section 17.1). The passing messengers are invented."],
       "text": "event.natal_messengers.body",
       "choices": [
         { "text": "event.natal_messengers.greet",

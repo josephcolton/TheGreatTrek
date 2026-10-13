@@ -1,5 +1,5 @@
 {
-  "_about": "Rates are invented starting values to be tuned with trekbot (04_game_design.md section 8.5). Fever is low on this route; malaria was the killer on Tregardt's northern route. Malaria (weight 0) is never a random illness: it is caught only from the country, by the regions' fever rates (regions.json). The party calls it the fever; a death names it as malaria.",
+  "_about": "Rates are invented starting values to be tuned with trekbot (design.md section 13). Fever is low on this route; malaria was the killer on Tregardt's northern route. Malaria (weight 0) is never a random illness: it is caught only from the country, by the regions' fever rates (regions.json). The party calls it the fever; a death names it as malaria.",
   "illnesses": [
     { "id": "flux",      "damage": 6,  "recover": 0.15, "nursing": 0.03, "contagion": 0.04, "min_days": 3, "weight": 3, "child_mul": 1.5 },
     { "id": "fever",     "damage": 5,  "recover": 0.12, "nursing": 0.03, "contagion": 0.02, "min_days": 4, "weight": 2, "child_mul": 1.3 },

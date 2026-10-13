@@ -4,7 +4,7 @@
     {
       "id": "grahamstown_bible", "setpiece": true,
       "history": "history.grahamstown_bible",
-      "sources": ["02_research_resources.md section 6: the 1820 Settlers' Bible for the Uys trek, April 1837 (Wikipedia: Uys; SA Military History vol036iu; Grocott's Mail)",
+      "sources": ["research.md section 11: the 1820 Settlers' Bible for the Uys trek, April 1837 (Wikipedia: Uys; SA Military History vol036iu; Grocott's Mail)",
                   "The family's presence and choices are invented."],
       "text": "event.grahamstown_bible.body",
       "choices": [
@@ -21,8 +21,8 @@
     {
       "id": "colesberg_edge", "setpiece": true,
       "history": "history.colesberg_edge",
-      "sources": ["Cape of Good Hope Punishment Act, 6 & 7 Will. IV c. 57, 13 Aug 1836 (05_research_pass2.md section 7)",
-                  "Colesberg as the edge of the Colony: 03_development_plan.md section 3. The scene is invented."],
+      "sources": ["Cape of Good Hope Punishment Act, 6 & 7 Will. IV c. 57, 13 Aug 1836 (research.md section 10.1)",
+                  "Colesberg as the edge of the Colony: design.md section 9.1. The scene is invented."],
       "text": "event.colesberg_edge.body",
       "choices": [
         { "text": "event.colesberg_edge.ask_road",
@@ -36,7 +36,7 @@
     {
       "id": "philippolis_arrival", "setpiece": true,
       "history": "history.place.philippolis",
-      "sources": ["Philippolis as a Griqua town: 01_gemini_review.md section 3, 02_research_resources.md section 4. The scene is invented."],
+      "sources": ["Philippolis as a Griqua town: research.md section 11. The scene is invented."],
       "text": "event.philippolis_arrival.body",
       "choices": [
         { "text": "event.philippolis_arrival.respects",
@@ -64,7 +64,7 @@
     {
       "id": "buffelsvlei_news", "setpiece": true,
       "history": "history.buffelsvlei",
-      "sources": ["Retief's party crossed the Orange at Buffelsvlei (later Aliwal North) in March 1837: weet.co.za Retief biography (05_research_pass2.md sections 2-3). The meeting is invented."],
+      "sources": ["Retief's party crossed the Orange at Buffelsvlei (later Aliwal North) in March 1837: weet.co.za Retief biography (research.md sections 5-6). The meeting is invented."],
       "text": "event.buffelsvlei_news.body",
       "choices": [
         { "text": "event.buffelsvlei_news.listen",
@@ -76,8 +76,8 @@
     {
       "id": "thaba_nchu_moroka", "setpiece": true,
       "history": "history.thaba_nchu",
-      "sources": ["After Vegkop (Oct 1836) Moroka of the Barolong sent oxen to bring the stranded trek to Thaba Nchu (02_research_resources.md section 1; Wikipedia: Battle of Vegkop)",
-                  "Barolong and Wesleyan missionaries moved to Thaba Nchu from Platberg in 1833 (05_research_pass2.md section 7). The family's visit is invented."],
+      "sources": ["After Vegkop (Oct 1836) Moroka of the Barolong sent oxen to bring the stranded trek to Thaba Nchu (research.md section 2; Wikipedia: Battle of Vegkop)",
+                  "Barolong and Wesleyan missionaries moved to Thaba Nchu from Platberg in 1833 (research.md section 10.1). The family's visit is invented."],
       "nodes": [
         { "id": "start", "text": "event.thaba_nchu_moroka.body",
           "choices": [
@@ -105,8 +105,8 @@
     {
       "id": "sand_river_laager", "setpiece": true,
       "history": "history.sand_river",
-      "sources": ["The Uys party reached the united laager at the Sand River on 29 June 1837 (Wikipedia: Piet Uys; NWU paper gives Thaba Nchu, Aug 1837 [conflict]) - 05_research_pass2.md section 3",
-                  "English settlers were rare among the trekkers and had to earn trust (03_development_plan.md section 4). The family's welcome is invented."],
+      "sources": ["The Uys party reached the united laager at the Sand River on 29 June 1837 (Wikipedia: Piet Uys; NWU paper gives Thaba Nchu, Aug 1837 [conflict]) - research.md section 6",
+                  "English settlers were rare among the trekkers and had to earn trust (research.md section 11; design.md section 15). The family's welcome is invented."],
       "nodes": [
         { "id": "start", "text": "event.sand_river_laager.body",
           "choices": [
@@ -133,7 +133,7 @@
     {
       "id": "vaal_news", "setpiece": true,
       "history": "history.vaal_news",
-      "sources": ["Mosega, 17 Jan 1837: a trekker commando with Barolong and Griqua allies attacked the Ndebele town and took about 6,000-6,500 cattle; the American missionaries left with the commando (Wikipedia: Battle of Vegkop; SA Military History vol172jr) - 05_research_pass2.md section 3",
+      "sources": ["Mosega, 17 Jan 1837: a trekker commando with Barolong and Griqua allies attacked the Ndebele town and took about 6,000-6,500 cattle; the American missionaries left with the commando (Wikipedia: Battle of Vegkop; SA Military History vol172jr) - research.md section 6",
                   "The herder's account is invented, written to give the Ndebele side of the story."],
       "text": "event.vaal_news.body",
       "choices": [
@@ -146,7 +146,7 @@
     {
       "id": "mooi_arrival", "setpiece": true,
       "history": "history.mooi_river",
-      "sources": ["Potgieter settled on the Mooi River; Potchefstroom founded Dec 1838 or June 1839 [conflict]; Barolong and Bahurutshe lived in the area before the trekkers (02_research_resources.md section 6b)"],
+      "sources": ["Potgieter settled on the Mooi River; Potchefstroom founded Dec 1838 or June 1839 [conflict]; Barolong and Bahurutshe lived in the area before the trekkers (research.md section 6)"],
       "text": "event.mooi_arrival.body",
       "choices": [
         { "text": "event.mooi_arrival.unyoke", "outcomes": [ { "text": "event.mooi_arrival.unyoke.done", "effects": [ { "morale": 10 } ] } ] }

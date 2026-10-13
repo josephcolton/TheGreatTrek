@@ -1,4 +1,4 @@
-/* Real-time hunting (04_game_design.md section 9), in the spirit of the Oregon Trail hunt:
+/* Real-time hunting (design.md section 14), in the spirit of the Oregon Trail hunt:
  * wait for game to come into sight, then aim and fire with the mouse. The scene runs in fixed
  * ticks with the game's own RNG, so a hunt replays exactly from the seed and the shots.
  * A muzzle-loader fires once and is slow to load; rain makes the powder fail; shots scatter

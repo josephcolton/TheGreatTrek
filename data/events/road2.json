@@ -4,7 +4,7 @@
     {
       "id": "farms_for_sale", "regions": ["eastern_frontier", "karoo"], "weight": 6, "once": true,
       "history": "history.farms_for_sale",
-      "sources": ["Backhouse (1844): a field cornet had bought his farm 'of a Boor who emigrated'; another man with eight farms was 'about to emigrate' (05_research_pass2.md section 5). The sale here is invented."],
+      "sources": ["Backhouse (1844): a field cornet had bought his farm 'of a Boor who emigrated'; another man with eight farms was 'about to emigrate' (research.md section 8). The sale here is invented."],
       "text": "event.farms_for_sale.body",
       "choices": [
         { "text": "event.farms_for_sale.buy", "requires": [ { "money_gte": 50 } ], "locked": "lock.need_money",
@@ -17,7 +17,7 @@
       "id": "empty_farms", "regions": ["eastern_frontier", "stormberg"], "weight": 6, "once": true,
       "requires": [ { "flag": "east_road" } ],
       "history": "history.empty_farms",
-      "sources": ["Many frontier farms in districts like the Tarka were left as families trekked (02 section 1; 05 section 8.1). The abandoned farm is invented."],
+      "sources": ["Many frontier farms in districts like the Tarka were left as families trekked (research.md sections 2 and 12.1). The abandoned farm is invented."],
       "text": "event.empty_farms.body",
       "choices": [
         { "text": "event.empty_farms.take",
@@ -60,7 +60,7 @@
       "id": "jukskei_snaps", "weight": 6, "cooldown_days": 40,
       "speaker": { "pick": "skill", "skill": "voorloper" },
       "history": "history.jukskei",
-      "sources": ["Oxen were yoked in pairs with a wooden juk held by jukskeie, yoke pins (02 section 3). The breakage is invented."],
+      "sources": ["Oxen were yoked in pairs with a wooden juk held by jukskeie, yoke pins (research.md section 4). The breakage is invented."],
       "text": "event.jukskei_snaps.body",
       "choices": [
         { "text": "event.jukskei_snaps.carve",
@@ -99,7 +99,7 @@
       "id": "evening_hymns", "weight": 5, "cooldown_days": 25,
       "requires": [ { "days_gte": 10 } ],
       "history": "history.evening_hymns",
-      "sources": ["invented. Church and worship mattered greatly to the trekkers (Kerkspruit church, Oct 1837; 05 section 3)."],
+      "sources": ["invented. Church and worship mattered greatly to the trekkers (Kerkspruit church, Oct 1837; research.md section 6)."],
       "text": "event.evening_hymns.body",
       "choices": [
         { "text": "event.evening_hymns.join",
@@ -126,7 +126,7 @@
       "requires": [ { "member_role": "servant" }, { "days_gte": 25 } ],
       "speaker": { "pick": "role", "role": "servant" },
       "history": "history.servant_family",
-      "sources": ["invented, told from the servant's side. Khoikhoi workers could leave an employer after Ordinance 50 (1828) (05 section 7)."],
+      "sources": ["invented, told from the servant's side. Khoikhoi workers could leave an employer after Ordinance 50 (1828) (research.md section 10.1)."],
       "text": "event.servant_family_news.body",
       "choices": [
         { "text": "event.servant_family_news.go_home", "requires": [ { "money_gte": 10 } ], "locked": "lock.need_money",
@@ -142,7 +142,7 @@
       "requires": [ { "member_skill_gte": ["voorloper", 3] } ],
       "speaker": { "pick": "skill", "skill": "voorloper" },
       "history": "history.voorloper",
-      "sources": ["The voorloper walked ahead leading the front oxen and picking the way (01_gemini_review.md section 2; DSAE). The shortcut is invented."],
+      "sources": ["The voorloper walked ahead leading the front oxen and picking the way (research.md section 21; DSAE). The shortcut is invented."],
       "text": "event.voorloper_shortcut.body",
       "choices": [
         { "text": "event.voorloper_shortcut.take",
@@ -156,7 +156,7 @@
     {
       "id": "missionary_travellers", "regions": ["transorangia"], "weight": 5, "once": true,
       "history": "history.missionaries",
-      "sources": ["Missionaries travelled through Transorangia in these years: the Wesleyans at Thaba Nchu (05 section 7) and the French missionaries Arbousset and Daumas, who toured in 1836 (archive.org). The meeting is invented."],
+      "sources": ["Missionaries travelled through Transorangia in these years: the Wesleyans at Thaba Nchu (research.md section 10.1) and the French missionaries Arbousset and Daumas, who toured in 1836 (archive.org). The meeting is invented."],
       "text": "event.missionary_travellers.body",
       "choices": [
         { "text": "event.missionary_travellers.welcome",
@@ -169,7 +169,7 @@
       "id": "basotho_herders", "regions": ["transorangia"], "weight": 6, "once": true,
       "requires": [ { "flag": "east_road" } ],
       "history": "history.basotho",
-      "sources": ["Moshoeshoe's Basotho lived east of the Caledon (02 section 5). The meeting is invented."],
+      "sources": ["Moshoeshoe's Basotho lived east of the Caledon (research.md section 11). The meeting is invented."],
       "text": "event.basotho_herders.body",
       "choices": [
         { "text": "event.basotho_herders.greet",
@@ -182,7 +182,7 @@
       "id": "powder_found_out", "regions": ["highveld", "transorangia"], "weight": 20, "once": true,
       "requires": [ { "flag": "sold_powder" } ],
       "history": "history.powder_law",
-      "sources": ["Harris (1839): carrying gunpowder into the territories of African rulers was contraband, risking twelve months' imprisonment (05 section 10). The consequence here is invented."],
+      "sources": ["Harris (1839): carrying gunpowder into the territories of African rulers was contraband, risking twelve months' imprisonment (research.md section 14). The consequence here is invented."],
       "text": "event.powder_found_out.body",
       "choices": [
         { "text": "event.powder_found_out.admit",
@@ -195,7 +195,7 @@
       "id": "council_debate", "sides": ["dutch"], "regions": ["highveld"], "weight": 10, "once": true,
       "requires": [ { "flag": "joined_laager" } ],
       "history": "history.council",
-      "sources": ["The trekkers argued over whether to go north onto the Highveld or east over the mountains to Natal (02 section 1: two main directions; quarrels among the leaders). The vote here is invented."],
+      "sources": ["The trekkers argued over whether to go north onto the Highveld or east over the mountains to Natal (research.md section 2: two main directions; quarrels among the leaders). The vote here is invented."],
       "text": "event.council_debate.body",
       "choices": [
         { "text": "event.council_debate.north",
@@ -209,7 +209,7 @@
     {
       "id": "widow_wagon", "sides": ["english"], "regions": ["karoo", "transorangia", "stormberg"], "weight": 8, "once": true,
       "history": "history.widow_wagon",
-      "sources": ["invented: one of the ways an English family earns the trekkers' trust (04_game_design.md section 12.1)."],
+      "sources": ["invented: one of the ways an English family earns the trekkers' trust (design.md section 15)."],
       "text": "event.widow_wagon.body",
       "choices": [
         { "text": "event.widow_wagon.mend", "requires": [ { "any": [ { "item_gte": ["spare_wheel", 1] }, { "member_skill_gte": ["smithing", 1] }, { "item_gte": ["iron", 10] } ] } ], "locked": "lock.need_parts",
@@ -236,7 +236,7 @@
       "id": "sick_ox", "weight": 5, "cooldown_days": 30, "harmful": true,
       "speaker": { "pick": "skill", "skill": "herding" },
       "history": "history.sick_ox",
-      "sources": ["invented; a generic sickness, not a named cattle disease (lungsickness only arrived in 1853, 05 section 7)."],
+      "sources": ["invented; a generic sickness, not a named cattle disease (lungsickness only arrived in 1853, research.md section 10.1)."],
       "text": "event.sick_ox.body",
       "choices": [
         { "text": "event.sick_ox.rest",

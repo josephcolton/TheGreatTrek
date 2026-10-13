@@ -1,5 +1,5 @@
 {
-  "_about": "Random events on the road. Outcome weights are invented starting values unless a source is given (04_game_design.md section 8.5).",
+  "_about": "Random events on the road. Outcome weights are invented starting values unless a source is given (design.md section 13).",
   "events": [
     {
       "id": "karoo_stagnant_water", "regions": ["karoo"], "weight": 12, "cooldown_days": 15, "harmful": true,
@@ -7,7 +7,7 @@
       "weight_mods": [ { "if": { "weather": "hot" }, "mul": 1.5 } ],
       "speaker": { "pick": "skill", "skill": "voorloper" },
       "history": "history.karoo_water",
-      "sources": ["invented: Gemini seed 1 (01_gemini_review.md section 2). Dysentery as a major killer is plausible but not sourced (01 section 3)."],
+      "sources": ["invented. Dysentery as a major killer is plausible but not sourced (research.md section 10.1)."],
       "text": "event.karoo_stagnant_water.body",
       "choices": [
         { "text": "event.karoo_stagnant_water.drink",
@@ -28,7 +28,7 @@
       "id": "oxen_stray", "time": "night", "weight": 8, "cooldown_days": 30, "harmful": true,
       "speaker": { "pick": "skill", "skill": "herding" },
       "history": "history.oxen_stray",
-      "sources": ["Backhouse (1844), June 1839: 'detained by the straying of the oxen, which had smelt grass at a considerable distance' (05_research_pass2.md section 10). Outcome weights invented."],
+      "sources": ["Backhouse (1844), June 1839: 'detained by the straying of the oxen, which had smelt grass at a considerable distance' (research.md section 14). Outcome weights invented."],
       "text": "event.oxen_stray.body",
       "choices": [
         { "text": "event.oxen_stray.track",
@@ -45,7 +45,7 @@
       "id": "horses_go_home", "time": "night", "regions": ["eastern_frontier", "karoo"], "weight": 6, "once": true, "harmful": true,
       "requires": [ { "item_gte": ["horses", 2] } ],
       "history": "history.horses_go_home",
-      "sources": ["Harris (1839) ch. V: two horses 'absconded' in the night, thought to have gone back to the grazing where they were bred (05_research_pass2.md section 10)."],
+      "sources": ["Harris (1839) ch. V: two horses 'absconded' in the night, thought to have gone back to the grazing where they were bred (research.md section 14)."],
       "text": "event.horses_go_home.body",
       "choices": [
         { "text": "event.horses_go_home.send",
@@ -59,7 +59,7 @@
     {
       "id": "wagon_hole", "regions": ["eastern_frontier", "stormberg"], "weight": 6, "once": true, "harmful": true,
       "history": "history.wagon_hole",
-      "sources": ["Harris (1839) ch. II: near Graham's Town 'the baggage-waggon was accidentally upset in a deep hole by the road-side, and the upper works completely broken' (05_research_pass2.md section 10)."],
+      "sources": ["Harris (1839) ch. II: near Graham's Town 'the baggage-waggon was accidentally upset in a deep hole by the road-side, and the upper works completely broken' (research.md section 14)."],
       "text": "event.wagon_hole.body",
       "choices": [
         { "text": "event.wagon_hole.unload",
@@ -74,7 +74,7 @@
       "id": "quicksand", "regions": ["eastern_frontier"], "weight": 5, "once": true, "harmful": true,
       "requires": [ { "item_gte": ["horses", 1] } ],
       "history": "history.quicksand",
-      "sources": ["Harris (1839) ch. IV: crossing the Little Fish River 'my horse was suddenly engulphed in a quicksand, and nearly drowned' (05_research_pass2.md section 10)."],
+      "sources": ["Harris (1839) ch. IV: crossing the Little Fish River 'my horse was suddenly engulphed in a quicksand, and nearly drowned' (research.md section 14)."],
       "text": "event.quicksand.body",
       "choices": [
         { "text": "event.quicksand.riems",
@@ -88,7 +88,7 @@
       "requires": [ { "edge_water": "dry" } ],
       "weight_mods": [ { "if": { "weather": "hot" }, "mul": 2.0 } ],
       "history": "history.mirage",
-      "sources": ["Harris (1839) ch. VI: thirsty oxen ran for water that was 'a mere mineral efflorescence in the desert' (05_research_pass2.md section 10)."],
+      "sources": ["Harris (1839) ch. VI: thirsty oxen ran for water that was 'a mere mineral efflorescence in the desert' (research.md section 14)."],
       "text": "event.mirage.body",
       "choices": [
         { "text": "event.mirage.hold",
@@ -103,7 +103,7 @@
       "id": "dogs_paws", "regions": ["karoo"], "weight": 4, "once": true,
       "requires": [ { "weather": "hot" } ],
       "history": "history.dogs_paws",
-      "sources": ["Harris (1839) ch. VI: the dogs' paws were burned raw by the hot ground; treated with the tar-and-fat axle grease, they came back holding out a paw for more (05_research_pass2.md section 10)."],
+      "sources": ["Harris (1839) ch. VI: the dogs' paws were burned raw by the hot ground; treated with the tar-and-fat axle grease, they came back holding out a paw for more (research.md section 14)."],
       "text": "event.dogs_paws.body",
       "choices": [
         { "text": "event.dogs_paws.grease", "requires": [ { "item_gte": ["tallow", 1] } ], "locked": "lock.need_tallow",
@@ -115,7 +115,7 @@
     {
       "id": "hyenas_night", "time": "night", "weight": 6, "cooldown_days": 35, "harmful": true,
       "history": "history.hyenas",
-      "sources": ["Harris (1839) ch. VI: hyenas 'attracted by the smell of our mutton' came into camp at night (05_research_pass2.md section 10). Outcome weights invented."],
+      "sources": ["Harris (1839) ch. VI: hyenas 'attracted by the smell of our mutton' came into camp at night (research.md section 14). Outcome weights invented."],
       "text": "event.hyenas_night.body",
       "choices": [
         { "text": "event.hyenas_night.guard", "requires": [ { "item_gte": ["gunpowder", 1] }, { "item_gte": ["lead", 1] } ], "locked": "lock.need_powder",
@@ -133,7 +133,7 @@
       "requires": [ { "weather": "storm" } ],
       "speaker": { "pick": "skill", "skill": "herding" },
       "history": "history.storm_cattle",
-      "sources": ["Harris (1839): in a storm the thrashing reeds 'so alarmed the cattle that they thrice broke loose' (05_research_pass2.md section 10). Losses invented."],
+      "sources": ["Harris (1839): in a storm the thrashing reeds 'so alarmed the cattle that they thrice broke loose' (research.md section 14). Losses invented."],
       "text": "event.storm_cattle.body",
       "choices": [
         { "text": "event.storm_cattle.chase",
@@ -147,7 +147,7 @@
     {
       "id": "quagga_sunrise", "regions": ["karoo", "transorangia"], "weight": 5, "once": true,
       "history": "history.quagga",
-      "sources": ["Backhouse (1844), June 1839, Colesberg district: 'A troop of Quaggas, with their foals, were near us at sunrise.' Extinct in the wild by about 1878 (Wikipedia: Quagga) - 05_research_pass2.md section 7."],
+      "sources": ["Backhouse (1844), June 1839, Colesberg district: 'A troop of Quaggas, with their foals, were near us at sunrise.' Extinct in the wild by about 1878 (Wikipedia: Quagga) - research.md section 10.1."],
       "text": "event.quagga_sunrise.body",
       "choices": [
         { "text": "event.quagga_sunrise.watch",
@@ -159,7 +159,7 @@
     {
       "id": "lions_herd", "time": "night", "regions": ["transorangia", "highveld"], "weight": 6, "cooldown_days": 40, "harmful": true,
       "history": "history.lions",
-      "sources": ["invented: Gemini seed 2 (01_gemini_review.md section 2). Lions on the Highveld in the 1830s are described by Harris (1839)."],
+      "sources": ["invented. Lions on the Highveld in the 1830s are described by Harris (1839)."],
       "text": "event.lions_herd.body",
       "choices": [
         { "text": "event.lions_herd.guard", "requires": [ { "item_gte": ["gunpowder", 1] }, { "item_gte": ["lead", 1] } ], "locked": "lock.need_powder",
@@ -179,7 +179,7 @@
       "requires": [ { "member_role": "servant" }, { "days_gte": 20 } ],
       "speaker": { "pick": "role", "role": "servant" },
       "history": "history.servant_wages",
-      "sources": ["Wages: 10 Rds (15s) a month for a cattle leader or wagon driver (Steedman c. 1832; Backhouse 1838); farm hands could earn far more elsewhere, and after Ordinance 50 (1828) Khoikhoi could leave (05_research_pass2.md sections 4.3, 7). The conversation is invented."],
+      "sources": ["Wages: 10 Rds (15s) a month for a cattle leader or wagon driver (Steedman c. 1832; Backhouse 1838); farm hands could earn far more elsewhere, and after Ordinance 50 (1828) Khoikhoi could leave (research.md sections 7.3, 10.1). The conversation is invented."],
       "text": "event.servant_wages.body",
       "choices": [
         { "text": "event.servant_wages.raise", "requires": [ { "money_gte": 15 } ], "locked": "lock.need_money",
@@ -194,7 +194,7 @@
       "id": "smous_visit", "weight": 6, "cooldown_days": 30,
       "requires": [ { "days_gte": 5 } ],
       "history": "history.smous",
-      "sources": ["Smouse (travelling traders) took goods to farmers in exchange for sheep (Steedman 1835) and went far beyond the Colony (Harris 1839) - 05_research_pass2.md. The visit and prices are invented."],
+      "sources": ["Smouse (travelling traders) took goods to farmers in exchange for sheep (Steedman 1835) and went far beyond the Colony (Harris 1839) - research.md section 7.6. The visit and prices are invented."],
       "text": "event.smous_visit.body",
       "choices": [
         { "text": "event.smous_visit.coffee", "requires": [ { "money_gte": 10 } ], "locked": "lock.need_money",
@@ -247,7 +247,7 @@
     {
       "id": "griqua_riders", "regions": ["transorangia"], "weight": 6, "once": true,
       "history": "history.griqua",
-      "sources": ["Griqua lived around the Orange River and Philippolis (01_gemini_review.md section 3); they were allies at Mosega in 1837 (05 section 3). The meeting is invented."],
+      "sources": ["Griqua lived around the Orange River and Philippolis (research.md section 11); they were allies at Mosega in 1837 (research.md section 6). The meeting is invented."],
       "text": "event.griqua_riders.body",
       "choices": [
         { "text": "event.griqua_riders.welcome",
@@ -261,7 +261,7 @@
     {
       "id": "barolong_herders", "regions": ["transorangia", "highveld"], "weight": 6, "cooldown_days": 30,
       "history": "history.barolong",
-      "sources": ["Barolong under Moroka at Thaba Nchu (02_research_resources.md section 5); beads and tobacco as trade goods among the Batswana (Harris 1839). The meeting is invented."],
+      "sources": ["Barolong under Moroka at Thaba Nchu (research.md section 11); beads and tobacco as trade goods among the Batswana (Harris 1839). The meeting is invented."],
       "text": "event.barolong_herders.body",
       "choices": [
         { "text": "event.barolong_herders.beads", "requires": [ { "item_gte": ["beads", 2] } ], "locked": "lock.need_beads",
@@ -276,7 +276,7 @@
       "id": "vegkop_survivor", "regions": ["transorangia", "highveld"], "weight": 8, "once": true,
       "requires": [ { "not_flag": "heard_vegkop" } ],
       "history": "history.vegkop",
-      "sources": ["Vegkop, Oct 1836: Potgieter's laager attacked by the Ndebele; 2 trekkers killed; Potgieter lost 5,000 sheep, 300 cattle and 100 draught oxen; Moroka's oxen brought the trek to Thaba Nchu (Wikipedia: Battle of Vegkop; SA Military History) - 05_research_pass2.md section 3. The family met is invented."],
+      "sources": ["Vegkop, Oct 1836: Potgieter's laager attacked by the Ndebele; 2 trekkers killed; Potgieter lost 5,000 sheep, 300 cattle and 100 draught oxen; Moroka's oxen brought the trek to Thaba Nchu (Wikipedia: Battle of Vegkop; SA Military History) - research.md section 6. The family met is invented."],
       "text": "event.vegkop_survivor.body",
       "choices": [
         { "text": "event.vegkop_survivor.listen",
@@ -289,7 +289,7 @@
       "id": "retief_manifesto", "sides": ["dutch"], "regions": ["eastern_frontier", "karoo", "stormberg"], "weight": 8, "once": true,
       "requires": [ { "date_gte": "1837-02-02" } ],
       "history": "history.retief_manifesto",
-      "sources": ["Retief's manifesto was printed in the Graham's Town Journal in early 1837 (Jan or 2 Feb [conflict]); it gives labour, frontier-security and British-rule grievances (02_research_resources.md section 1). The reading is invented."],
+      "sources": ["Retief's manifesto was printed in the Graham's Town Journal in early 1837 (Jan or 2 Feb [conflict]); it gives labour, frontier-security and British-rule grievances (research.md section 2). The reading is invented."],
       "text": "event.retief_manifesto.body",
       "choices": [
         { "text": "event.retief_manifesto.agree",
@@ -303,7 +303,7 @@
       "requires": [ { "relation_lt": ["trekkers", 30] } ],
       "speaker": { "pick": "role", "role": "head" },
       "history": "history.governors_man",
-      "sources": ["English settlers were tolerated or suspected among the trekkers (03_development_plan.md section 4); English speakers on the trek were rare (02 section 6b). The scene is invented."],
+      "sources": ["English settlers were tolerated or suspected among the trekkers (design.md section 4); English speakers on the trek were rare (research.md section 11). The scene is invented."],
       "text": "event.governors_man.body",
       "choices": [
         { "text": "event.governors_man.honest",
@@ -318,7 +318,7 @@
       "id": "stuck_wagon", "regions": ["transorangia", "highveld"], "weight": 7, "cooldown_days": 30,
       "requires": [ { "not_flag": "helped_stuck_wagon" } ],
       "history": "history.stuck_wagon",
-      "sources": ["invented: a way for the English side to earn the trekkers' trust (04_game_design.md section 12.1)."],
+      "sources": ["invented: a way for the English side to earn the trekkers' trust (design.md section 15)."],
       "text": "event.stuck_wagon.body",
       "choices": [
         { "text": "event.stuck_wagon.help",

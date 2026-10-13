@@ -1,5 +1,5 @@
 {
-  "_about": "Relations run -100..100. Side price multipliers follow 03_development_plan.md section 4; all values invented starting points.",
+  "_about": "Relations run -100..100. Side price multipliers follow design.md section 4; all values invented starting points.",
   "groups": [
     { "id": "trekkers",            "start": { "dutch": 30,  "english": -10 }, "price_mul": { "dutch": 1.0,  "english": 1.25 }, "sell_spread": 0.6 },
     { "id": "british",             "start": { "dutch": -20, "english": 20 },  "price_mul": { "dutch": 1.0,  "english": 1.0 },  "sell_spread": 0.5 },

@@ -4,7 +4,7 @@ A survival game in the spirit of *The Oregon Trail*, set on the Great Trek in So
 
 Made by Joseph Colton <josephcolton@gmail.com>, with the code written by Claude (Anthropic). Written in C with SDL3. Licensed under the GNU GPL v3 (see `LICENSE`).
 
-**Status:** playable from start to finish, still being tested and balanced. See `docs/planning/` for the design and the historical research.
+**Status:** playable from start to finish, still being tested and balanced. See `docs/design.md` for the design and `docs/research.md` for the historical research.
 
 ![The title screen: a wagon and span crossing the highveld among thorn trees](docs/screenshots/title.png)
 

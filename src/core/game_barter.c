@@ -1,4 +1,4 @@
-/* Barter beyond the Colony: no coin, only goods (04_game_design.md section 7.4).
+/* Barter beyond the Colony: no coin, only goods (design.md section 11.5).
  * Each partner values goods differently. A fair deal builds goodwill; a mean one costs it.
  * Gunpowder is the most valuable thing to offer and a crime to sell beyond the frontier. */
 #include "game_internal.h"

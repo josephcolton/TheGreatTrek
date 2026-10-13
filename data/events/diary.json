@@ -1,5 +1,5 @@
 {
-  "_about": "Events drawn from research pass 3: the Tregardt diary (1836-38), horse-sickness, and the reach of the Punishment Act (05_research_pass2.md section 14).",
+  "_about": "Events drawn from research pass 3: the Tregardt diary (1836-38), horse-sickness, and the reach of the Punishment Act (research.md section 10.1).",
   "events": [
     {
       "id": "sunday_work", "weight": 8, "once": true,
@@ -18,7 +18,7 @@
       "id": "horse_sickness", "regions": ["karoo", "transorangia", "highveld", "stormberg"], "months": [3, 4, 5], "weight": 7, "once": true, "harmful": true,
       "requires": [ { "item_gte": ["horses", 1] } ],
       "history": "history.horse_sickness",
-      "sources": ["Horse-sickness outbreaks with very high mortality every year or two in Graaff-Reinet, 1819-29, worst in late summer and autumn (05 section 6). Tregardt's diary records horses dying of 'de paarde siekte' in 1837. Keeping horses in at night and on high ground was the period remedy; that it helps is [recall, verify]. The odds here are invented."],
+      "sources": ["Horse-sickness outbreaks with very high mortality every year or two in Graaff-Reinet, 1819-29, worst in late summer and autumn (research.md section 9). Tregardt's diary records horses dying of 'de paarde siekte' in 1837. Keeping horses in at night and on high ground was the period remedy; that it helps is [recall, verify]. The odds here are invented."],
       "text": "event.horse_sickness.body",
       "choices": [
         { "text": "event.horse_sickness.stable",
