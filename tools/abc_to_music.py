@@ -36,6 +36,9 @@ TUNES = [
 SCENES = {"title": "old_100th", "church": "old_100th", "ending": "old_100th", "night": "tallis_canon",
           "grave": "st_anne", "place": "o_waly_waly"}
 
+# the loudest a tune gets at 100% music volume (full scale is 1); music is under everything else
+LEVEL = 0.22
+
 KEYS = {"C": {}, "G": {"F": 1}, "D": {"F": 1, "C": 1}, "F": {"B": -1}, "Bb": {"B": -1, "E": -1}}
 BASE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
 NOTE = re.compile(r"(\^\^|\^|__|_|=)?([A-Ga-gzx])([,']*)(\d*)(/*)(\d*)")
@@ -120,7 +123,10 @@ def main():
     doc = {
         "_about": "Music: public-domain psalm, hymn and folk tunes (sources in each tune), played by the game in a "
                   "retro tracker style. Made from tools/music/*.abc by tools/abc_to_music.py; edit those, not this. "
-                  "Each voice is [midi note, beats]; note 0 is a rest. The melody is the first voice.",
+                  "Each voice is [midi note, beats]; note 0 is a rest. The melody is the first voice. level is the "
+                  "loudest a tune gets at 100% music volume (1 is full scale); the volume setting scales it on a "
+                  "squared curve, so 10% is quiet.",
+        "level": LEVEL,
         "scenes": SCENES,
         "tunes": tunes,
     }

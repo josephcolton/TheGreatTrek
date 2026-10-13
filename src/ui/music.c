@@ -40,7 +40,8 @@ static struct {
 static int scene_count;
 
 static SDL_AudioStream *stream;
-static float volume = 0.6f;
+static float volume = 0.36f; /* the setting, squared */
+static float level = 0.22f;  /* a tune's peak at 100% volume, from music.json */
 static int playing = -1, wanted = -1;
 static int pos;        /* next frame of the playing tune to queue */
 static float fade = 0; /* 0..1, the playing tune's fade */
@@ -125,9 +126,10 @@ static void render_tune(Tune *t)
     for (int i = 0; i < t->frames; i++) {
         peak = fmaxf(peak, fabsf(t->pcm[i]));
     }
-    if (peak > 0.7f) {
+    /* every tune peaks at the same level, well under the sound effects */
+    if (peak > 0) {
         for (int i = 0; i < t->frames; i++) {
-            t->pcm[i] *= 0.7f / peak;
+            t->pcm[i] *= level / peak;
         }
     }
 }
@@ -147,6 +149,10 @@ bool music_load(const char *data_dir)
     if (!root) {
         SDL_Log("No music: cannot read music.json");
         return false;
+    }
+    const cJSON *lv = cJSON_GetObjectItemCaseSensitive(root, "level");
+    if (cJSON_IsNumber(lv) && lv->valuedouble > 0 && lv->valuedouble <= 1) {
+        level = (float)lv->valuedouble;
     }
     const cJSON *tj;
     cJSON_ArrayForEach(tj, cJSON_GetObjectItemCaseSensitive(root, "tunes"))
@@ -273,7 +279,9 @@ bool music_write_wav(const char *tune_id, const char *path)
 
 void music_set_volume(int percent)
 {
-    volume = (percent < 0 ? 0 : percent > 100 ? 100 : percent) / 100.0f;
+    /* squared, since the ear hears loudness on a curve: 50% is a quarter of full, 10% a hundredth */
+    float v = (percent < 0 ? 0 : percent > 100 ? 100 : percent) / 100.0f;
+    volume = v * v;
 }
 
 void music_want(const char *scene)
