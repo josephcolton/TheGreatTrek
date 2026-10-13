@@ -2,7 +2,7 @@
 
 A survival game in the spirit of *The Oregon Trail*, set on the Great Trek in South Africa in 1837. Choose to play a Dutch (Voortrekker) or English (settler/trader) family. Outfit your wagon in Grahamstown and lead your family north across the Orange and Vaal rivers to the Highveld.
 
-Written in C with SDL3. Licensed under the GNU GPL v3 (see `LICENSE`).
+Made by Joseph Colton <josephcolton@gmail.com>, with the code written by Claude (Anthropic). Written in C with SDL3. Licensed under the GNU GPL v3 (see `LICENSE`).
 
 **Status:** playable from start to finish, still being tested and balanced. See `docs/planning/` for the design and the historical research.
 

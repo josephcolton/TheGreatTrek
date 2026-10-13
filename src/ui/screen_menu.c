@@ -445,6 +445,8 @@ void credits_event(App *app, const SDL_Event *e)
 void credits_render(App *app)
 {
     draw_header(app, app_text(app, "credits.title"), NULL);
-    draw_wrapped(&app->draw, app->font, app_text(app, "credits.body"), 30, 30, 580, COL_TEXT, false);
+    float y = 30;
+    y += draw_wrapped(&app->draw, app->font, app_text(app, "credits.made_by"), 30, y, 580, COL_GOLD, false) + 10;
+    draw_wrapped(&app->draw, app->font, app_text(app, "credits.body"), 30, y, 580, COL_TEXT, false);
     draw_footer(app, app_text(app, "footer.back"));
 }

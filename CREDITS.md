@@ -1,5 +1,7 @@
 # Credits
 
+**Joseph Colton** <josephcolton@gmail.com>: the idea, the design and the testing. The code, pictures and research were written with Claude (Anthropic).
+
 ## Code libraries
 | Library | Licence | Use |
 |---|---|---|
