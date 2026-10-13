@@ -40,6 +40,7 @@
   "settings.speed.2": "fast",
   "settings.on": "on",
   "settings.off": "off",
+  "settings.reset": "Reset to defaults",
   "settings.back": "Back",
   "footer.back": "Esc: back",
 

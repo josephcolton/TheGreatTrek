@@ -32,16 +32,22 @@ static TTF_Font *open_font(const App *app, const char *name, float size)
 
 /* ---------------------------------------------------------------- settings */
 
-static void load_settings(App *app)
+/* The defaults of everything on the settings screen. */
+static void screen_defaults(Settings *s)
 {
-    Settings *s = &app->settings;
-    s->difficulty = DIFF_NORMAL;
-    s->text_speed = 0;
     s->show_odds = false;
     s->fullscreen = false;
     s->travel_speed = 1;
     s->sound = true;
     s->music_volume = 60;
+}
+
+static void load_settings(App *app)
+{
+    Settings *s = &app->settings;
+    s->difficulty = DIFF_NORMAL;
+    s->text_speed = 0;
+    screen_defaults(s);
     char *path = util_path_join(app->pref_path, "settings.json");
     char *json = util_read_file(path, NULL);
     free(path);
@@ -71,6 +77,15 @@ static void load_settings(App *app)
         s->travel_speed = v->valueint < 0 ? 0 : (v->valueint > 2 ? 2 : v->valueint);
     }
     cJSON_Delete(o);
+}
+
+void app_reset_settings(App *app)
+{
+    screen_defaults(&app->settings);
+    SDL_SetWindowFullscreen(app->window, app->settings.fullscreen);
+    sound_set_enabled(app->settings.sound);
+    music_set_volume(app->settings.music_volume);
+    app_save_settings(app);
 }
 
 void app_save_settings(App *app)

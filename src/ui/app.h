@@ -104,6 +104,8 @@ void app_fmt_to(App *app, const LocText *t, char *out, size_t cap);
 void app_scan_trips(App *app);
 void app_commit(App *app);
 void app_save_settings(App *app);
+/* Puts everything on the settings screen back to its default, applies it and saves. */
+void app_reset_settings(App *app);
 void app_set_message(App *app, const char *text);
 void app_close_game(App *app);
 void app_switch(App *app, ScreenId s);

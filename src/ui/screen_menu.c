@@ -278,7 +278,7 @@ void trips_render(App *app)
 
 #include "music.h"
 
-typedef enum { ST_ODDS, ST_FULLSCREEN, ST_SPEED, ST_SOUND, ST_MUSIC, ST_BACK, ST_COUNT } SettingItem;
+typedef enum { ST_ODDS, ST_FULLSCREEN, ST_SPEED, ST_SOUND, ST_MUSIC, ST_RESET, ST_BACK, ST_COUNT } SettingItem;
 
 static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128])
 {
@@ -296,6 +296,7 @@ static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128]
     } else {
         snprintf(bufs[ST_MUSIC], 128, "%s %s", app_text(app, "settings.music"), app_text(app, "settings.off"));
     }
+    snprintf(bufs[ST_RESET], 128, "%s", app_text(app, "settings.reset"));
     snprintf(bufs[ST_BACK], 128, "%s", app_text(app, "settings.back"));
     for (int i = 0; i < ST_COUNT; i++) {
         items[i] = (ChoiceItem){bufs[i], NULL};
@@ -328,6 +329,7 @@ static void settings_activate(App *app, int item)
         sound_play(SFX_CLICK);
         break;
     case ST_MUSIC: settings_music(app, 10, true); break;
+    case ST_RESET: app_reset_settings(app); break;
     case ST_BACK:
         app_switch(app, app->game ? SCR_GAME : SCR_TITLE);
         break;
