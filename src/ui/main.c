@@ -1,6 +1,7 @@
 /* The Great Trek: SDL init, main loop, screen dispatch.
  * Testing options:
  *   --screenshot FILE   render a frame to a PNG after any --keys, then exit
+ *   --quit              exit after any --keys (saving as on a normal quit), leaving no window open
  *   --check-text        lay out every text the game can show; list any that run off the screen
  *   --keys "a b c"      feed key presses first: 1-9, a-z, enter, esc, up, down, left, right,
  *                       space, bksp, "text:Word", "wait:N" (N frames of 1/10 s),
@@ -272,10 +273,13 @@ int main(int argc, char **argv)
 {
     const char *screenshot = NULL, *keys = NULL, *pref = NULL;
     uint64_t seed = 0;
-    bool check_text = false;
+    bool check_text = false, quit = false;
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--check-text") == 0) {
             check_text = true;
+        }
+        if (strcmp(argv[i], "--quit") == 0) {
+            quit = true;
         }
         if (strcmp(argv[i], "--screenshot") == 0 && i + 1 < argc) {
             screenshot = argv[++i];
@@ -314,6 +318,13 @@ int main(int argc, char **argv)
         bool ok = save_screenshot(&app, screenshot);
         app_shutdown(&app);
         return ok ? 0 : 1;
+    }
+    if (quit) {
+        if (app.game) {
+            app_commit(&app);
+        }
+        app_shutdown(&app);
+        return 0;
     }
 
     Uint64 last = SDL_GetTicksNS();
