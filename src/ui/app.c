@@ -3,6 +3,7 @@
 #include "format.h"
 #include "scores.h"
 #include "sprites.h"
+#include "music.h"
 #include "sound.h"
 #include "util.h"
 #include "version.h"
@@ -40,6 +41,7 @@ static void load_settings(App *app)
     s->fullscreen = false;
     s->travel_speed = 1;
     s->sound = true;
+    s->music_volume = 60;
     char *path = util_path_join(app->pref_path, "settings.json");
     char *json = util_read_file(path, NULL);
     free(path);
@@ -62,6 +64,9 @@ static void load_settings(App *app)
     if (cJSON_IsBool(v = cJSON_GetObjectItemCaseSensitive(o, "sound"))) {
         s->sound = cJSON_IsTrue(v);
     }
+    if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "music_volume"))) {
+        s->music_volume = v->valueint < 0 ? 0 : (v->valueint > 100 ? 100 : v->valueint / 10 * 10);
+    }
     if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "travel_speed"))) {
         s->travel_speed = v->valueint < 0 ? 0 : (v->valueint > 2 ? 2 : v->valueint);
     }
@@ -76,6 +81,7 @@ void app_save_settings(App *app)
     cJSON_AddBoolToObject(o, "fullscreen", app->settings.fullscreen);
     cJSON_AddNumberToObject(o, "travel_speed", app->settings.travel_speed);
     cJSON_AddBoolToObject(o, "sound", app->settings.sound);
+    cJSON_AddNumberToObject(o, "music_volume", app->settings.music_volume);
     cJSON_AddBoolToObject(o, "help_seen", app->settings.help_seen);
     char *json = cJSON_Print(o);
     cJSON_Delete(o);
@@ -180,6 +186,8 @@ bool app_init(App *app, const char *pref_override)
     load_names(app);
     sound_init(); /* the game works without sound if there is no audio device */
     sound_set_enabled(app->settings.sound);
+    music_init(app->data_dir); /* tunes from data/music.json, if there is sound at all */
+    music_set_volume(app->settings.music_volume);
 
     if (!SDL_CreateWindowAndRenderer(locale_get(app->loc, "app.title"), TREK_LOGICAL_W * 2, TREK_LOGICAL_H * 2,
                                      SDL_WINDOW_RESIZABLE, &app->window, &app->renderer)) {
@@ -233,6 +241,7 @@ void app_close_game(App *app)
 void app_shutdown(App *app)
 {
     app_close_game(app);
+    music_shutdown();
     sound_shutdown();
     draw_shutdown();
     sprites_free();

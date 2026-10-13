@@ -8,6 +8,7 @@
  *   --pref DIR          keep saves and settings in DIR instead of the user folder
  *   --seed N            use seed N for new trips */
 #include "app.h"
+#include "music.h"
 #include "screens.h"
 #include "util.h"
 
@@ -85,8 +86,45 @@ static void dispatch_screen_event(App *app, const SDL_Event *e)
     }
 }
 
+/* Which tune fits what is on screen (data/music.json "scenes"); NULL for quiet. Music plays on
+ * the menus, in towns and missions, at church, in camp at night, at a grave and at the end;
+ * the road itself is left to the sound of the wagon. */
+static const char *music_scene(const App *app)
+{
+    const Game *g = app->game;
+    if (!g) {
+        return "title";
+    }
+    switch (game_phase(g)) {
+    case PHASE_ENDED: return "ending";
+    case PHASE_GRAVE: return "grave";
+    case PHASE_STORE:
+    case PHASE_BARTER: return "place";
+    case PHASE_DIALOG:
+        if (g->dlg.kind == DLG_EVENT && g->dlg.event >= 0) {
+            const EventDef *ev = &app->data->events[g->dlg.event];
+            if (strncmp(ev->id, "church", 6) == 0) {
+                return "church";
+            }
+            if (ev->night) {
+                return "night";
+            }
+        }
+        if (g->dlg.kind == DLG_LANDMARK) {
+            NodeKind k = app->data->nodes[g->node].kind;
+            if (k == NODE_TOWN || k == NODE_MISSION) {
+                return "place";
+            }
+        }
+        return NULL;
+    default: return NULL;
+    }
+}
+
 static void update(App *app, double dt)
 {
+    music_want(music_scene(app));
+    music_update(dt);
     if (app->message_timer > 0) {
         app->message_timer -= dt;
     }
@@ -247,6 +285,14 @@ int main(int argc, char **argv)
             pref = argv[++i];
         } else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
             seed = strtoull(argv[++i], NULL, 10);
+        } else if (strcmp(argv[i], "--music-wav") == 0 && i + 2 < argc) {
+            /* --music-wav TUNE FILE: write a tune to a WAV to listen to, then stop */
+            char *base = SDL_GetBasePath() ? util_strdup(SDL_GetBasePath()) : util_strdup("./");
+            char *data = util_path_join(base, "data");
+            bool ok = music_load(data) && music_write_wav(argv[i + 1], argv[i + 2]);
+            free(data);
+            free(base);
+            return ok ? 0 : 1;
         }
     }
 

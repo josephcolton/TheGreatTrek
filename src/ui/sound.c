@@ -150,6 +150,11 @@ void sound_shutdown(void)
     }
 }
 
+SDL_AudioDeviceID sound_device(void)
+{
+    return device;
+}
+
 void sound_set_enabled(bool on)
 {
     enabled = on;

@@ -474,3 +474,8 @@ Sources added in this pass:
 - 72nd Highlanders in the 1834-35 war (Spink medal lot): https://spink.com/lot/18002000225
 - Magaliesberg, formerly the Cashan Mountains: https://en.wikipedia.org/wiki/Magaliesberg
 - Result: every place where the game offers church had a church or chapel by 1837, except the trekker laager, where services were held in the open or under an awning, as the game already shows. Quinine: still no source that the trekkers had it (`06` section 9).
+
+**Music (2026-10-12).** The game plays public-domain tunes in a retro tracker style (`data/music.json`, `src/ui/music.c`):
+- *Old Hundredth*, the Genevan Psalter tune of c. 1551 (Psalm 134 in the Genevan and Dutch psalters), for the title, church and the ending. Cape congregations went on singing from Datheen's psalm book and the Statenberyming (both set to the Genevan tunes) after the Netherlands moved on, and the trekkers carried their psalm and hymn books inland: https://repository.nwu.ac.za/handle/10394/17433 . **[sourced in general; that this tune was sung on the trek is likely but not shown]**
+- *Tallis' Canon* (c. 1567), the English evening hymn, for nights in camp; *St Anne* (Croft, 1708, "O God, our help in ages past") at graves; *O Waly Waly*, a traditional English and Scots folk tune, in towns. These are tunes the English settlers of 1820 could have known **[general knowledge; not tied to a specific source]**.
+- Settings and notes: the Open Hymnal Project (public domain), https://github.com/mzealey/openhymnal .

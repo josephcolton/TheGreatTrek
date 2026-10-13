@@ -8,6 +8,7 @@
 #include "locale.h"
 #include "util.h"
 
+#include <cJSON.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -143,6 +144,68 @@ static int check_portraits(const GameData *d, const char *data_dir)
     return missing;
 }
 
+/* data/music.json (played by src/ui/music.c): every tune has a source, its voices last the same
+ * number of beats, and every scene names a tune. */
+static int check_music(const char *data_dir)
+{
+    char *path = util_path_join(data_dir, "music.json");
+    char *text = util_read_file(path, NULL);
+    free(path);
+    cJSON *root = text ? cJSON_Parse(text) : NULL;
+    free(text);
+    if (!root) {
+        fprintf(stderr, "music.json: missing or not JSON\n");
+        return 1;
+    }
+    int bad = 0, tunes = 0;
+    const cJSON *t;
+    cJSON_ArrayForEach(t, cJSON_GetObjectItemCaseSensitive(root, "tunes"))
+    {
+        const cJSON *id = cJSON_GetObjectItemCaseSensitive(t, "id");
+        const char *name = cJSON_IsString(id) ? id->valuestring : "?";
+        const cJSON *src = cJSON_GetObjectItemCaseSensitive(t, "source");
+        if (!cJSON_IsString(src) || !src->valuestring[0]) {
+            fprintf(stderr, "music %s: no source\n", name);
+            bad++;
+        }
+        double first = -1;
+        const cJSON *v;
+        cJSON_ArrayForEach(v, cJSON_GetObjectItemCaseSensitive(t, "voices"))
+        {
+            double beats = 0;
+            const cJSON *n;
+            cJSON_ArrayForEach(n, v)
+            {
+                beats += cJSON_GetArrayItem(n, 1) ? cJSON_GetArrayItem(n, 1)->valuedouble : 0;
+            }
+            if (first < 0) {
+                first = beats;
+            } else if (beats < first - 1e-6 || beats > first + 1e-6) {
+                fprintf(stderr, "music %s: voices of different lengths (%g and %g beats)\n", name, first, beats);
+                bad++;
+            }
+        }
+        tunes++;
+    }
+    const cJSON *sc;
+    cJSON_ArrayForEach(sc, cJSON_GetObjectItemCaseSensitive(root, "scenes"))
+    {
+        bool found = false;
+        cJSON_ArrayForEach(t, cJSON_GetObjectItemCaseSensitive(root, "tunes"))
+        {
+            const cJSON *id = cJSON_GetObjectItemCaseSensitive(t, "id");
+            found = found || (cJSON_IsString(id) && cJSON_IsString(sc) && strcmp(id->valuestring, sc->valuestring) == 0);
+        }
+        if (!found) {
+            fprintf(stderr, "music scene %s: no such tune\n", sc->string);
+            bad++;
+        }
+    }
+    printf("music: %d tunes\n", tunes);
+    cJSON_Delete(root);
+    return bad;
+}
+
 int main(int argc, char **argv)
 {
     const char *data_dir = argc > 1 ? argv[1] : "data";
@@ -237,6 +300,7 @@ int main(int argc, char **argv)
         locale_free(loc);
     }
 
+    errors += check_music(data_dir);
     int no_portrait = check_portraits(d, data_dir);
     printf("portraits: %d missing\n", no_portrait);
     errors += no_portrait;
