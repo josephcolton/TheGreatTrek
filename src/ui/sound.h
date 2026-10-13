@@ -12,7 +12,8 @@ typedef enum {
 bool sound_init(void);
 void sound_shutdown(void);
 void sound_play(Sfx s);
-void sound_set_enabled(bool on);
+/* 0 (off) to 100. */
+void sound_set_volume(int percent);
 /* The open playback device (0 if there is none), for the music. */
 SDL_AudioDeviceID sound_device(void);
 

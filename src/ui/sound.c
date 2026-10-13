@@ -17,7 +17,7 @@ static SDL_AudioDeviceID device;
 static SDL_AudioStream *streams[CHANNELS];
 static Sample samples[SFX_COUNT];
 static int next_channel;
-static bool enabled = true;
+static float gain = 1.0f; /* the volume setting, squared */
 
 /* A small private noise generator; sound is not part of the simulation, so it needs no seed. */
 static uint32_t noise_state = 0x12345678u;
@@ -126,6 +126,7 @@ bool sound_init(void)
         streams[i] = SDL_CreateAudioStream(&spec, &spec);
         if (streams[i]) {
             SDL_BindAudioStream(device, streams[i]);
+            SDL_SetAudioStreamGain(streams[i], gain);
         }
     }
     synth_all();
@@ -155,14 +156,21 @@ SDL_AudioDeviceID sound_device(void)
     return device;
 }
 
-void sound_set_enabled(bool on)
+void sound_set_volume(int percent)
 {
-    enabled = on;
+    /* squared, like the music: the ear hears loudness on a curve */
+    float v = (percent < 0 ? 0 : percent > 100 ? 100 : percent) / 100.0f;
+    gain = v * v;
+    for (int i = 0; i < CHANNELS; i++) {
+        if (streams[i]) {
+            SDL_SetAudioStreamGain(streams[i], gain);
+        }
+    }
 }
 
 void sound_play(Sfx s)
 {
-    if (!enabled || !device || s < 0 || s >= SFX_COUNT || !samples[s].data) {
+    if (gain <= 0 || !device || s < 0 || s >= SFX_COUNT || !samples[s].data) {
         return;
     }
     SDL_AudioStream *st = streams[next_channel];

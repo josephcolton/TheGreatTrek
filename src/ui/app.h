@@ -28,7 +28,7 @@ typedef struct {
     bool show_odds;         /* off by default */
     bool fullscreen;
     int travel_speed;       /* 0 slow, 1 normal, 2 fast */
-    bool sound;
+    int sound_volume;       /* sound effects, 0 (off) to 100, in steps of 10 */
     int music_volume;       /* 0 (off) to 100, in steps of 10 */
     bool help_seen;         /* the how-to-play page has been shown once, on the first trip */
 } Settings;

@@ -280,6 +280,15 @@ void trips_render(App *app)
 
 typedef enum { ST_ODDS, ST_FULLSCREEN, ST_SPEED, ST_SOUND, ST_MUSIC, ST_RESET, ST_BACK, ST_COUNT } SettingItem;
 
+static void volume_label(App *app, char buf[128], const char *key, int volume)
+{
+    if (volume > 0) {
+        snprintf(buf, 128, "%s %d%%", app_text(app, key), volume);
+    } else {
+        snprintf(buf, 128, "%s %s", app_text(app, key), app_text(app, "settings.off"));
+    }
+}
+
 static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128])
 {
     snprintf(bufs[ST_ODDS], 128, "%s %s", app_text(app, "settings.odds"),
@@ -289,13 +298,8 @@ static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128]
     char key[48];
     snprintf(key, sizeof key, "settings.speed.%d", app->settings.travel_speed);
     snprintf(bufs[ST_SPEED], 128, "%s %s", app_text(app, "settings.speed"), app_text(app, key));
-    snprintf(bufs[ST_SOUND], 128, "%s %s", app_text(app, "settings.sound"),
-             app_text(app, app->settings.sound ? "settings.on" : "settings.off"));
-    if (app->settings.music_volume > 0) {
-        snprintf(bufs[ST_MUSIC], 128, "%s %d%%", app_text(app, "settings.music"), app->settings.music_volume);
-    } else {
-        snprintf(bufs[ST_MUSIC], 128, "%s %s", app_text(app, "settings.music"), app_text(app, "settings.off"));
-    }
+    volume_label(app, bufs[ST_SOUND], "settings.sound", app->settings.sound_volume);
+    volume_label(app, bufs[ST_MUSIC], "settings.music", app->settings.music_volume);
     snprintf(bufs[ST_RESET], 128, "%s", app_text(app, "settings.reset"));
     snprintf(bufs[ST_BACK], 128, "%s", app_text(app, "settings.back"));
     for (int i = 0; i < ST_COUNT; i++) {
@@ -303,15 +307,22 @@ static void settings_items(App *app, ChoiceItem *items, char bufs[ST_COUNT][128]
     }
 }
 
-/* Music volume up or down by step; Enter goes round from 100% back to off. */
-static void settings_music(App *app, int step, bool wrap)
+/* Sound effects or music volume up or down by step; Enter goes round from 100% back to off. A
+ * click is played at the new sound effects volume, so it can be judged. */
+static void settings_volume(App *app, int item, int step, bool wrap)
 {
-    int v = app->settings.music_volume + step;
+    int *volume = item == ST_SOUND ? &app->settings.sound_volume : &app->settings.music_volume;
+    int v = *volume + step;
     if (v > 100) {
         v = wrap ? 0 : 100;
     }
-    app->settings.music_volume = v < 0 ? 0 : v;
-    music_set_volume(app->settings.music_volume);
+    *volume = v < 0 ? 0 : v;
+    if (item == ST_SOUND) {
+        sound_set_volume(*volume);
+        sound_play(SFX_CLICK);
+    } else {
+        music_set_volume(*volume);
+    }
 }
 
 static void settings_activate(App *app, int item)
@@ -324,11 +335,7 @@ static void settings_activate(App *app, int item)
         break;
     case ST_SPEED: app->settings.travel_speed = (app->settings.travel_speed + 1) % 3; break;
     case ST_SOUND:
-        app->settings.sound = !app->settings.sound;
-        sound_set_enabled(app->settings.sound);
-        sound_play(SFX_CLICK);
-        break;
-    case ST_MUSIC: settings_music(app, 10, true); break;
+    case ST_MUSIC: settings_volume(app, item, 10, true); break;
     case ST_RESET: app_reset_settings(app); break;
     case ST_BACK:
         app_switch(app, app->game ? SCR_GAME : SCR_TITLE);
@@ -345,8 +352,8 @@ void settings_event(App *app, const SDL_Event *e)
     settings_items(app, items, bufs);
     nav_updown(app, e, ST_COUNT);
     int digit = key_digit(e);
-    if (app->sel == ST_MUSIC && (key_is(e, SDLK_LEFT) || key_is(e, SDLK_RIGHT))) {
-        settings_music(app, key_is(e, SDLK_LEFT) ? -10 : 10, false);
+    if ((app->sel == ST_SOUND || app->sel == ST_MUSIC) && (key_is(e, SDLK_LEFT) || key_is(e, SDLK_RIGHT))) {
+        settings_volume(app, app->sel, key_is(e, SDLK_LEFT) ? -10 : 10, false);
         app_save_settings(app);
     } else if (digit >= 0 && digit < ST_COUNT) {
         app->sel = digit;

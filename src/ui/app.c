@@ -38,7 +38,7 @@ static void screen_defaults(Settings *s)
     s->show_odds = false;
     s->fullscreen = false;
     s->travel_speed = 1;
-    s->sound = true;
+    s->sound_volume = 80;
     s->music_volume = 60;
 }
 
@@ -67,8 +67,10 @@ static void load_settings(App *app)
     s->show_odds = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "show_odds"));
     s->fullscreen = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "fullscreen"));
     s->help_seen = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(o, "help_seen"));
-    if (cJSON_IsBool(v = cJSON_GetObjectItemCaseSensitive(o, "sound"))) {
-        s->sound = cJSON_IsTrue(v);
+    if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "sound_volume"))) {
+        s->sound_volume = v->valueint < 0 ? 0 : (v->valueint > 100 ? 100 : v->valueint / 10 * 10);
+    } else if (cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(o, "sound"))) {
+        s->sound_volume = 0; /* settings from before 0.1.5 had sound on or off */
     }
     if (cJSON_IsNumber(v = cJSON_GetObjectItemCaseSensitive(o, "music_volume"))) {
         s->music_volume = v->valueint < 0 ? 0 : (v->valueint > 100 ? 100 : v->valueint / 10 * 10);
@@ -83,7 +85,7 @@ void app_reset_settings(App *app)
 {
     screen_defaults(&app->settings);
     SDL_SetWindowFullscreen(app->window, app->settings.fullscreen);
-    sound_set_enabled(app->settings.sound);
+    sound_set_volume(app->settings.sound_volume);
     music_set_volume(app->settings.music_volume);
     app_save_settings(app);
 }
@@ -95,7 +97,7 @@ void app_save_settings(App *app)
     cJSON_AddBoolToObject(o, "show_odds", app->settings.show_odds);
     cJSON_AddBoolToObject(o, "fullscreen", app->settings.fullscreen);
     cJSON_AddNumberToObject(o, "travel_speed", app->settings.travel_speed);
-    cJSON_AddBoolToObject(o, "sound", app->settings.sound);
+    cJSON_AddNumberToObject(o, "sound_volume", app->settings.sound_volume);
     cJSON_AddNumberToObject(o, "music_volume", app->settings.music_volume);
     cJSON_AddBoolToObject(o, "help_seen", app->settings.help_seen);
     char *json = cJSON_Print(o);
@@ -200,7 +202,7 @@ bool app_init(App *app, const char *pref_override)
     load_settings(app);
     load_names(app);
     sound_init(); /* the game works without sound if there is no audio device */
-    sound_set_enabled(app->settings.sound);
+    sound_set_volume(app->settings.sound_volume);
     music_init(app->data_dir); /* tunes from data/music.json, if there is sound at all */
     music_set_volume(app->settings.music_volume);
 
